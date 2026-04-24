@@ -1,53 +1,55 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"/>
-  <title>Jogja Rafting – Adventure Packages</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, height=device-height"/>
+  <title>Affito – La Selva | Eco-Lodge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg: #f2f1ef;
-      --surface: #ffffff;
-      --ink: #111827;
-      --ink-2: #374151;
-      --ink-3: #6b7280;
-      --ink-4: #9ca3af;
-      --ink-5: #d1d5db;
-      --card-h-mobile: 240px;
-      --card-h-tab: 300px;
-      --card-h-desktop: 340px;
-      --nav-h: 76px;
-    }
+:root {
+  --ink: #0f0f0f;
+  --ink-2: #262626;
+  --ink-3: #525252;
+  --ink-4: #a3a3a3;
+  --ink-5: #e5e5e5;
+
+  --bg: #f8f8f7;
+  --surface: #ffffff;
+
+  --primary: #171717;
+  --primary-soft: #2f2f2f;
+
+  --accent: #2f2f2f; /* jadi bukan warna, tapi tone */
+  --border-light: #eaeaea;
+
+  --available: #d4d4d4; /* bukan hijau lagi */
+  --booked: #bdbdbd;   /* bukan merah lagi */
+  --selected-date: #171717;
+}
 
     html, body {
       width: 100%;
       height: 100%;
       background: var(--bg);
       overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
     }
-
-    body { font-family: 'DM Sans', sans-serif; }
 
     #app {
       width: 100%;
       height: 100%;
       display: flex;
-      flex-direction: column;
       overflow: hidden;
+      position: relative;
     }
 
-    .app-shell {
-      display: flex;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
+    /* ===== SIDEBAR (desktop) ===== */
+    .sidebar {
+      display: none;
     }
-
-    .sidebar { display: none; }
 
     @media (min-width: 1024px) {
       .sidebar {
@@ -56,14 +58,13 @@
         align-items: center;
         justify-content: space-between;
         width: 80px;
-        min-height: 100vh;
+        height: 100vh;
         background: var(--surface);
-        box-shadow: 1px 0 0 var(--ink-5);
+        border-right: 1px solid var(--ink-5);
         padding: 28px 0;
         flex-shrink: 0;
         z-index: 50;
       }
-
       .sidebar-logo {
         font-family: 'Syne', sans-serif;
         font-size: 11px;
@@ -73,902 +74,846 @@
         writing-mode: vertical-rl;
         transform: rotate(180deg);
       }
-
       .sidebar-nav {
         display: flex;
         flex-direction: column;
         gap: 8px;
-        align-items: center;
       }
-
       .sidebar-nav-item {
-        width: 46px;
-        height: 46px;
+        width: 46px; height: 46px;
         border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         cursor: pointer;
         transition: background 0.2s;
+        color: var(--ink-4);
       }
-
-      .sidebar-nav-item.active { background: var(--ink); }
-      .sidebar-nav-item.active svg { stroke: #fff; }
+      .sidebar-nav-item.active { background: var(--ink); color: white; }
+      .sidebar-nav-item.active svg { stroke: white; }
       .sidebar-nav-item:not(.active) svg { stroke: var(--ink-4); }
       .sidebar-nav-item:not(.active):hover { background: var(--bg); }
+      .sidebar-avatar {
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #374151, #111827);
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+      }
     }
 
+    /* ===== MAIN AREA ===== */
     .main-area {
       flex: 1;
       display: flex;
       flex-direction: column;
+      height: 100%;
       overflow: hidden;
-      position: relative;
       min-width: 0;
+      position: relative;
     }
 
-    .scroll-content {
+    .page-layout {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    @media (min-width: 1024px) {
+      .page-layout {
+        flex-direction: row;
+      }
+    }
+
+    /* ===== HERO ===== */
+    .hero-wrap {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    @media (min-width: 640px) {
+      .hero-wrap { height: 380px; }
+    }
+
+    @media (min-width: 1024px) {
+      .hero-wrap {
+        width: 50%;
+        height: 100%;
+        flex-shrink: 0;
+      }
+    }
+
+    .hero-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.4s ease, transform 0.5s ease;
+    }
+    .hero-img.switching { opacity: 0; transform: scale(1.04); }
+
+    .hero-grad {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 50%, transparent 100%);
+      pointer-events: none;
+    }
+
+    @media (max-width: 1023px) {
+      .hero-img { border-radius: 0 0 28px 28px; }
+      .hero-grad { border-radius: 0 0 28px 28px; }
+    }
+
+    .top-btns {
+      position: absolute; top: 20px; left: 0; right: 0;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 20px;
+      z-index: 10;
+    }
+
+    @supports (top: env(safe-area-inset-top)) {
+      .top-btns { top: calc(16px + env(safe-area-inset-top)); }
+    }
+
+    .glass-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.22);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: transform 0.2s;
+      color: white;
+    }
+    .glass-btn:active { transform: scale(0.9); }
+
+    .thumbs-col {
+      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px;
+      z-index: 10;
+    }
+
+    .thumb-item {
+      width: 54px; height: 54px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 2.5px solid white;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .thumb-item.active {
+      box-shadow: 0 0 0 2.5px white, 0 0 0 4.5px var(--accent);
+    }
+    .thumb-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .hero-title {
+      position: absolute; bottom: 24px; left: 20px; z-index: 10;
+    }
+
+    /* ===== CONTENT PANEL ===== */
+    .content-panel {
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
-      padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 16px));
+      padding: 20px 20px 24px;
+      background: var(--bg);
+      scroll-behavior: smooth;
+      padding-bottom: 160px; /* extra space for floating CTA */
+    }
+
+    @media (min-width: 640px) {
+      .content-panel { padding: 24px 32px 170px; }
     }
 
     @media (min-width: 1024px) {
-      .scroll-content { padding-bottom: 32px; }
+      .content-panel {
+        width: 50%;
+        padding: 36px 40px 180px;
+      }
     }
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    .inner {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 20px;
+    /* ===== INFO CARDS ===== */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
     }
 
-    @media (min-width: 640px) { .inner { padding: 0 32px; } }
-    @media (min-width: 1024px) { .inner { padding: 0; } }
-
-    .header { padding: max(24px, 4vh) 0 20px; }
-
-    .header-row {
+    .info-card {
+      background: white;
+      border-radius: 18px;
+      padding: 14px 8px;
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
     }
 
-    .header-label {
+    .info-icon {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 6px;
+      color: white;
+    }
+
+    /* ===== INCLUDED / NOT INCLUDED ===== */
+    .amenities-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .amenity-col h3 {
       font-family: 'Syne', sans-serif;
-      font-size: 11px;
+      font-size: 14px;
       font-weight: 700;
-      color: var(--ink-2);
-      letter-spacing: 2px;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .header-title {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(26px, 5vw, 44px);
-      font-weight: 800;
-      line-height: 1.05;
+    .amenity-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .amenity-list li {
+      font-size: 13px;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .included-icon { color: #10b981; }
+    .not-included-icon { color: #ef4444; }
+
+    /* ===== FORM ELEMENTS ===== */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ink-3);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      background: white;
+      outline: none;
+      transition: border 0.2s;
       color: var(--ink);
     }
 
-    @media (min-width: 1024px) { .header-label { display: none; } }
+    .form-input:focus {
+      border-color: var(--accent);
+    }
 
-    .search-btn {
-      background: var(--surface);
+    /* Custom Calendar Styles */
+    .calendar-container {
+      background: white;
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+      margin-bottom: 20px;
+      border: 1px solid var(--border-light);
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .month-nav {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--ink-3);
+      padding: 6px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+    }
+    .month-nav:hover { background: var(--bg); }
+
+    .weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-4);
+      margin-bottom: 8px;
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      text-align: center;
+    }
+
+   .day-cell {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: transparent;
+    border: none;
+    color: var(--ink-2);
+    position: relative;
+    }
+
+    .day-cell:hover:not(.empty):not(.past):not(.booked):not(.selected) {
+    background: #f3f4f6;
+    }
+
+    .day-cell.empty { cursor: default; }
+    .day-cell.past { color: var(--ink-5); cursor: not-allowed; opacity: 0.5; }
+
+    .day-cell.available {
+    background: #ecfdf5;
+    color: #065f46;
+    font-weight: 600;
+    }
+    .day-cell.available:hover:not(.selected) { background: #d1fae5; }
+
+    .day-cell.booked {
+    background: #fef2f2;
+    color: #b91c1c;
+    text-decoration: line-through;
+    cursor: not-allowed;
+    }
+    /* Tidak ada hover untuk .booked */
+
+    .day-cell.selected {
+    background: var(--selected-date);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(79,70,229,0.3);
+    }
+
+    .guest-selector {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      border: 1px solid var(--border-light);
       border-radius: 14px;
-      width: 44px;
-      height: 44px;
+      padding: 8px 14px;
+      margin-top: 8px;
+    }
+    .guest-btn {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: none;
+      font-size: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      margin-top: 4px;
       cursor: pointer;
-      border: none;
-      flex-shrink: 0;
-      transition: box-shadow 0.2s;
+      color: var(--ink);
+      font-weight: 600;
     }
-    .search-btn:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-
-    .card-section { margin-bottom: 28px; }
-
-    .card-stack {
-      position: relative;
-      height: var(--card-h-mobile);
+    .guest-count {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--ink);
     }
 
-    @media (min-width: 640px) {
-      .card-stack { height: var(--card-h-tab); }
-      .card-back-2 { height: 270px !important; }
-      .card-back-1 { height: 280px !important; }
-      .card-main { height: 290px !important; }
+    /* ===== FLOATING CTA (tidak menempel, ada jarak) ===== */
+    .floating-cta {
+      position: fixed;
+      bottom: 24px;
+      left: 20px;
+      right: 20px;
+      background: #111827;
+      backdrop-filter: blur(12px);
+      padding: 14px 20px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 45;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+      max-width: 500px;
+      margin: 0 auto;
     }
 
     @media (min-width: 1024px) {
-      .card-stack { height: var(--card-h-desktop); }
-      .card-back-2 { height: 310px !important; }
-      .card-back-1 { height: 320px !important; }
-      .card-main { height: 330px !important; }
+      .floating-cta {
+        left: auto;
+        right: 24px;
+        width: calc(50% - 80px);
+        max-width: 420px;
+      }
     }
 
-    .card-back-2 {
-      position: absolute;
-      left: -28px; top: 16px;
-      width: calc(100% + 28px);
-      height: 212px;
-      border-radius: 24px;
-      background: #9ca3af;
-      opacity: 0.25;
-      filter: blur(1px);
-      transform: scale(0.91);
-      z-index: 1;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.07);
-    }
-
-    .card-back-1 {
-      position: absolute;
-      left: -14px; top: 9px;
-      width: calc(100% + 14px);
-      height: 225px;
-      border-radius: 24px;
-      background: #6b7280;
-      opacity: 0.4;
-      transform: scale(0.95);
-      z-index: 2;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    }
-
-    .card-main {
-      position: absolute;
-      left: 0; top: 0;
-      width: 100%;
-      height: 235px;
-      border-radius: 24px;
-      background: #1f2937;
-      z-index: 3;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.1);
-      transition: transform 0.25s;
-      cursor: grab;
-      user-select: none;
-    }
-    .card-main:active { transform: scale(0.985); cursor: grabbing; }
-
-    .card-main::before {
-      content: '';
-      position: absolute;
-      top: -40%; left: -20%;
-      width: 55%; height: 75%;
-      background: radial-gradient(ellipse, rgba(255,255,255,0.07) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 5;
-    }
-
-    .adventure-bg {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .indicator-lines {
-      position: absolute;
-      left: 16px; top: 50%;
-      transform: translateY(-50%);
+    .price-text {
+      color: white;
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      z-index: 10;
     }
 
-    .indicator-line {
-      width: 3px;
-      border-radius: 99px;
-      background: rgba(255,255,255,0.35);
-      transition: all 0.3s ease;
-    }
-    .indicator-line.active { background: white; height: 26px; }
-    .indicator-line.inactive { height: 9px; }
-
-    .card-content {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      padding: 20px 18px 20px 44px;
-      z-index: 6;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-    }
-
-    .card-label {
+    .price-text .total-label {
       font-size: 10px;
       font-weight: 500;
-      color: rgba(255,255,255,0.55);
-      letter-spacing: 1.2px;
-      margin-bottom: 4px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 2px;
     }
 
-    .card-name {
+    .price-text .amount {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(16px, 2.8vw, 22px);
-      font-weight: 700;
+      font-size: 22px;
+      font-weight: 800;
       color: white;
-      line-height: 1.2;
-      margin-bottom: 4px;
+      line-height: 1.1;
     }
 
-    .card-loc {
-      display: flex;
-      align-items: center;
-      gap: 4px;
+    .price-text .amount span {
+      font-size: 12px;
+      font-weight: 400;
+      color: #9ca3af;
+      margin-left: 2px;
     }
 
-    .dot-row {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 14px;
-    }
-
-    .dot {
-      height: 6px;
-      border-radius: 99px;
-      transition: all 0.3s;
-      cursor: pointer;
-    }
-
-    .tabs-row {
-      display: flex;
-      gap: 20px;
-      border-bottom: 1px solid var(--ink-5);
-      padding-bottom: 2px;
-      margin-bottom: 20px;
-    }
-
-    .tab-item {
-      position: relative;
-      padding: 4px 0;
-      cursor: pointer;
-      font-size: clamp(12px, 1.5vw, 14px);
-      transition: color 0.2s;
-    }
-
-    .tab-item.active { font-weight: 700; color: var(--ink); }
-    .tab-item.active::after {
-      content: '';
-      position: absolute;
-      bottom: -2px; left: 0;
-      width: 100%; height: 2px;
-      background: var(--ink);
-      border-radius: 2px;
-    }
-    .tab-item:not(.active) { font-weight: 400; color: var(--ink-4); }
-
-    /* ===== SCROLL CONTAINERS ===== */
-    .prop-cards-scroll,
-    .prop-list-wrapper {
-      overflow-x: auto;
-      overflow-y: hidden;
-      width: 100%;
-      padding-bottom: 8px;
-      cursor: grab;
-      user-select: none;
-      -webkit-overflow-scrolling: touch;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    .prop-cards-scroll::-webkit-scrollbar,
-    .prop-list-wrapper::-webkit-scrollbar { display: none; }
-    .prop-cards-scroll:active,
-    .prop-list-wrapper:active { cursor: grabbing; }
-
-    /* Row selalu horizontal, tidak boleh wrap */
-    .prop-cards-row {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      gap: 12px;
-      width: max-content;
-    }
-
-    /* List juga selalu horizontal di semua breakpoint untuk wrapper scroll */
-    .prop-list {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      gap: 12px;
-      width: max-content;
-    }
-
-    .prop-card {
-      border-radius: 18px;
-      overflow: hidden;
-      background: var(--surface);
-      box-shadow: 0 2px 14px rgba(0,0,0,0.06);
-      flex-shrink: 0;
-      width: 148px;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    @media (min-width: 640px) { .prop-card { width: 170px; } }
-    @media (min-width: 1024px) { .prop-card { width: 190px; } }
-
-    .prop-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
-
-    .prop-thumb {
-      width: 100%;
-      height: 96px;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    @media (min-width: 640px) { .prop-thumb { height: 110px; } }
-
-    .list-card {
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 14px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-      cursor: pointer;
-      transition: box-shadow 0.2s, transform 0.2s;
-      flex-shrink: 0;
-      width: 260px;
-    }
-
-    @media (min-width: 640px) { .list-card { width: 300px; } }
-    @media (min-width: 1024px) { .list-card { width: 280px; } }
-
-    .list-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.09); transform: translateY(-2px); }
-
-    .list-thumb {
-      width: 52px; height: 52px;
-      border-radius: 12px;
-      flex-shrink: 0;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    .bottom-nav-wrapper {
-      display: block;
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      padding: 0 20px;
-      padding-bottom: max(14px, env(safe-area-inset-bottom, 14px));
-      z-index: 100;
-      background: transparent;
-      pointer-events: none;
-    }
-
-    .bottom-nav {
-      max-width: 480px;
-      margin: 0 auto;
+    .cta-btn {
+      width: 48px; height: 48px;
+      border-radius: 50%;
       background: white;
-      border-radius: 99px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.07);
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      pointer-events: all;
-    }
-
-    @media (min-width: 640px) {
-      .bottom-nav { max-width: 560px; padding: 12px 32px; }
-    }
-
-    @media (min-width: 1024px) {
-      .bottom-nav-wrapper { display: none; }
-    }
-
-    .nav-item {
-      width: 46px; height: 46px;
-      border-radius: 99px;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
-      transition: background 0.2s;
+      border: none;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+      transition: transform 0.18s, background 0.2s;
+      color: #111827;
     }
-    .nav-item.active { background: var(--ink); }
-    .nav-item.active svg { stroke: white; }
-    .nav-item:not(.active) svg { stroke: var(--ink-4); }
+    .cta-btn:hover { background: #f3f4f6; transform: scale(1.05); }
+    .cta-btn:active { transform: scale(0.93); }
 
-    .slide-fade-enter-active, .slide-fade-leave-active { transition: all 0.3s ease; }
-    .slide-fade-enter-from { opacity: 0; transform: translateX(24px); }
-    .slide-fade-leave-to { opacity: 0; transform: translateX(-24px); }
-
-    @media (min-width: 1024px) {
-      .desktop-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 32px;
-        align-items: start;
-      }
-
-      .desktop-right {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        /* CRITICAL: allow overflow untuk horizontal scroll */
-        overflow: visible;
-      }
-
-      .card-section { min-width: 0; max-width: 100%; }
-      .card-stack { height: var(--card-h-desktop); width: 100%; }
-    }
-
-    @media (max-width: 1023px) {
-      .desktop-grid { display: block; }
+    hr {
+      border: none;
+      border-top: 1px solid var(--border-light);
+      margin: 20px 0;
     }
   </style>
 </head>
 <body>
 <div id="app">
-  <div class="app-shell">
 
-    <aside class="sidebar h-screen w-20 bg-white flex flex-col justify-between items-center py-6 border-r">
-
-    <!-- LOGO -->
-    <div class="sidebar-logo text-xs font-semibold tracking-widest text-gray-700">
-        JOGJA RAFTING
+  <!-- SIDEBAR DESKTOP -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">AFFITO</div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-item" @click="activeNav='home'" :class="{ active: activeNav==='home' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div class="sidebar-nav-item" @click="activeNav='map'" :class="{ active: activeNav==='map' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>
+        </svg>
+      </div>
+      <div class="sidebar-nav-item" @click="activeNav='chat'" :class="{ active: activeNav==='chat' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <div class="sidebar-nav-item" @click="activeNav='notif'" :class="{ active: activeNav==='notif' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </div>
+    </nav>
+    <div class="sidebar-avatar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
     </div>
+  </aside>
 
-      <!-- NAV -->
-      <nav class="sidebar-nav flex flex-col gap-6" aria-label="Navigasi utama">
+  <!-- MAIN -->
+  <div class="main-area">
+    <div class="page-layout">
 
-          <div v-for="nav in navItems" :key="nav.id"
-              class="sidebar-nav-item w-12 h-12 flex items-center justify-center rounded-xl cursor-pointer transition-all duration-200"
-              :class="activeNav===nav.id ? 'bg-gray-900 text-white' : 'text-gray-500 hover:bg-gray-100'"
-              @click="activeNav=nav.id"
-              role="button"
-              :aria-label="nav.id"
-              :aria-current="activeNav===nav.id ? 'page' : undefined"
-              tabindex="0"
-              @keydown.enter="activeNav=nav.id"
-              @keydown.space.prevent="activeNav=nav.id">
+      <!-- HERO -->
+      <div class="hero-wrap">
+        <img :src="currentImage" alt="La Selva"
+             class="hero-img"
+             :class="{ switching: imgSwitching }"/>
+        <div class="hero-grad"></div>
 
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2.2"
-                  stroke-linecap="round" stroke-linejoin="round">
+        <div class="top-btns">
+          <button class="glass-btn" @click="goBack">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <button class="glass-btn" @click="wishlist=!wishlist">
+            <svg width="18" height="18" viewBox="0 0 24 24"
+                 :fill="wishlist ? '#f43f5e' : 'none'"
+                 :stroke="wishlist ? '#f43f5e' : 'white'"
+                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
 
-                  <!-- HOME -->
-                  <template v-if="nav.id==='home'">
-                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                      <polyline points="9 22 9 12 15 12 15 22"/>
-                  </template>
-
-                  <!-- PROMO -->
-                  <template v-else-if="nav.id==='promo'">
-                      <path d="M20.59 13.41L11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82z"/>
-                      <circle cx="7.5" cy="7.5" r="1.5"/>
-                  </template>
-
-                  <!-- CEK BOOKING -->
-                  <template v-else-if="nav.id==='cek-booking'">
-                      <rect x="3" y="4" width="18" height="18" rx="2"/>
-                      <line x1="16" y1="2" x2="16" y2="6"/>
-                      <line x1="8" y1="2" x2="8" y2="6"/>
-                      <line x1="3" y1="10" x2="21" y2="10"/>
-                  </template>
-
-                  <!-- CONTACT -->
-                  <template v-else-if="nav.id==='contact'">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                  </template>
-
-              </svg>
+        <div class="thumbs-col">
+          <div v-for="(img, i) in images" :key="i"
+               class="thumb-item"
+               :class="{ active: selectedIndex===i }"
+               @click="selectImage(i)">
+            <img :src="img.thumb" :alt="'view '+i"/>
           </div>
+        </div>
 
-      </nav>
-    </aside>
-
-    <main class="main-area">
-      <div class="scroll-content no-scrollbar" ref="scrollContentRef">
-        <div class="inner">
-
-          <header class="header">
-            <div class="header-row">
-              <div>
-                <div class="header-label">JOGJA RAFTING</div>
-                <div class="header-title">Find Your<br/>Perfect<br/>Adventure</div>
-              </div>
-              <button class="search-btn" aria-label="Search">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                </svg>
-              </button>
-            </div>
-          </header>
-
-          <div class="desktop-grid">
-
-            <div class="card-section">
-              <div class="card-stack">
-                <div class="card-back-2"></div>
-                <div class="card-back-1"></div>
-
-                <transition name="slide-fade" mode="out-in">
-                  <div class="card-main"
-                       :key="currentCard"
-                       @touchstart.passive="handleTouchStart"
-                       @touchmove.passive="handleTouchMove"
-                       @touchend.passive="handleTouchEnd"
-                       @mousedown="handleMouseDown"
-                       @mousemove="handleMouseMove"
-                       @mouseup="handleMouseUp"
-                       @mouseleave="handleMouseLeave">
-
-                    <div class="adventure-bg"
-                         :style="{ backgroundImage: 'url(' + cards[currentCard].image + ')' }">
-                    </div>
-
-                    <div class="indicator-lines">
-                      <div v-for="i in cards.length" :key="i"
-                           class="indicator-line"
-                           :class="i-1 === currentCard ? 'active' : 'inactive'">
-                      </div>
-                    </div>
-
-                    <div class="card-content">
-                      <div class="card-label">Featured Adventure</div>
-                      <div class="card-name">{{ cards[currentCard].name }}</div>
-                      <div class="card-loc">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-                          <circle cx="12" cy="9" r="2.5"/>
-                        </svg>
-                        <span style="font-size:11px; color:rgba(255,255,255,0.65); font-weight:400;">
-                          {{ cards[currentCard].location }}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </transition>
-              </div>
-
-              <div class="dot-row">
-                <div v-for="(c, i) in cards" :key="i"
-                     class="dot"
-                     @click="currentCard=i; resetAutoSlide()"
-                     :style="{ width: i===currentCard ? '22px' : '6px', background: i===currentCard ? '#374151' : '#d1d5db' }">
-                </div>
-              </div>
-            </div>
-
-            <div class="desktop-right">
-
-              <div class="tabs-row">
-                <div v-for="tab in tabs" :key="tab"
-                     class="tab-item"
-                     :class="{ active: activeTab===tab }"
-                     @click="activeTab=tab">
-                  {{ tab }}
-                </div>
-              </div>
-
-              <transition name="slide-fade" mode="out-in">
-                <div :key="activeTab">
-
-                  <div class="prop-cards-scroll no-scrollbar" ref="cardsScrollRef">
-                    <div class="prop-cards-row">
-                      <div v-for="pkg in currentPackages" :key="pkg.id" class="prop-card">
-                        <div class="prop-thumb"
-                             :style="{ backgroundImage: 'url(' + pkg.image + ')' }">
-                        </div>
-                        <div style="padding:10px 10px 12px;">
-                          <div style="font-size:12px; font-weight:600; color:#111827; margin-bottom:2px;">{{ pkg.name }}</div>
-                          <div style="font-size:11px; color:#9ca3af; margin-bottom:5px;">{{ pkg.duration }}</div>
-                          <div style="font-size:12px; font-weight:700; color:#374151;">{{ pkg.price }}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="prop-list-wrapper no-scrollbar" ref="listScrollRef">
-                    <div class="prop-list">
-                      <div v-for="pkg in currentList" :key="pkg.id" class="list-card">
-                        <div class="list-thumb"
-                             :style="{ backgroundImage: 'url(' + pkg.image + ')' }">
-                        </div>
-                        <div style="flex:1; min-width:0;">
-                          <div class="prop-name"
-                               style="font-size:13px; font-weight:600; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                            {{ pkg.name }}
-                          </div>
-                          <div class="prop-loc" style="font-size:11px; color:#9ca3af; margin-top:2px;">{{ pkg.description }}</div>
-                        </div>
-                        <div style="text-align:right; flex-shrink:0;">
-                          <div class="prop-price" style="font-size:12px; font-weight:700; color:#374151;">{{ pkg.price }}</div>
-                          <div class="prop-rating" style="font-size:11px; color:#9ca3af; margin-top:2px;">{{ pkg.rating }} ★</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </transition>
-            </div>
-
+        <div class="hero-title">
+          <h1 style="font-family:'Syne',sans-serif; font-size:clamp(26px,4vw,36px); font-weight:800; color:white; line-height:1.1; text-shadow:0 2px 8px rgba(0,0,0,0.3);">
+            La Selva
+          </h1>
+          <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+              <circle cx="12" cy="9" r="2.5"/>
+            </svg>
+            <span style="font-size:13px; color:rgba(255,255,255,0.85);">Peru, South America</span>
           </div>
-
         </div>
       </div>
 
-      <div class="bottom-nav-wrapper">
-        <nav class="bottom-nav" aria-label="Navigasi mobile">
-          <div v-for="nav in navItems" :key="nav.id"
-              class="nav-item"
-              :class="{ active: activeNav===nav.id }"
-              @click="activeNav=nav.id"
-              role="button"
-              :aria-label="nav.id"
-              :aria-current="activeNav===nav.id ? 'page' : undefined"
-              tabindex="0"
-              @keydown.enter="activeNav=nav.id"
-              @keydown.space.prevent="activeNav=nav.id">
+      <!-- CONTENT PANEL (scrollable) -->
+      <div class="content-panel no-scrollbar">
 
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" 
-                  :stroke="activeNav===nav.id ? 'white' : '#9ca3af'"
-                  stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-
-                  <!-- HOME -->
-                  <template v-if="nav.id==='home'">
-                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                      <polyline points="9 22 9 12 15 12 15 22"/>
-                  </template>
-
-                  <!-- PROMO -->
-                  <template v-else-if="nav.id==='promo'">
-                      <path d="M20.59 13.41L11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82z"/>
-                      <circle cx="7.5" cy="7.5" r="1.5"/>
-                  </template>
-
-                  <!-- CEK BOOKING -->
-                  <template v-else-if="nav.id==='cek-booking'">
-                      <rect x="3" y="4" width="18" height="18" rx="2"/>
-                      <line x1="16" y1="2" x2="16" y2="6"/>
-                      <line x1="8" y1="2" x2="8" y2="6"/>
-                      <line x1="3" y1="10" x2="21" y2="10"/>
-                  </template>
-
-                  <!-- CONTACT -->
-                  <template v-else-if="nav.id==='contact'">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                  </template>
-
+        <!-- INFO CARDS -->
+        <div class="info-grid">
+          <div v-for="info in infoCards" :key="info.label" class="info-card">
+            <div class="info-icon">
+              <svg v-if="info.type==='distance'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
               </svg>
+              <svg v-else-if="info.type==='temp'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+              </svg>
+              <svg v-else-if="info.type==='rating'" width="14" height="14" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+            <p style="font-size:15px; font-weight:700; color:#111827;">{{ info.value }}</p>
+            <p style="font-size:11px; color:#9ca3af; margin-top:1px;">{{ info.label }}</p>
           </div>
-        </nav>    
-      </div>
+        </div>
 
-    </main>
-  </div>
-</div>
+        <!-- DESCRIPTION -->
+        <div style="margin-bottom:24px;">
+          <h2 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:#111827; margin-bottom:8px;">Description</h2>
+          <p style="font-size:13px; color:#6b7280; line-height:1.65;"
+             :style="expanded ? {} : { display:'-webkit-box', WebkitLineClamp:'4', WebkitBoxOrient:'vertical', overflow:'hidden' }">
+            La Selva is a breathtaking eco-lodge nestled deep within the lush Amazon rainforest of Peru. Surrounded by ancient trees, exotic wildlife, and crystal-clear rivers, this hidden gem offers a truly immersive nature experience. Guests can explore winding jungle trails, spot rare birds and wildlife, and fall asleep to the soothing sounds of the forest at night.
+          </p>
+          <button @click="expanded=!expanded"
+                  style="font-size:12px; font-weight:600; color:#4f46e5; margin-top:6px; background:none; border:none; cursor:pointer; padding:0;">
+            {{ expanded ? 'Show less' : 'Read more' }}
+          </button>
+        </div>
+
+        <!-- INCLUDED & NOT INCLUDED -->
+        <div class="amenities-grid">
+          <div class="amenity-col">
+            <h3 style="color:#111827;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Included
+            </h3>
+            <ul class="amenity-list">
+              <li><span class="included-icon">✓</span> Jungle trekking guide</li>
+              <li><span class="included-icon">✓</span> Canopy walkway</li>
+              <li><span class="included-icon">✓</span> 3x daily meals</li>
+              <li><span class="included-icon">✓</span> Airport transfer</li>
+            </ul>
+          </div>
+          <div class="amenity-col">
+            <h3 style="color:#111827;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Not Included
+            </h3>
+            <ul class="amenity-list">
+              <li><span class="not-included-icon">✗</span> International flights</li>
+              <li><span class="not-included-icon">✗</span> Travel insurance</li>
+              <li><span class="not-included-icon">✗</span> Alcoholic beverages</li>
+              <li><span class="not-included-icon">✗</span> Personal expenses</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr/>
+
+        <!-- BOOKING FORM: CUSTOM CALENDAR & GUEST -->
+        <div style="margin-bottom: 10px;">
+          <h2 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:#111827; margin-bottom:16px;">Select Date & Guests</h2>
+          
+          <!-- Custom Calendar -->
+          <div class="calendar-container">
+            <div class="calendar-header">
+              <button class="month-nav" @click="prevMonth">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <span>{{ currentMonthName }} {{ currentYear }}</span>
+              <button class="month-nav" @click="nextMonth">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+            <div class="weekdays">
+              <span v-for="d in weekdays" :key="d">{{ d }}</span>
+            </div>
+            <div class="days-grid">
+              <button
+                v-for="(day, idx) in calendarDays" :key="idx"
+                class="day-cell"
+                :class="{
+                  empty: !day,
+                  past: day && isPastDay(day),
+                  available: day && isAvailable(day) && !isSelected(day),
+                  booked: day && isBooked(day),
+                  selected: day && isSelected(day)
+                }"
+                :disabled="!day || isPastDay(day) || isBooked(day)"
+                @click="day && selectDay(day)"
+              >
+                {{ day || '' }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Guest Selector -->
+          <div class="form-group">
+            <label class="form-label">Number of Guests</label>
+            <div class="guest-selector">
+              <button class="guest-btn" @click="guests > 1 ? guests-- : null">−</button>
+              <span class="guest-count">{{ guests }} {{ guests === 1 ? 'Guest' : 'Guests' }}</span>
+              <button class="guest-btn" @click="guests < 8 ? guests++ : null">+</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" v-model="booking.name" placeholder="Your full name" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" v-model="booking.phone" placeholder="+62 812 3456 7890" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" v-model="booking.email" placeholder="you@example.com" class="form-input" />
+          </div>
+        </div>
+
+        <div style="height: 20px;"></div>
+
+      </div><!-- /content-panel -->
+    </div><!-- /page-layout -->
+
+    <!-- FLOATING CTA (dengan jarak dari bawah) -->
+    <div class="floating-cta">
+      <div class="price-text">
+        <div class="total-label">Total Price</div>
+        <div class="amount">
+          ${{ totalPrice }} <span>/person</span>
+        </div>
+      </div>
+      <button class="cta-btn" @click="submitBooking">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </div>
+
+  </div><!-- /main-area -->
+</div><!-- /app -->
 
 <script>
-const { createApp, ref, computed, onMounted, onUnmounted, nextTick, watch } = Vue;
+const { createApp, ref, computed } = Vue;
 
 createApp({
   setup() {
-    const currentCard = ref(0);
-    const activeTab = ref('Rafting');
+    const wishlist = ref(false);
+    const expanded = ref(false);
+    const selectedIndex = ref(0);
+    const imgSwitching = ref(false);
     const activeNav = ref('home');
+    const guests = ref(2);
+    
+    // Date state
+    const today = new Date();
+    const currentMonth = ref(today.getMonth());
+    const currentYear = ref(today.getFullYear());
+    const selectedDate = ref(null); // format: 'YYYY-MM-DD'
 
-    // Template refs
-    const scrollContentRef = ref(null);
-    const cardsScrollRef = ref(null);
-    const listScrollRef = ref(null);
-
-    const tabs = ['Rafting', 'VW Tour', 'Outbound'];
-    const navItems = [
-    { id: 'home' },
-    { id: 'promo' },
-    { id: 'cek-booking' },
-    { id: 'contact' }
-    ];
-
-    const cards = [
-      { name: 'Elo River Adventure', price: 'Rp 250K/person', location: 'Magelang, Jawa Tengah', image: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=600&h=400&fit=crop' },
-      { name: 'Progo River Extreme', price: 'Rp 300K/person', location: 'Kulon Progo, Yogyakarta', image: 'https://images.unsplash.com/photo-1591303874512-c22cfb1a69c2?w=600&h=400&fit=crop' },
-      { name: 'Pindul Cave Tubing', price: 'Rp 180K/person', location: 'Gunungkidul, Yogyakarta', image: 'https://images.unsplash.com/photo-1573551445922-7f1d1f04c04e?w=600&h=400&fit=crop' },
-    ];
-
-    const allPackages = {
-      Rafting: {
-        cards: [
-          { id:1, name:'Elo River Pro', duration:'2.5 hours', price:'Rp 250K', image:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop' },
-          { id:2, name:'Progo Extreme', duration:'3 hours', price:'Rp 300K', image:'https://images.unsplash.com/photo-1527015175922-36a306cf0e20?w=400&h=300&fit=crop' },
-          { id:3, name:'Pindul Tubing', duration:'1.5 hours', price:'Rp 180K', image:'https://images.unsplash.com/photo-1530051744172-739f2f8d0de7?w=400&h=300&fit=crop' },
-        ],
-        list: [
-          { id:4, name:'Family Rafting Package', description:'Elo River · 2-4 persons', price:'Rp 450K', rating:'4.8', image:'https://images.unsplash.com/photo-1566837945700-30057527ade0?w=200&h=200&fit=crop' },
-          { id:5, name:'Group Adventure', description:'Progo River · 5-10 persons', price:'Rp 1.2M', rating:'4.9', image:'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?w=200&h=200&fit=crop' },
-          { id:6, name:'Sunset Rafting', description:'Elo River · 2 persons', price:'Rp 350K', rating:'4.6', image:'https://images.unsplash.com/photo-1509023464722-18d996393ca8?w=200&h=200&fit=crop' },
-        ]
-      },
-      'VW Tour': {
-        cards: [
-          { id:7, name:'City Heritage', duration:'4 hours', price:'Rp 400K', image:'https://images.unsplash.com/photo-1558383409-ab7ef8db3e01?w=400&h=300&fit=crop' },
-          { id:8, name:'Merapi Lava Tour', duration:'6 hours', price:'Rp 550K', image:'https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=400&h=300&fit=crop' },
-          { id:9, name:'Sunset Tour', duration:'3 hours', price:'Rp 350K', image:'https://images.unsplash.com/photo-1504700898892-3e9cfb82a1e7?w=400&h=300&fit=crop' },
-        ],
-        list: [
-          { id:10, name:'Full Day Explorer', description:'All destinations · 8 hours', price:'Rp 750K', rating:'5.0', image:'https://images.unsplash.com/photo-1549473447-581b78f13745?w=200&h=200&fit=crop' },
-          { id:11, name:'Romantic Night Tour', description:'City lights · 3 hours', price:'Rp 450K', rating:'4.7', image:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200&h=200&fit=crop' },
-        ]
-      },
-      Outbound: {
-        cards: [
-          { id:12, name:'Team Building', duration:'Full day', price:'Rp 200K/pax', image:'https://images.unsplash.com/photo-1577471488278-16eec37ffcc2?w=400&h=300&fit=crop' },
-          { id:13, name:'Fun Games', duration:'Half day', price:'Rp 150K/pax', image:'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=300&fit=crop' },
-        ],
-        list: [
-          { id:14, name:'Corporate Package', description:'20-50 persons · Full day', price:'Rp 8M', rating:'4.5', image:'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=200&h=200&fit=crop' },
-          { id:15, name:'School Program', description:'30-100 persons · Half day', price:'Rp 5M', rating:'4.6', image:'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=200&h=200&fit=crop' },
-          { id:16, name:'Family Gathering', description:'10-20 persons · Full day', price:'Rp 3.5M', rating:'4.4', image:'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=200&h=200&fit=crop' },
-        ]
-      }
-    };
-
-    const currentPackages = computed(() => allPackages[activeTab.value].cards);
-    const currentList = computed(() => allPackages[activeTab.value].list);
-
-    // ---- Card swipe ----
-    function nextCard() { currentCard.value = (currentCard.value + 1) % cards.length; }
-    function prevCard() { currentCard.value = (currentCard.value - 1 + cards.length) % cards.length; }
-
-    let startX = 0, startY = 0, currentX = 0, currentY = 0;
-    let isDragging = false, swipeHandled = false;
-    const threshold = 40;
-
-    function handleTouchStart(e) {
-      startX = e.touches[0].clientX; startY = e.touches[0].clientY;
-      currentX = startX; currentY = startY;
-      isDragging = true; swipeHandled = false;
-    }
-    function handleTouchMove(e) {
-      if (!isDragging || swipeHandled) return;
-      currentX = e.touches[0].clientX; currentY = e.touches[0].clientY;
-      const diffX = startX - currentX, diffY = startY - currentY;
-      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
-        swipeHandled = true; diffX > 0 ? nextCard() : prevCard(); resetAutoSlide();
-      }
-    }
-    function handleTouchEnd() {
-      if (!isDragging || swipeHandled) { isDragging = false; return; }
-      const diffX = startX - currentX, diffY = startY - currentY;
-      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
-        diffX > 0 ? nextCard() : prevCard(); resetAutoSlide();
-      }
-      isDragging = false;
-    }
-    function handleMouseDown(e) {
-      startX = e.clientX; startY = e.clientY;
-      currentX = startX; currentY = startY;
-      isDragging = true; swipeHandled = false; e.preventDefault();
-    }
-    function handleMouseMove(e) {
-      if (!isDragging || swipeHandled) return;
-      currentX = e.clientX; currentY = e.clientY;
-      const diffX = startX - currentX, diffY = startY - currentY;
-      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
-        swipeHandled = true; diffX > 0 ? nextCard() : prevCard(); resetAutoSlide();
-      }
-    }
-    function handleMouseUp() {
-      if (!isDragging || swipeHandled) { isDragging = false; return; }
-      const diffX = startX - currentX, diffY = startY - currentY;
-      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
-        diffX > 0 ? nextCard() : prevCard(); resetAutoSlide();
-      }
-      isDragging = false;
-    }
-    function handleMouseLeave() {
-      if (isDragging && !swipeHandled) {
-        const diffX = startX - currentX, diffY = startY - currentY;
-        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
-          diffX > 0 ? nextCard() : prevCard(); resetAutoSlide();
-        }
-      }
-      isDragging = false;
-    }
-
-    // ---- Auto slide ----
-    let autoSlideInterval = null;
-    function startAutoSlide() { stopAutoSlide(); autoSlideInterval = setInterval(nextCard, 5000); }
-    function stopAutoSlide() { if (autoSlideInterval) { clearInterval(autoSlideInterval); autoSlideInterval = null; } }
-    function resetAutoSlide() { stopAutoSlide(); startAutoSlide(); }
-
-    // ---- Package drag scroll ----
-    // Satu fungsi bersih, tanpa event handler lama numpuk
-    function attachDragScroll(el) {
-      if (!el || el._dragAttached) return;
-      el._dragAttached = true;
-
-      let isDown = false, startMouseX = 0, startScrollLeft = 0;
-
-      el.addEventListener('mousedown', (e) => {
-        isDown = true;
-        el.style.cursor = 'grabbing';
-        startMouseX = e.pageX - el.offsetLeft;
-        startScrollLeft = el.scrollLeft;
-        e.preventDefault();
-      });
-
-      el.addEventListener('mouseleave', () => { isDown = false; el.style.cursor = 'grab'; });
-      el.addEventListener('mouseup', () => { isDown = false; el.style.cursor = 'grab'; });
-
-      el.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - el.offsetLeft;
-        el.scrollLeft = startScrollLeft - (x - startMouseX) * 1.5;
-      });
-
-      // Wheel → horizontal scroll pada container ini
-      el.addEventListener('wheel', (e) => {
-        if (el.scrollWidth > el.clientWidth) {
-          e.preventDefault();
-          e.stopPropagation();
-          el.scrollLeft += e.deltaY + e.deltaX;
-        }
-      }, { passive: false });
-    }
-
-    // Pasang setelah transisi selesai (300ms = durasi transition)
-    function setupScrollAfterTransition() {
-      setTimeout(() => {
-        nextTick(() => {
-          const containers = document.querySelectorAll('.prop-cards-scroll, .prop-list-wrapper');
-          containers.forEach(el => {
-            el._dragAttached = false; // reset agar bisa re-attach setelah tab ganti
-            attachDragScroll(el);
-          });
-        });
-      }, 350);
-    }
-
-    // Watch tab change
-    watch(activeTab, () => {
-      setupScrollAfterTransition();
+    const booking = ref({
+      name: '',
+      phone: '',
+      email: ''
     });
 
-    onMounted(() => {
-      startAutoSlide();
-      // Setup awal scroll
-      nextTick(() => {
-        setTimeout(() => {
-          document.querySelectorAll('.prop-cards-scroll, .prop-list-wrapper').forEach(el => {
-            attachDragScroll(el);
-          });
-        }, 100);
-      });
+    // Simulasi ketersediaan: beberapa tanggal booked, sisanya available
+    const bookedDates = ref(new Set([
+      '2026-05-12', '2026-05-13', '2026-05-20', '2026-05-21',
+      '2026-06-05', '2026-06-15', '2026-06-16'
+    ]));
+
+    const images = [
+      { full:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=85', thumb:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=200&q=75' },
+      { full:'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800&q=85', thumb:'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=200&q=75' },
+      { full:'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&q=85', thumb:'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=200&q=75' },
+      { full:'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=85', thumb:'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=200&q=75' },
+    ];
+
+    const currentImage = computed(() => images[selectedIndex.value].full);
+
+    // Calendar logic
+    const weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    
+    const currentMonthName = computed(() => monthNames[currentMonth.value]);
+
+    const calendarDays = computed(() => {
+      const year = currentYear.value;
+      const month = currentMonth.value;
+      const firstDay = new Date(year, month, 1).getDay(); // 0 = Sunday
+      const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1; // Monday start
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      let days = [];
+      for (let i = 0; i < adjustedFirstDay; i++) {
+        days.push(null);
+      }
+      for (let d = 1; d <= daysInMonth; d++) {
+        days.push(d);
+      }
+      return days;
     });
 
-    onUnmounted(() => { stopAutoSlide(); });
+    function formatDate(year, month, day) {
+      return `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    }
 
-    return {
-      cards, currentCard, nextCard, prevCard, resetAutoSlide,
-      tabs, activeTab, navItems, activeNav,
-      currentPackages, currentList,
-      scrollContentRef, cardsScrollRef, listScrollRef,
-      handleTouchStart, handleTouchMove, handleTouchEnd,
-      handleMouseDown, handleMouseMove, handleMouseUp, handleMouseLeave,
+    function isPastDay(day) {
+      const dateStr = formatDate(currentYear.value, currentMonth.value, day);
+      const check = new Date(dateStr);
+      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      return check < todayStart;
+    }
+
+    function isBooked(day) {
+      const dateStr = formatDate(currentYear.value, currentMonth.value, day);
+      return bookedDates.value.has(dateStr);
+    }
+
+    function isAvailable(day) {
+      return !isPastDay(day) && !isBooked(day);
+    }
+
+    function isSelected(day) {
+      if (!selectedDate.value) return false;
+      const dateStr = formatDate(currentYear.value, currentMonth.value, day);
+      return dateStr === selectedDate.value;
+    }
+
+    function selectDay(day) {
+      selectedDate.value = formatDate(currentYear.value, currentMonth.value, day);
+    }
+
+    function prevMonth() {
+      if (currentMonth.value === 0) {
+        currentMonth.value = 11;
+        currentYear.value--;
+      } else {
+        currentMonth.value--;
+      }
+    }
+
+    function nextMonth() {
+      if (currentMonth.value === 11) {
+        currentMonth.value = 0;
+        currentYear.value++;
+      } else {
+        currentMonth.value++;
+      }
+    }
+
+    // Price calculation based on guests
+    const basePrice = 635;
+    const totalPrice = computed(() => basePrice * guests.value);
+
+    function selectImage(i) {
+      if (i === selectedIndex.value) return;
+      imgSwitching.value = true;
+      setTimeout(() => { selectedIndex.value = i; imgSwitching.value = false; }, 220);
+    }
+
+    function goBack() { history.back(); }
+
+    function submitBooking() {
+      if (!booking.value.name || !booking.value.email || !selectedDate.value) {
+        alert('Mohon lengkapi data diri dan pilih tanggal menginap.');
+        return;
+      }
+      alert(`Terima kasih, ${booking.value.name}! Pemesanan untuk La Selva (${selectedDate.value}, ${guests.value} tamu) sedang diproses. Total: $${totalPrice.value}`);
+    }
+
+    const infoCards = [
+      { type:'distance', label:'Distance',    value:'7 Km',  iconBg:'linear-gradient(135deg,#6366f1,#8b5cf6)' },
+      { type:'temp',     label:'Temperature', value:'28°C',  iconBg:'linear-gradient(135deg,#f97316,#f59e0b)' },
+      { type:'rating',   label:'Rating',      value:'4.8',   iconBg:'linear-gradient(135deg,#06b6d4,#3b82f6)' },
+    ];
+
+    return { 
+      wishlist, expanded, images, selectedIndex, currentImage, imgSwitching, 
+      selectImage, goBack, infoCards, activeNav, booking, submitBooking,
+      guests, currentMonth, currentYear, selectedDate, calendarDays,
+      weekdays, currentMonthName, prevMonth, nextMonth,
+      isPastDay, isBooked, isAvailable, isSelected, selectDay,
+      totalPrice
     };
   }
 }).mount('#app');
