@@ -1,1079 +1,986 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, height=device-height"/>
-  <title>Affito – La Selva | Eco-Lodge</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>Jogja Rafting · Payments</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --ink: #0f0f0f;
-      --ink-2: #262626;
-      --ink-3: #525252;
-      --ink-4: #a3a3a3;
-      --ink-5: #e5e5e5;
-      --bg: #f8f8f7;
+      --bg: #efefef;
       --surface: #ffffff;
-      --primary: #171717;
-      --primary-soft: #2f2f2f;
-      --accent: #2f2f2f;
-      --border-light: #eaeaea;
-      --available: #d4d4d4;
-      --booked: #bdbdbd;
-      --selected-date: #171717;
+      --surface2: #f7f7f7;
+      --border: #e2e2e2;
+      --ink: #111111;
+      --ink2: #333333;
+      --ink3: #666666;
+      --ink4: #999999;
+      --ink5: #cccccc;
+      --grey-50: #fafafa;
+      --grey-100: #f4f4f4;
+      --grey-200: #e9e9e9;
+      --grey-300: #d4d4d4;
+      --grey-400: #a3a3a3;
+      --grey-500: #737373;
+      --grey-600: #525252;
+      --grey-700: #404040;
+      --grey-800: #262626;
+      --grey-900: #171717;
     }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: var(--bg);
-      font-family: 'DM Sans', sans-serif;
-      overflow: auto;
-    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing: border-box; }
+    body { background: var(--bg); margin: 0; }
 
-    #app {
-      width: 100%;
-      min-height: 100%;
-      display: flex;
-      overflow: visible;
-      position: relative;
-    }
-
-    /* ===== SIDEBAR (desktop) ===== */
-    .sidebar {
-      display: none;
-    }
-
-    @media (min-width: 1024px) {
-      .sidebar {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-        width: 80px;
-        height: 100vh;
-        background: var(--surface);
-        border-right: 1px solid var(--ink-5);
-        padding: 28px 0;
-        flex-shrink: 0;
-        z-index: 50;
-        position: sticky;
-        top: 0;
-      }
-      .sidebar-logo {
-        font-family: 'Syne', sans-serif;
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 2px;
-        color: var(--ink);
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-      }
-      .sidebar-nav {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .sidebar-nav-item {
-        width: 46px; height: 46px;
-        border-radius: 14px;
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer;
-        transition: background 0.2s;
-        color: var(--ink-4);
-      }
-      .sidebar-nav-item.active { background: var(--ink); color: white; }
-      .sidebar-nav-item.active svg { stroke: white; }
-      .sidebar-nav-item:not(.active) svg { stroke: var(--ink-4); }
-      .sidebar-nav-item:not(.active):hover { background: var(--bg); }
-      .sidebar-avatar {
-        width: 38px; height: 38px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #374151, #111827);
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer;
-      }
-    }
-
-    /* ===== MAIN AREA ===== */
-    .main-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-      overflow: visible;
-      min-width: 0;
-      position: relative;
-    }
-
-    .page-layout {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      height: auto;
-      overflow: visible;
-    }
-
-    @media (min-width: 1024px) {
-      .page-layout {
-        flex-direction: row;
-        height: 100vh;
-        overflow: hidden;
-      }
-    }
-
-    /* ===== HERO ===== */
-    .hero-wrap {
-      position: relative;
-      width: 100%;
-      height: 360px;
-      flex-shrink: 0;
-      overflow: hidden;
-      border-radius: 0 0 28px 28px;
-    }
-
-    @media (min-width: 640px) {
-      .hero-wrap { height: 420px; }
-    }
-
-    @media (min-width: 1024px) {
-      .hero-wrap {
-        width: 50%;
-        height: 100vh;
-        flex-shrink: 0;
-        border-radius: 0;
-        position: sticky;
-        top: 0;
-      }
-    }
-
-    .hero-img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: opacity 0.4s ease, transform 0.5s ease;
-    }
-    .hero-img.switching { opacity: 0; transform: scale(1.04); }
-
-    .hero-grad {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 50%, transparent 100%);
-      pointer-events: none;
-    }
-
-    @media (max-width: 1023px) {
-      .hero-grad { border-radius: 0 0 28px 28px; }
-    }
-
-    .top-btns {
-      position: absolute; top: 20px; left: 0; right: 0;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 0 20px;
-      z-index: 10;
-    }
-
-    @supports (top: env(safe-area-inset-top)) {
-      .top-btns { top: calc(16px + env(safe-area-inset-top)); }
-    }
-
-    .glass-btn {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(255,255,255,0.22);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.3);
-      cursor: pointer;
-      transition: transform 0.2s;
-      color: white;
-    }
-    .glass-btn:active { transform: scale(0.9); }
-
-    .thumbs-col {
-      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 10px;
-      z-index: 10;
-    }
-
-    .thumb-item {
-      width: 54px; height: 54px;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 2.5px solid white;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.25);
-      cursor: pointer;
-      transition: all 0.25s;
-    }
-    .thumb-item.active {
-      box-shadow: 0 0 0 2.5px white, 0 0 0 4.5px var(--accent);
-    }
-    .thumb-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-    .hero-title {
-      position: absolute; bottom: 24px; left: 20px; z-index: 10;
-    }
-
-    /* ===== CONTENT PANEL ===== */
-    .content-panel {
-      flex: 1;
-      overflow-y: visible;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      padding: 20px 20px 24px;
-      background: var(--bg);
-      scroll-behavior: smooth;
-      padding-bottom: 160px;
-      position: relative;
-      z-index: 5;
-    }
-
-    @media (min-width: 640px) {
-      .content-panel { padding: 24px 32px 170px; }
-    }
-
-    @media (min-width: 1024px) {
-      .content-panel {
-        width: 50%;
-        height: 100vh;
-        overflow-y: auto;
-        padding: 36px 40px 180px;
-      }
-    }
-
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-    /* ===== INFO CARDS — 4 kolom ===== */
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-
-    /* Di layar sangat kecil, wrap jadi 2x2 */
-    @media (max-width: 400px) {
-      .info-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    .info-card {
-      background: white;
-      border-radius: 18px;
-      padding: 14px 6px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .card {
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      padding: 22px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.04);
     }
 
-    .info-icon {
-      width: 32px; height: 32px;
-      border-radius: 10px;
-      background: var(--primary-soft);
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 6px;
-      color: white;
-    }
+    .fade-in-up { animation: fadeInUp 0.5s ease forwards; opacity: 0; }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ===== INCLUDED / NOT INCLUDED ===== */
-    .amenities-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--grey-300); border-radius: 99px; }
 
-    .amenity-col h3 {
-      font-family: 'Syne', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .amenity-list {
-      list-style: none;
+    /* ── SIDEBAR DESKTOP ── */
+    .desktop-sidebar {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-    }
-
-    .amenity-list li {
-      font-size: 13px;
-      color: var(--ink-2);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .included-icon { color: #10b981; }
-    .not-included-icon { color: #ef4444; }
-
-    /* ===== FORM ELEMENTS ===== */
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-label {
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--ink-3);
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--border-light);
-      border-radius: 14px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      background: white;
-      outline: none;
-      transition: border 0.2s;
-      color: var(--ink);
-    }
-
-    .form-input:focus {
-      border-color: var(--accent);
-    }
-
-    /* Custom Calendar Styles */
-    .calendar-container {
-      background: white;
+      background: var(--surface);
       border-radius: 20px;
-      padding: 16px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.04);
-      margin-bottom: 20px;
-      border: 1px solid var(--border-light);
-    }
-
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      font-weight: 600;
-      color: var(--ink);
-    }
-
-    .month-nav {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--ink-3);
-      padding: 6px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-    }
-    .month-nav:hover { background: var(--bg); }
-
-    .weekdays {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      text-align: center;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--ink-4);
-      margin-bottom: 8px;
-    }
-
-    .days-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-      text-align: center;
-    }
-
-    .day-cell {
-      aspect-ratio: 1 / 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s;
-      background: transparent;
-      border: none;
-      color: var(--ink-2);
-      position: relative;
-    }
-
-    .day-cell:hover:not(.empty):not(.past):not(.booked):not(.selected) {
-      background: #f3f4f6;
-    }
-
-    .day-cell.empty { cursor: default; }
-    .day-cell.past { color: var(--ink-5); cursor: not-allowed; opacity: 0.5; }
-
-    .day-cell.available {
-      background: #ecfdf5;
-      color: #065f46;
-      font-weight: 600;
-    }
-    .day-cell.available:hover:not(.selected) { background: #d1fae5; }
-
-    .day-cell.booked {
-      background: #fef2f2;
-      color: #b91c1c;
-      text-decoration: line-through;
-      cursor: not-allowed;
-    }
-
-    .day-cell.selected {
-      background: var(--selected-date);
-      color: white;
-      font-weight: 700;
-      box-shadow: 0 4px 10px rgba(79,70,229,0.3);
-    }
-
-    .guest-selector {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: white;
-      border: 1px solid var(--border-light);
-      border-radius: 14px;
-      padding: 8px 14px;
-      margin-top: 8px;
-    }
-    .guest-btn {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: var(--bg);
-      border: none;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--ink);
-      font-weight: 600;
-    }
-    .guest-count {
-      font-weight: 700;
-      font-size: 16px;
-      color: var(--ink);
-    }
-
-    /* ===== TIME PICKER ===== */
-    .time-picker-wrap {
-      background: white;
-      border: 1px solid var(--border-light);
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-top: 8px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .time-picker-icon {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      background: var(--primary);
-      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border);
+      overflow: hidden;
       flex-shrink: 0;
+      height: 100%;
+      transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
+      min-height: 0;
     }
+    .desktop-sidebar.collapsed { width: 62px; }
+    .desktop-sidebar.expanded  { width: 216px; }
 
-    .time-scroll-row {
+    .sidebar-header {
       display: flex;
       align-items: center;
-      gap: 4px;
-      flex: 1;
+      height: 60px;
+      padding: 0 12px;
+      gap: 8px;
+      border-bottom: 1px solid var(--grey-200);
+      flex-shrink: 0;
+      background: white;
+      z-index: 10;
     }
+    .desktop-sidebar.collapsed .sidebar-header { justify-content: center; padding: 0; }
+    .desktop-sidebar.collapsed .sidebar-logo-area { display: none; }
+    .desktop-sidebar.expanded  .sidebar-logo-area { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
 
-    .time-col {
+    .sidebar-nav {
+      height: calc(100% - 120px);
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 10px 8px;
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 2px;
-      flex: 1;
+      scrollbar-width: thin;
+      scrollbar-color: var(--grey-300) transparent;
+      min-height: 0;
     }
+    .sidebar-nav::-webkit-scrollbar { width: 3px; }
+    .sidebar-nav::-webkit-scrollbar-thumb { background: var(--grey-300); border-radius: 99px; }
 
-    .time-col label {
-      font-size: 10px;
-      font-weight: 600;
+    .nav-group {
+      font-size: 9.5px;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--ink-4);
-      margin-bottom: 2px;
+      letter-spacing: 0.12em;
+      color: var(--grey-400);
+      padding: 0 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      min-height: 20px;
+    }
+    .desktop-sidebar.collapsed .nav-group {
+      height: 0; opacity: 0; margin: 0; padding: 0;
+      overflow: hidden; pointer-events: none; display: none;
+    }
+    .desktop-sidebar.expanded  .nav-group { height: auto; opacity: 1; }
+
+    .nav-btn {
+      width: 100%;
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px; border-radius: 10px;
+      font-size: 13px; font-weight: 600;
+      color: var(--grey-600); background: transparent;
+      border: none; cursor: pointer; text-align: left;
+      transition: all 0.18s ease;
+      white-space: nowrap; overflow: hidden; position: relative;
+    }
+    .nav-btn:hover { background: var(--grey-100); color: var(--grey-900); }
+    .nav-btn.active { background: var(--grey-100); color: var(--grey-900); font-weight: 700; }
+    .nav-btn.active::before {
+      content: '';
+      position: absolute; left: 0; top: 25%; bottom: 25%;
+      width: 3px; border-radius: 0 3px 3px 0; background: var(--grey-700);
+    }
+    .desktop-sidebar.collapsed .nav-btn { justify-content: center; padding: 9px 0; }
+    .desktop-sidebar.collapsed .nav-btn.active::before { display: none; }
+
+    .nav-label { transition: all 0.25s; overflow: hidden; white-space: nowrap; }
+    .desktop-sidebar.collapsed .nav-label { width: 0; opacity: 0; }
+    .desktop-sidebar.expanded  .nav-label { width: auto; opacity: 1; }
+
+    .nav-tooltip {
+      position: absolute; left: calc(100% + 10px); top: 50%;
+      transform: translateY(-50%); background: var(--grey-900); color: #fff;
+      font-size: 11px; font-weight: 600; padding: 4px 9px;
+      border-radius: 8px; white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity 0.15s; z-index: 100;
+    }
+    .desktop-sidebar.collapsed .nav-btn:hover .nav-tooltip { opacity: 1; }
+
+    .toggle-btn {
+      width: 26px; height: 26px; flex-shrink: 0; border-radius: 7px;
+      border: 1px solid var(--border); display: flex; align-items: center;
+      justify-content: center; color: var(--grey-500); background: transparent;
+      cursor: pointer; transition: all 0.18s;
+    }
+    .toggle-btn:hover { background: var(--grey-100); color: var(--grey-800); border-color: var(--grey-300); }
+
+    .sidebar-footer {
+      flex-shrink: 0; border-top: 1px solid var(--grey-200);
+      padding: 10px 8px; display: flex; align-items: center; gap: 10px;
+      overflow: hidden; background: white; z-index: 10;
+    }
+    .desktop-sidebar.collapsed .sidebar-footer { justify-content: center; }
+    .profile-label { transition: all 0.25s; overflow: hidden; white-space: nowrap; }
+    .desktop-sidebar.collapsed .profile-label { width: 0; opacity: 0; }
+    .desktop-sidebar.expanded  .profile-label { width: auto; opacity: 1; }
+
+    /* ── SIDEBAR MOBILE ── */
+    .sidebar-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.3);
+      z-index: 40; opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+    }
+    .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+    .mobile-sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0; width: 220px;
+      background: #fff; z-index: 50;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 8px 0 32px rgba(0,0,0,0.1);
+      display: flex; flex-direction: column;
+      padding: 20px 14px 28px; border-radius: 0 20px 20px 0;
+    }
+    .mobile-sidebar.open { transform: translateX(0); }
+    .mobile-nav-scroll {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      min-height: 0; display: flex; flex-direction: column; gap: 1px;
     }
 
-    .time-spin-btn {
-      width: 28px; height: 28px;
-      border-radius: 8px;
-      border: 1px solid var(--border-light);
-      background: var(--bg);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      color: var(--ink-3);
+    .app-container { height: 100vh; display: flex; overflow: hidden; }
+    main { flex: 1; overflow-y: auto; min-height: 0; }
+    .sidebar-wrapper {
+      display: flex; height: 100vh; padding: 20px;
+      padding-right: 0; box-sizing: border-box;
+    }
+    @media (max-width: 767px) { .sidebar-wrapper { display: none; } }
+
+    /* ── TABLE STYLES ── */
+    .table-container {
+      overflow-x: auto; border-radius: 16px;
+      border: 1px solid var(--border); background: white;
+    }
+    table {
+      width: 100%; border-collapse: collapse; font-size: 13px;
+    }
+    thead th {
+      background: var(--grey-50); padding: 12px 16px;
+      text-align: left; font-weight: 700; font-size: 11px;
+      color: var(--grey-500); text-transform: uppercase;
+      letter-spacing: 0.05em; border-bottom: 1px solid var(--grey-200);
+      white-space: nowrap; cursor: pointer; user-select: none;
+    }
+    thead th:hover { color: var(--grey-800); }
+    thead th.sorted { color: var(--grey-900); }
+    tbody td {
+      padding: 14px 16px; border-bottom: 1px solid var(--grey-100);
+      color: var(--grey-800); font-weight: 500; vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background 0.15s; cursor: pointer; }
+    tbody tr:hover { background: var(--grey-50); }
+
+    .sort-icon {
+      display: inline-block; margin-left: 2px;
+      font-size: 10px; opacity: 0.4;
+    }
+    .sorted .sort-icon { opacity: 1; }
+
+    .pagination-btn {
+      width: 34px; height: 34px; border-radius: 8px;
+      border: 1px solid var(--grey-200);
+      display: inline-flex; align-items: center; justify-content: center;
+      background: white; cursor: pointer; color: var(--grey-500);
+      font-size: 12px; font-weight: 600; transition: all 0.15s;
+    }
+    .pagination-btn:hover:not(.disabled) { background: var(--grey-100); color: var(--grey-800); }
+    .pagination-btn.active { background: var(--grey-900); color: white; border-color: var(--grey-900); }
+    .pagination-btn.disabled { opacity: 0.3; cursor: default; }
+
+    .empty-state { padding: 60px 20px; text-align: center; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      z-index: 60; display: flex; align-items: center;
+      justify-content: center; padding: 20px;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-dialog {
+      background: white; border-radius: 24px; padding: 28px;
+      max-width: 540px; width: 100%; max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.15);
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .detail-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-bottom: 1px solid var(--grey-100);
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label {
+      font-size: 12px; font-weight: 600; color: var(--grey-500);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .detail-value {
+      font-size: 13px; font-weight: 700; color: var(--grey-900);
+      text-align: right;
+    }
+
+    .proof-img {
+      width: 100%; max-height: 300px;
+      object-fit: contain; border-radius: 12px;
+      border: 1px solid var(--grey-200);
+      background: var(--grey-50);
+    }
+
+    .btn-approve {
+      padding: 10px 20px; border-radius: 12px;
+      background: #10b981; color: white; font-weight: 700;
+      font-size: 13px; border: none; cursor: pointer;
       transition: all 0.15s;
-      font-size: 0;
-      flex-shrink: 0;
     }
-    .time-spin-btn:hover { background: var(--ink-5); color: var(--ink); }
-    .time-spin-btn:active { transform: scale(0.9); }
-    .time-spin-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-
-    .time-display {
-      font-family: 'Syne', sans-serif;
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--ink);
-      min-width: 36px;
-      text-align: center;
-      line-height: 1;
-      user-select: none;
+    .btn-approve:hover { background: #059669; }
+    .btn-reject {
+      padding: 10px 20px; border-radius: 12px;
+      background: white; color: #ef4444; font-weight: 700;
+      font-size: 13px; border: 1px solid #fecaca; cursor: pointer;
+      transition: all 0.15s;
     }
-
-    .time-sep {
-      font-family: 'Syne', sans-serif;
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--ink-4);
-      line-height: 1;
-      padding-bottom: 2px;
-      align-self: center;
-    }
-
-    .time-range-hint {
-      font-size: 11px;
-      color: var(--ink-4);
-      margin-top: 6px;
-      text-align: center;
-    }
-
-    /* ===== FLOATING CTA ===== */
-    .floating-cta {
-      position: fixed;
-      bottom: 24px;
-      left: 20px;
-      right: 20px;
-      background: #111827;
-      backdrop-filter: blur(12px);
-      padding: 14px 20px;
-      border-radius: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 45;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.35);
-      border: 1px solid rgba(255,255,255,0.08);
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    @media (min-width: 1024px) {
-      .floating-cta {
-        left: auto;
-        right: 24px;
-        width: calc(50% - 80px);
-        max-width: 420px;
-      }
-    }
-
-    .price-text {
-      color: white;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .price-text .total-label {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: #9ca3af;
-      margin-bottom: 2px;
-    }
-
-    .price-text .amount {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px;
-      font-weight: 800;
-      color: white;
-      line-height: 1.1;
-    }
-
-    .price-text .amount span {
-      font-size: 12px;
-      font-weight: 400;
-      color: #9ca3af;
-      margin-left: 2px;
-    }
-
-    .cta-btn {
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      background: white;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      border: none;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
-      transition: transform 0.18s, background 0.2s;
-      color: #111827;
-    }
-    .cta-btn:hover { background: #f3f4f6; transform: scale(1.05); }
-    .cta-btn:active { transform: scale(0.93); }
-
-    hr {
-      border: none;
-      border-top: 1px solid var(--border-light);
-      margin: 20px 0;
-    }
-
-    @media (max-width: 1023px) {
-      .main-area {
-        overflow: visible;
-        height: auto;
-      }
-      .page-layout {
-        height: auto;
-      }
-    }
+    .btn-reject:hover { background: #fef2f2; }
   </style>
 </head>
 <body>
-<div id="app">
+<div id="app"></div>
 
-  <!-- SIDEBAR DESKTOP -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">AFFITO</div>
-    <nav class="sidebar-nav">
-      <div class="sidebar-nav-item" @click="activeNav='home'" :class="{ active: activeNav==='home' }">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-      </div>
-      <div class="sidebar-nav-item" @click="activeNav='map'" :class="{ active: activeNav==='map' }">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>
-        </svg>
-      </div>
-      <div class="sidebar-nav-item" @click="activeNav='chat'" :class="{ active: activeNav==='chat' }">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-      </div>
-      <div class="sidebar-nav-item" @click="activeNav='notif'" :class="{ active: activeNav==='notif' }">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-        </svg>
-      </div>
-    </nav>
-    <div class="sidebar-avatar">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-      </svg>
-    </div>
-  </aside>
+<script type="module">
+  import { createApp, ref, computed, reactive } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 
-  <!-- MAIN -->
-  <div class="main-area">
-    <div class="page-layout">
+  /* ── IKON SVG ── */
+  const icons = {
+    dashboard: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+    rafting: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2v-3H2v3z"/><path d="M20 11V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v4"/><circle cx="8" cy="17" r="1.5"/><circle cx="16" cy="17" r="1.5"/></svg>`,
+    tour: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="17" height="12" rx="2"/><path d="M7 18v-2"/><path d="M13 18v-2"/><circle cx="5" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></svg>`,
+    outbound: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M10 22l2-12 4 4"/><path d="M8 17l-4 4"/><path d="M16 17l4 4"/></svg>`,
+    packages: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
+    promo: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+    payments: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`,
+    reports: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+    logout: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
+    orders: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
+    settings: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    bell: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
+    search: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+    chevLeft: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`,
+    chevRight: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
+    chevLeftDouble: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>`,
+    chevRightDouble: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>`,
+    menu: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`,
+    close: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+    compass: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
+    arrowUp: `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>`,
+    arrowDown: `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`,
+    receipt: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1z"/><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/></svg>`,
+    checkCircle: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+    xCircle: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
+    clock: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+    image: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`,
+    bank: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`,
+    wallet: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>`,
+  };
 
-      <!-- HERO -->
-      <div class="hero-wrap">
-        <img :src="currentImage" alt="La Selva"
-             class="hero-img"
-             :class="{ switching: imgSwitching }"/>
-        <div class="hero-grad"></div>
+  const NAV_ITEMS = [
+    { id: 'dashboard', label: 'Dasbor', icon: 'dashboard' },
+    { group: 'Pemesanan' },
+    { id: 'rafting', label: 'Arung Jeram', icon: 'rafting' },
+    { id: 'tour', label: 'Tur VW', icon: 'tour' },
+    { id: 'outbound', label: 'Outbound', icon: 'outbound' },
+    { group: 'Bisnis' },
+    { id: 'packages', label: 'Paket', icon: 'packages' },
+    { id: 'promo', label: 'Promo', icon: 'promo' },
+    { id: 'payments', label: 'Pembayaran', icon: 'payments' },
+    { group: 'Manajemen' },
+    { id: 'orders', label: 'Pesanan', icon: 'orders' },
+    { id: 'reports', label: 'Laporan', icon: 'reports' },
+    { group: 'Sistem' },
+    { id: 'settings', label: 'Pengaturan', icon: 'settings' },
+    { id: 'logout', label: 'Keluar', icon: 'logout' },
+  ];
 
-        <div class="top-btns">
-          <button class="glass-btn" @click="goBack">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"/>
-            </svg>
-          </button>
-          <button class="glass-btn" @click="wishlist=!wishlist">
-            <svg width="18" height="18" viewBox="0 0 24 24"
-                 :fill="wishlist ? '#f43f5e' : 'none'"
-                 :stroke="wishlist ? '#f43f5e' : 'white'"
-                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-            </svg>
-          </button>
-        </div>
+  /* ── DATA PAYMENTS ── */
+  const ALL_PAYMENTS = [
+    { id:1, invoice:'INV-20250701-001', customer:'Budi Santoso', service:'Arung Jeram Sungai Elo', amount:250000, method:'Midtrans', status:'Paid', date:'2025-07-01', transactionId:'MDT-1751234567', paymentType:'Bank Transfer BCA', midtransStatus:'settlement', proof:'' },
+    { id:2, invoice:'INV-20250702-002', customer:'Anisa Rahma', service:'Tur VW Borobudur', amount:200000, method:'Manual Transfer', status:'Pending', date:'2025-07-02', transactionId:'', paymentType:'', midtransStatus:'', proof:'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop' },
+    { id:3, invoice:'INV-20250703-003', customer:'Kelompok Mentari', service:'Outbound Team Building', amount:1500000, method:'Midtrans', status:'Pending', date:'2025-07-03', transactionId:'MDT-1751345678', paymentType:'GoPay', midtransStatus:'pending', proof:'' },
+    { id:4, invoice:'INV-20250704-004', customer:'Dimas Arya', service:'Snorkeling Sadranan', amount:300000, method:'Manual Transfer', status:'Paid', date:'2025-07-04', transactionId:'', paymentType:'', midtransStatus:'', proof:'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&h=300&fit=crop' },
+    { id:5, invoice:'INV-20250705-005', customer:'Rina Wijaya', service:'Cave Tubing Goa Pindul', amount:200000, method:'Midtrans', status:'Expired', date:'2025-07-05', transactionId:'MDT-1751456789', paymentType:'ShopeePay', midtransStatus:'expire', proof:'' },
+    { id:6, invoice:'INV-20250706-006', customer:'Ahmad Fauzi', service:'Lava Tour Merapi', amount:275000, method:'Manual Transfer', status:'Failed', date:'2025-07-06', transactionId:'', paymentType:'', midtransStatus:'', proof:'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop' },
+    { id:7, invoice:'INV-20250707-007', customer:'Keluarga Hartono', service:'Arung Jeram Progo', amount:700000, method:'Midtrans', status:'Paid', date:'2025-07-07', transactionId:'MDT-1751567890', paymentType:'Bank Transfer Mandiri', midtransStatus:'settlement', proof:'' },
+    { id:8, invoice:'INV-20250708-008', customer:'Sari Dewi', service:'Sunrise Punthuk Setumbu', amount:150000, method:'Manual Transfer', status:'Pending', date:'2025-07-08', transactionId:'', paymentType:'', midtransStatus:'', proof:'' },
+    { id:9, invoice:'INV-20250709-009', customer:'Rombongan SMA 5', service:'Outbound Kids Adventure', amount:3000000, method:'Midtrans', status:'Failed', date:'2025-07-09', transactionId:'MDT-1751678901', paymentType:'OVO', midtransStatus:'failure', proof:'' },
+    { id:10, invoice:'INV-20250710-010', customer:'Gilang Pratama', service:'Arung Jeram Elo Premium', amount:450000, method:'Manual Transfer', status:'Pending', date:'2025-07-10', transactionId:'', paymentType:'', midtransStatus:'', proof:'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&h=300&fit=crop' },
+  ];
 
-        <div class="thumbs-col">
-          <div v-for="(img, i) in images" :key="i"
-               class="thumb-item"
-               :class="{ active: selectedIndex===i }"
-               @click="selectImage(i)">
-            <img :src="img.thumb" :alt="'view '+i"/>
-          </div>
-        </div>
+  const PER_PAGE = 8;
 
-        <div class="hero-title">
-          <h1 style="font-family:'Syne',sans-serif; font-size:clamp(26px,4vw,36px); font-weight:800; color:white; line-height:1.1; text-shadow:0 2px 8px rgba(0,0,0,0.3);">
-            La Selva
-          </h1>
-          <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-              <circle cx="12" cy="9" r="2.5"/>
-            </svg>
-            <span style="font-size:13px; color:rgba(255,255,255,0.85);">Peru, South America</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- CONTENT PANEL -->
-      <div class="content-panel no-scrollbar">
-
-        <!-- INFO CARDS — 4 items -->
-        <div class="info-grid">
-          <div v-for="info in infoCards" :key="info.label" class="info-card">
-            <div class="info-icon">
-              <!-- Duration icon -->
-              <svg v-if="info.type==='duration'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-              </svg>
-              <!-- Distance icon -->
-              <svg v-else-if="info.type==='distance'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
-              </svg>
-              <!-- Grade / wave icon -->
-              <svg v-else-if="info.type==='grade'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 12c1.5-3 3-4.5 4.5-4.5S9 9 10.5 9 13.5 6 15 6s3 3 4.5 3 2.5-2 3-3"/>
-                <path d="M2 18c1.5-3 3-4.5 4.5-4.5S9 15 10.5 15 13.5 12 15 12s3 3 4.5 3 2.5-2 3-3"/>
-              </svg>
-              <!-- Capacity / group icon -->
-              <svg v-else-if="info.type==='capacity'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
+  /* ── KOMPONEN SIDEBAR ── */
+  const Sidebar = {
+    props: { active: String, expanded: Boolean },
+    emits: ['navigate', 'toggle'],
+    setup(props, { emit }) { return { items: NAV_ITEMS, icons, emit }; },
+    template: `
+      <aside class="desktop-sidebar hidden md:flex flex-col" :class="expanded ? 'expanded' : 'collapsed'">
+        <div class="sidebar-header">
+          <div class="sidebar-logo-area">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-gray-900 text-white">
+              <span v-html="icons.compass"></span>
             </div>
-            <p style="font-size:14px; font-weight:700; color:#111827; text-align:center; line-height:1.2;">{{ info.value }}</p>
-            <p style="font-size:10px; color:#9ca3af; margin-top:2px; text-align:center;">{{ info.label }}</p>
+            <span class="text-sm font-extrabold text-gray-900 tracking-tight truncate">Jogja Rafting</span>
           </div>
-        </div>
-
-        <!-- DESCRIPTION -->
-        <div style="margin-bottom:24px;">
-          <h2 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:#111827; margin-bottom:8px;">Description</h2>
-          <p style="font-size:13px; color:#6b7280; line-height:1.65;"
-             :style="expanded ? {} : { display:'-webkit-box', WebkitLineClamp:'4', WebkitBoxOrient:'vertical', overflow:'hidden' }">
-            La Selva is a breathtaking eco-lodge nestled deep within the lush Amazon rainforest of Peru. Surrounded by ancient trees, exotic wildlife, and crystal-clear rivers, this hidden gem offers a truly immersive nature experience. Guests can explore winding jungle trails, spot rare birds and wildlife, and fall asleep to the soothing sounds of the forest at night.
-          </p>
-          <button @click="expanded=!expanded"
-                  style="font-size:12px; font-weight:600; color:#4f46e5; margin-top:6px; background:none; border:none; cursor:pointer; padding:0;">
-            {{ expanded ? 'Show less' : 'Read more' }}
+          <button @click="emit('toggle')" class="toggle-btn flex-shrink-0" :class="!expanded ? '' : 'ml-auto'">
+            <span v-html="expanded ? icons.chevLeftDouble : icons.chevRightDouble"></span>
           </button>
         </div>
-
-        <!-- INCLUDED & NOT INCLUDED -->
-        <div class="amenities-grid">
-          <div class="amenity-col">
-            <h3 style="color:#111827;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Included
-            </h3>
-            <ul class="amenity-list">
-              <li><span class="included-icon">✓</span> Jungle trekking guide</li>
-              <li><span class="included-icon">✓</span> Canopy walkway</li>
-              <li><span class="included-icon">✓</span> 3x daily meals</li>
-              <li><span class="included-icon">✓</span> Airport transfer</li>
-            </ul>
-          </div>
-          <div class="amenity-col">
-            <h3 style="color:#111827;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              Not Included
-            </h3>
-            <ul class="amenity-list">
-              <li><span class="not-included-icon">✗</span> International flights</li>
-              <li><span class="not-included-icon">✗</span> Travel insurance</li>
-              <li><span class="not-included-icon">✗</span> Alcoholic beverages</li>
-              <li><span class="not-included-icon">✗</span> Personal expenses</li>
-            </ul>
+        <div class="sidebar-nav">
+          <template v-for="item in items" :key="item.id || item.group">
+            <div v-if="item.group" class="nav-group">{{ item.group }}</div>
+            <button v-else @click="emit('navigate', item.id)"
+              class="nav-btn" :class="{ active: active === item.id }">
+              <span v-html="icons[item.id]" class="flex-shrink-0"></span>
+              <span class="nav-label">{{ item.label }}</span>
+              <span class="nav-tooltip">{{ item.label }}</span>
+            </button>
+          </template>
+        </div>
+        <div class="sidebar-footer">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0 bg-gray-800">JR</div>
+          <div class="profile-label min-w-0">
+            <p class="text-xs font-bold text-gray-900 truncate leading-none">Admin JR</p>
+            <p class="text-[10px] text-gray-500 font-medium mt-0.5">Operator</p>
           </div>
         </div>
+      </aside>
+    `
+  };
 
-        <hr/>
-
-        <!-- BOOKING FORM -->
-        <div style="margin-bottom: 10px;">
-          <h2 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:#111827; margin-bottom:16px;">Select Date & Guests</h2>
-          
-          <!-- Custom Calendar -->
-          <div class="calendar-container">
-            <div class="calendar-header">
-              <button class="month-nav" @click="prevMonth">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-              </button>
-              <span>{{ currentMonthName }} {{ currentYear }}</span>
-              <button class="month-nav" @click="nextMonth">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-              </button>
-            </div>
-            <div class="weekdays">
-              <span v-for="d in weekdays" :key="d">{{ d }}</span>
-            </div>
-            <div class="days-grid">
-              <button
-                v-for="(day, idx) in calendarDays" :key="idx"
-                class="day-cell"
-                :class="{
-                  empty: !day,
-                  past: day && isPastDay(day),
-                  available: day && isAvailable(day) && !isSelected(day),
-                  booked: day && isBooked(day),
-                  selected: day && isSelected(day)
-                }"
-                :disabled="!day || isPastDay(day) || isBooked(day)"
-                @click="day && selectDay(day)"
-              >
-                {{ day || '' }}
-              </button>
-            </div>
-          </div>
-
-          <!-- Guest Selector -->
-          <div class="form-group">
-            <label class="form-label">Number of Guests</label>
-            <div class="guest-selector">
-              <button class="guest-btn" @click="guests > 1 ? guests-- : null">−</button>
-              <span class="guest-count">{{ guests }} {{ guests === 1 ? 'Guest' : 'Guests' }}</span>
-              <button class="guest-btn" @click="guests < 4 ? guests++ : null">+</button>
-            </div>
-          </div>
-
-          <!-- Start Time Picker -->
-          <div class="form-group">
-            <label class="form-label">Start Time</label>
-            <div class="time-picker-wrap">
-              <div class="time-picker-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                </svg>
+  const MobileSidebar = {
+    props: { active: String, open: Boolean },
+    emits: ['navigate', 'close'],
+    setup(props, { emit }) {
+      const go = (id) => { emit('navigate', id); emit('close'); };
+      return { items: NAV_ITEMS, go, icons };
+    },
+    template: `
+      <div>
+        <div class="sidebar-overlay md:hidden" :class="{open}" @click="$emit('close')"></div>
+        <div class="mobile-sidebar md:hidden" :class="{open}">
+          <div class="flex items-center justify-between mb-5 flex-shrink-0">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl flex items-center justify-center bg-gray-900 text-white">
+                <span v-html="icons.compass"></span>
               </div>
-              <div style="flex:1;">
-                <div class="time-scroll-row">
-                  <!-- Hour -->
-                  <div class="time-col">
-                    <label>Jam</label>
-                    <button class="time-spin-btn" @click="incrementHour" :disabled="timeHour >= 16">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-                    </button>
-                    <span class="time-display">{{ String(timeHour).padStart(2,'0') }}</span>
-                    <button class="time-spin-btn" @click="decrementHour" :disabled="timeHour <= 6">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                    </button>
-                  </div>
-                  <span class="time-sep">:</span>
-                  <!-- Minute -->
-                  <div class="time-col">
-                    <label>Menit</label>
-                    <button class="time-spin-btn" @click="incrementMinute">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-                    </button>
-                    <span class="time-display">{{ String(timeMinute).padStart(2,'0') }}</span>
-                    <button class="time-spin-btn" @click="decrementMinute">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                    </button>
+              <span class="font-extrabold text-gray-900 text-sm tracking-tight">Jogja Rafting</span>
+            </div>
+            <button @click="$emit('close')"
+              class="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 transition-all">
+              <span v-html="icons.close"></span>
+            </button>
+          </div>
+          <div class="mobile-nav-scroll">
+            <template v-for="item in items" :key="item.id || item.group">
+              <span v-if="item.group" class="text-[9.5px] font-extrabold text-gray-400 uppercase tracking-widest px-3 mt-3 mb-1 block">{{ item.group }}</span>
+              <button v-else @click="go(item.id)"
+                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-sm font-semibold"
+                :class="active===item.id ? 'bg-gray-100 text-gray-900 font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'">
+                <span v-html="icons[item.id]"></span>{{ item.label }}
+              </button>
+            </template>
+          </div>
+          <div class="flex items-center gap-3 pt-4 border-t border-gray-200 flex-shrink-0 mt-auto">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm bg-gray-800">JR</div>
+            <div>
+              <p class="text-sm font-bold text-gray-900 leading-none">Admin JR</p>
+              <p class="text-xs text-gray-500 mt-0.5 font-medium">Operator</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  };
+
+  /* ── KOMPONEN MODAL DETAIL ── */
+  const PaymentDetailModal = {
+    props: { payment: Object },
+    emits: ['close', 'approve', 'reject'],
+    setup(props, { emit }) {
+      const formatCurrency = (val) => 'Rp ' + Number(val).toLocaleString('id-ID');
+      const formatDate = (d) => {
+        if (!d) return '-';
+        return new Date(d).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+      };
+
+      const getStatusIcon = (status) => {
+        switch(status) {
+          case 'Paid': return icons.checkCircle;
+          case 'Pending': return icons.clock;
+          case 'Failed': return icons.xCircle;
+          case 'Expired': return icons.xCircle;
+          default: return '';
+        }
+      };
+      const getStatusColor = (status) => {
+        switch(status) {
+          case 'Paid': return 'text-emerald-600 bg-emerald-50 border-emerald-200';
+          case 'Pending': return 'text-amber-600 bg-amber-50 border-amber-200';
+          case 'Failed': return 'text-red-600 bg-red-50 border-red-200';
+          case 'Expired': return 'text-gray-500 bg-gray-100 border-gray-200';
+          default: return 'text-gray-500 bg-gray-100 border-gray-200';
+        }
+      };
+
+      const getMethodIcon = (method) => {
+        return method === 'Midtrans' ? icons.wallet : icons.bank;
+      };
+
+      return { emit, icons, formatCurrency, formatDate, getStatusIcon, getStatusColor, getMethodIcon };
+    },
+    template: `
+      <div class="modal-overlay" @click.self="emit('close')">
+        <div class="modal-dialog">
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-5">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-gray-900 text-white">
+                <span v-html="icons.receipt"></span>
+              </div>
+              <div>
+                <h3 class="text-lg font-extrabold text-gray-900">Detail Pembayaran</h3>
+                <p class="text-xs text-gray-400 font-medium">{{ payment.invoice }}</p>
+              </div>
+            </div>
+            <button @click="emit('close')"
+              class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all">
+              <span v-html="icons.close"></span>
+            </button>
+          </div>
+
+          <!-- Status Badge -->
+          <div class="flex items-center justify-center mb-6">
+            <span :class="[
+              'inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold',
+              getStatusColor(payment.status)
+            ]">
+              <span v-html="getStatusIcon(payment.status)" style="width:16px;height:16px;"></span>
+              {{ payment.status }}
+            </span>
+          </div>
+
+          <!-- Detail Rows -->
+          <div class="bg-gray-50 rounded-2xl p-4 mb-5">
+            <div class="detail-row">
+              <span class="detail-label">Invoice</span>
+              <span class="detail-value text-xs font-mono">{{ payment.invoice }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Customer</span>
+              <span class="detail-value">{{ payment.customer }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Layanan</span>
+              <span class="detail-value">{{ payment.service }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Total</span>
+              <span class="detail-value text-base">{{ formatCurrency(payment.amount) }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Metode</span>
+              <span class="detail-value inline-flex items-center gap-1.5">
+                <span v-html="getMethodIcon(payment.method)" style="width:14px;height:14px;"></span>
+                {{ payment.method }}
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Tanggal</span>
+              <span class="detail-value">{{ formatDate(payment.date) }}</span>
+            </div>
+          </div>
+
+          <!-- KHUSUS MIDTRANS -->
+          <div v-if="payment.method === 'Midtrans'" class="bg-blue-50 rounded-2xl p-4 mb-5 border border-blue-100">
+            <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Midtrans Info</p>
+            <div class="detail-row border-blue-100">
+              <span class="detail-label text-blue-600">Transaction ID</span>
+              <span class="detail-value text-xs font-mono text-blue-900">{{ payment.transactionId }}</span>
+            </div>
+            <div class="detail-row border-blue-100">
+              <span class="detail-label text-blue-600">Payment Type</span>
+              <span class="detail-value text-blue-900">{{ payment.paymentType }}</span>
+            </div>
+            <div class="detail-row border-blue-100">
+              <span class="detail-label text-blue-600">Auto Status</span>
+              <span class="detail-value text-blue-900">
+                <span :class="[
+                  'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold',
+                  payment.midtransStatus === 'settlement' ? 'bg-emerald-100 text-emerald-700' :
+                  payment.midtransStatus === 'pending' ? 'bg-amber-100 text-amber-700' :
+                  payment.midtransStatus === 'expire' ? 'bg-red-100 text-red-600' :
+                  'bg-gray-100 text-gray-500'
+                ]">
+                  {{ payment.midtransStatus }}
+                </span>
+              </span>
+            </div>
+            <p class="text-[10px] text-blue-500 mt-2 font-medium">
+              ℹ️ Status otomatis dari Midtrans. Tidak perlu approve manual.
+            </p>
+          </div>
+
+          <!-- KHUSUS MANUAL TRANSFER -->
+          <div v-if="payment.method === 'Manual Transfer'" class="bg-amber-50 rounded-2xl p-4 mb-5 border border-amber-100">
+            <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-3">Manual Transfer</p>
+            <div v-if="payment.proof" class="mb-3">
+              <p class="text-xs font-semibold text-amber-700 mb-2">Bukti Transfer</p>
+              <img :src="payment.proof" alt="Bukti Transfer" class="proof-img" />
+            </div>
+            <div v-else class="mb-3">
+              <div class="w-full h-32 rounded-xl bg-amber-100 flex items-center justify-center text-amber-400">
+                <div class="text-center">
+                  <span v-html="icons.image" style="width:32px;height:32px;display:block;margin:0 auto 4px;"></span>
+                  <span class="text-xs font-medium">Belum ada bukti transfer</span>
+                </div>
+              </div>
+            </div>
+            <!-- Tombol Approve/Reject hanya untuk Pending -->
+            <div v-if="payment.status === 'Pending'" class="flex items-center gap-3 mt-4 pt-3 border-t border-amber-200">
+              <button @click="emit('approve', payment)" class="btn-approve flex-1 flex items-center justify-center gap-2">
+                <span v-html="icons.checkCircle" style="width:16px;height:16px;"></span> Approve
+              </button>
+              <button @click="emit('reject', payment)" class="btn-reject flex-1 flex items-center justify-center gap-2">
+                <span v-html="icons.xCircle" style="width:16px;height:16px;"></span> Reject
+              </button>
+            </div>
+            <p v-if="payment.status === 'Paid'" class="text-[10px] text-emerald-600 mt-2 font-medium">✅ Pembayaran sudah di-approve</p>
+            <p v-if="payment.status === 'Failed'" class="text-[10px] text-red-500 mt-2 font-medium">❌ Pembayaran telah di-reject</p>
+          </div>
+
+          <!-- Close Button -->
+          <button @click="emit('close')"
+            class="w-full py-3 rounded-xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all">
+            Tutup
+          </button>
+        </div>
+      </div>
+    `
+  };
+
+  /* ── APLIKASI ── */
+  const App = {
+    components: { Sidebar, MobileSidebar, PaymentDetailModal },
+    setup() {
+      const activeNav = ref('payments');
+      const sidebarOpen = ref(false);
+      const sidebarExpanded = ref(true);
+      const searchQuery = ref('');
+      const filterStatus = ref('Semua');
+      const filterMethod = ref('Semua');
+      const filterDateFrom = ref('');
+      const filterDateTo = ref('');
+      const sortBy = ref('date');
+      const sortDir = ref('desc');
+      const currentPage = ref(1);
+
+      const payments = ref([...ALL_PAYMENTS]);
+      const selectedPayment = ref(null);
+
+      /* Filter + sort */
+      const filtered = computed(() => {
+        let data = [...payments.value];
+
+        if (filterStatus.value !== 'Semua') {
+          data = data.filter(p => p.status === filterStatus.value);
+        }
+        if (filterMethod.value !== 'Semua') {
+          data = data.filter(p => p.method === filterMethod.value);
+        }
+        if (searchQuery.value.trim()) {
+          const q = searchQuery.value.toLowerCase();
+          data = data.filter(p =>
+            p.invoice.toLowerCase().includes(q) ||
+            p.customer.toLowerCase().includes(q) ||
+            p.service.toLowerCase().includes(q)
+          );
+        }
+        if (filterDateFrom.value) {
+          data = data.filter(p => p.date >= filterDateFrom.value);
+        }
+        if (filterDateTo.value) {
+          data = data.filter(p => p.date <= filterDateTo.value);
+        }
+
+        data.sort((a,b) => {
+          let valA, valB;
+          if (sortBy.value === 'date') {
+            valA = new Date(a.date); valB = new Date(b.date);
+            return sortDir.value === 'asc' ? valA - valB : valB - valA;
+          }
+          if (sortBy.value === 'amount') {
+            valA = a.amount; valB = b.amount;
+            return sortDir.value === 'asc' ? valA - valB : valB - valA;
+          }
+          if (sortBy.value === 'invoice') {
+            valA = a.invoice; valB = b.invoice;
+            return sortDir.value === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+          }
+          return 0;
+        });
+        return data;
+      });
+
+      const totalPages = computed(() => Math.max(1, Math.ceil(filtered.value.length / PER_PAGE)));
+      const paginated = computed(() => {
+        const start = (currentPage.value - 1) * PER_PAGE;
+        return filtered.value.slice(start, start + PER_PAGE);
+      });
+
+      const paginationRange = computed(() => {
+        const total = totalPages.value;
+        const current = currentPage.value;
+        const range = [];
+        if (total <= 7) {
+          for (let i=1; i<=total; i++) range.push(i);
+        } else {
+          range.push(1);
+          if (current > 3) range.push('...');
+          for (let i=Math.max(2, current-1); i<=Math.min(total-1, current+1); i++) range.push(i);
+          if (current < total-2) range.push('...');
+          range.push(total);
+        }
+        return range;
+      });
+
+      const toggleSort = (col) => {
+        if (sortBy.value === col) {
+          sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortBy.value = col;
+          sortDir.value = 'desc';
+        }
+        currentPage.value = 1;
+      };
+
+      const goPage = (p) => { if (p>=1 && p<=totalPages.value) currentPage.value = p; };
+
+      const openDetail = (payment) => { selectedPayment.value = payment; };
+      const closeDetail = () => { selectedPayment.value = null; };
+
+      const approvePayment = (payment) => {
+        const found = payments.value.find(p => p.id === payment.id);
+        if (found) found.status = 'Paid';
+        closeDetail();
+      };
+
+      const rejectPayment = (payment) => {
+        const found = payments.value.find(p => p.id === payment.id);
+        if (found) found.status = 'Failed';
+        closeDetail();
+      };
+
+      const formatCurrency = (v) => 'Rp ' + Number(v).toLocaleString('id-ID');
+      const formatDate = (d) => {
+        if (!d) return '-';
+        return new Date(d).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' });
+      };
+
+      const getStatusClass = (status) => {
+        switch(status) {
+          case 'Paid': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+          case 'Pending': return 'bg-amber-50 text-amber-700 border-amber-200';
+          case 'Failed': return 'bg-red-50 text-red-600 border-red-200';
+          case 'Expired': return 'bg-gray-100 text-gray-500 border-gray-200';
+          default: return 'bg-gray-100 text-gray-500 border-gray-200';
+        }
+      };
+      const getStatusDot = (status) => {
+        switch(status) {
+          case 'Paid': return 'bg-emerald-500';
+          case 'Pending': return 'bg-amber-500';
+          case 'Failed': return 'bg-red-500';
+          case 'Expired': return 'bg-gray-400';
+          default: return 'bg-gray-400';
+        }
+      };
+
+      return {
+        activeNav, sidebarOpen, sidebarExpanded, icons,
+        searchQuery, filterStatus, filterMethod,
+        filterDateFrom, filterDateTo,
+        sortBy, sortDir, currentPage,
+        filtered, paginated, totalPages, paginationRange,
+        toggleSort, goPage,
+        selectedPayment,
+        openDetail, closeDetail, approvePayment, rejectPayment,
+        formatCurrency, formatDate, getStatusClass, getStatusDot,
+      };
+    },
+    template: `
+      <div class="min-h-screen" style="background:#efefef;">
+        <MobileSidebar :active="activeNav" :open="sidebarOpen" @navigate="activeNav=$event" @close="sidebarOpen=false"/>
+        <div class="app-container">
+          <!-- Sidebar Desktop -->
+          <div class="sidebar-wrapper hidden md:block">
+            <Sidebar
+              :active="activeNav"
+              :expanded="sidebarExpanded"
+              @navigate="activeNav=$event"
+              @toggle="sidebarExpanded=!sidebarExpanded"
+            />
+          </div>
+
+          <!-- Konten Utama -->
+          <main class="flex-1 overflow-y-auto">
+            <div class="p-4 md:p-6 pb-10 max-w-7xl mx-auto">
+
+              <!-- Header -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 fade-in-up">
+                <div class="flex items-center gap-3">
+                  <button @click="sidebarOpen=true"
+                    class="md:hidden w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-all flex-shrink-0">
+                    <span v-html="icons.menu"></span>
+                  </button>
+                  <div>
+                    <h1 class="text-xl lg:text-2xl font-extrabold text-gray-900 tracking-tight leading-tight">Pembayaran</h1>
+                    <p class="text-xs text-gray-500 mt-0.5 font-medium">Pantau semua transaksi pembayaran</p>
                   </div>
                 </div>
-                <div class="time-range-hint">Tersedia 06:00 – 16:00</div>
+                <div class="flex items-center gap-2 text-xs text-gray-400 font-medium flex-shrink-0">
+                  <span v-html="icons.receipt" style="width:14px;height:14px;"></span>
+                  {{ filtered.length }} transaksi
+                </div>
               </div>
+
+              <!-- FILTER BAR -->
+              <div class="card mb-5 fade-in-up" style="animation-delay:0.05s;">
+                <div class="flex flex-col md:flex-row gap-3 items-start md:items-end">
+                  <!-- Search -->
+                  <div class="relative flex-1 w-full">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Cari</label>
+                    <div class="relative">
+                      <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"><span v-html="icons.search"></span></span>
+                      <input v-model="searchQuery" type="text" placeholder="Invoice, customer, layanan..."
+                        class="pl-10 pr-4 py-2.5 rounded-xl bg-gray-50 text-sm text-gray-800 placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent focus:bg-white w-full transition-all"/>
+                    </div>
+                  </div>
+                  <!-- Status -->
+                  <div class="w-full md:w-36">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Status</label>
+                    <select v-model="filterStatus"
+                      class="w-full px-3 py-2.5 rounded-xl bg-gray-50 text-sm font-medium text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent focus:bg-white cursor-pointer">
+                      <option value="Semua">Semua</option>
+                      <option value="Paid">Paid</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Failed">Failed</option>
+                      <option value="Expired">Expired</option>
+                    </select>
+                  </div>
+                  <!-- Method -->
+                  <div class="w-full md:w-36">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Metode</label>
+                    <select v-model="filterMethod"
+                      class="w-full px-3 py-2.5 rounded-xl bg-gray-50 text-sm font-medium text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent focus:bg-white cursor-pointer">
+                      <option value="Semua">Semua</option>
+                      <option value="Midtrans">Midtrans</option>
+                      <option value="Manual Transfer">Manual</option>
+                    </select>
+                  </div>
+                  <!-- Date From -->
+                  <div class="w-full md:w-40">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Dari Tgl</label>
+                    <input v-model="filterDateFrom" type="date"
+                      class="w-full px-3 py-2.5 rounded-xl bg-gray-50 text-sm text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent focus:bg-white cursor-pointer"/>
+                  </div>
+                  <!-- Date To -->
+                  <div class="w-full md:w-40">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Sampai Tgl</label>
+                    <input v-model="filterDateTo" type="date"
+                      class="w-full px-3 py-2.5 rounded-xl bg-gray-50 text-sm text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent focus:bg-white cursor-pointer"/>
+                  </div>
+                  <!-- Reset -->
+                  <button @click="searchQuery='';filterStatus='Semua';filterMethod='Semua';filterDateFrom='';filterDateTo='';currentPage=1"
+                    class="px-4 py-2.5 rounded-xl bg-gray-200 text-gray-600 font-semibold text-xs hover:bg-gray-300 transition-all flex-shrink-0">
+                    Reset
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tabel -->
+              <div class="card fade-in-up" style="animation-delay:0.1s; padding: 0; overflow: hidden;">
+                <div class="table-container" style="border-radius: 20px; border: none;">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th @click="toggleSort('invoice')" :class="{ sorted: sortBy === 'invoice' }">
+                          Invoice <span class="sort-icon" v-html="sortBy==='invoice' ? (sortDir==='asc' ? icons.arrowUp : icons.arrowDown) : icons.arrowUp"></span>
+                        </th>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th @click="toggleSort('amount')" :class="{ sorted: sortBy === 'amount' }">
+                          Amount <span class="sort-icon" v-html="sortBy==='amount' ? (sortDir==='asc' ? icons.arrowUp : icons.arrowDown) : icons.arrowUp"></span>
+                        </th>
+                        <th>Method</th>
+                        <th>Status</th>
+                        <th @click="toggleSort('date')" :class="{ sorted: sortBy === 'date' }">
+                          Date <span class="sort-icon" v-html="sortBy==='date' ? (sortDir==='asc' ? icons.arrowUp : icons.arrowDown) : icons.arrowUp"></span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="p in paginated" :key="p.id" @click="openDetail(p)">
+                        <!-- Invoice -->
+                        <td>
+                          <span class="text-xs font-mono font-bold text-gray-800">{{ p.invoice }}</span>
+                        </td>
+                        <!-- Customer -->
+                        <td>
+                          <span class="text-sm font-semibold text-gray-800">{{ p.customer }}</span>
+                        </td>
+                        <!-- Service -->
+                        <td>
+                          <span class="text-sm text-gray-600">{{ p.service }}</span>
+                        </td>
+                        <!-- Amount -->
+                        <td>
+                          <span class="text-sm font-bold text-gray-900">{{ formatCurrency(p.amount) }}</span>
+                        </td>
+                        <!-- Method -->
+                        <td>
+                          <span :class="[
+                            'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold',
+                            p.method === 'Midtrans'
+                              ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                              : 'bg-amber-50 text-amber-700 border border-amber-200'
+                          ]">
+                            <span v-html="p.method === 'Midtrans' ? icons.wallet : icons.bank" style="width:11px;height:11px;"></span>
+                            {{ p.method === 'Midtrans' ? 'Midtrans' : 'Manual' }}
+                          </span>
+                        </td>
+                        <!-- Status -->
+                        <td>
+                          <span :class="[
+                            'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold',
+                            getStatusClass(p.status)
+                          ]">
+                            <span :class="'w-1.5 h-1.5 rounded-full ' + getStatusDot(p.status)"></span>
+                            {{ p.status }}
+                          </span>
+                        </td>
+                        <!-- Date -->
+                        <td>
+                          <span class="text-sm text-gray-500 font-medium">{{ formatDate(p.date) }}</span>
+                        </td>
+                      </tr>
+                      <!-- Empty State -->
+                      <tr v-if="paginated.length === 0">
+                        <td colspan="7">
+                          <div class="empty-state">
+                            <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4 text-gray-400">
+                              <span v-html="icons.receipt" style="width:28px;height:28px;"></span>
+                            </div>
+                            <h3 class="text-base font-bold text-gray-700 mb-1">Tidak ada transaksi</h3>
+                            <p class="text-sm text-gray-400">Coba ubah filter atau tanggal.</p>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Pagination -->
+              <div v-if="totalPages > 1" class="flex items-center justify-between mt-5 fade-in-up" style="animation-delay:0.15s">
+                <span class="text-xs text-gray-400 font-medium">Halaman {{ currentPage }} dari {{ totalPages }} ({{ filtered.length }} transaksi)</span>
+                <div class="flex items-center gap-1.5">
+                  <button @click="goPage(currentPage-1)" :class="['pagination-btn', { disabled: currentPage === 1 }]">
+                    <span v-html="icons.chevLeft"></span>
+                  </button>
+                  <template v-for="p in paginationRange" :key="p">
+                    <span v-if="p === '...'" class="px-1 text-gray-400 text-xs">...</span>
+                    <button v-else @click="goPage(p)" :class="['pagination-btn', { active: currentPage === p }]">{{ p }}</button>
+                  </template>
+                  <button @click="goPage(currentPage+1)" :class="['pagination-btn', { disabled: currentPage === totalPages }]">
+                    <span v-html="icons.chevRight"></span>
+                  </button>
+                </div>
+              </div>
+
             </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input type="text" v-model="booking.name" placeholder="Your full name" class="form-input" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Phone Number</label>
-            <input type="tel" v-model="booking.phone" placeholder="+62 812 3456 7890" class="form-input" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email Address</label>
-            <input type="email" v-model="booking.email" placeholder="you@example.com" class="form-input" />
-          </div>
+          </main>
         </div>
 
-        <div style="height: 20px;"></div>
-
-      </div><!-- /content-panel -->
-    </div><!-- /page-layout -->
-
-    <!-- FLOATING CTA -->
-    <div class="floating-cta">
-      <div class="price-text">
-        <div class="total-label">Total Price</div>
-        <div class="amount">
-          ${{ totalPrice }} <span>/person</span>
-        </div>
+        <!-- Modal Detail -->
+        <PaymentDetailModal
+          v-if="selectedPayment"
+          :payment="selectedPayment"
+          @close="closeDetail"
+          @approve="approvePayment"
+          @reject="rejectPayment"
+        />
       </div>
-      <button class="cta-btn" @click="submitBooking">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-        </svg>
-      </button>
-    </div>
+    `
+  };
 
-  </div><!-- /main-area -->
-</div><!-- /app -->
-
-<script>
-const { createApp, ref, computed } = Vue;
-
-createApp({
-  setup() {
-    const wishlist = ref(false);
-    const expanded = ref(false);
-    const selectedIndex = ref(0);
-    const imgSwitching = ref(false);
-    const activeNav = ref('home');
-    const guests = ref(2);
-    const timeHour = ref(8);
-    const timeMinute = ref(0);
-
-    function incrementHour() { if (timeHour.value < 16) timeHour.value++; }
-    function decrementHour() { if (timeHour.value > 6) timeHour.value--; }
-    function incrementMinute() {
-      if (timeMinute.value === 45) { timeMinute.value = 0; if (timeHour.value < 16) timeHour.value++; }
-      else timeMinute.value += 15;
-    }
-    function decrementMinute() {
-      if (timeMinute.value === 0) { timeMinute.value = 45; if (timeHour.value > 6) timeHour.value--; }
-      else timeMinute.value -= 15;
-    }
-    const selectedTimeStr = computed(() => `${String(timeHour.value).padStart(2,'0')}:${String(timeMinute.value).padStart(2,'0')}`);
-    const today = new Date();
-    const currentMonth = ref(today.getMonth());
-    const currentYear = ref(today.getFullYear());
-    const selectedDate = ref(null);
-
-    const booking = ref({
-      name: '',
-      phone: '',
-      email: ''
-    });
-
-    const bookedDates = ref(new Set([
-      '2026-05-12', '2026-05-13', '2026-05-20', '2026-05-21',
-      '2026-06-05', '2026-06-15', '2026-06-16'
-    ]));
-
-    const timeSlots = ['07:00', '08:00', '09:00', '10:00', '13:00', '14:00'];
-
-    const images = [
-      { full:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=85', thumb:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=200&q=75' },
-      { full:'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800&q=85', thumb:'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=200&q=75' },
-      { full:'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&q=85', thumb:'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=200&q=75' },
-      { full:'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=85', thumb:'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=200&q=75' },
-    ];
-
-    const currentImage = computed(() => images[selectedIndex.value].full);
-
-    const weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const currentMonthName = computed(() => monthNames[currentMonth.value]);
-
-    const calendarDays = computed(() => {
-      const year = currentYear.value;
-      const month = currentMonth.value;
-      const firstDay = new Date(year, month, 1).getDay();
-      const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      let days = [];
-      for (let i = 0; i < adjustedFirstDay; i++) days.push(null);
-      for (let d = 1; d <= daysInMonth; d++) days.push(d);
-      return days;
-    });
-
-    function formatDate(year, month, day) {
-      return `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-    }
-
-    function isPastDay(day) {
-      const dateStr = formatDate(currentYear.value, currentMonth.value, day);
-      const check = new Date(dateStr);
-      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      return check < todayStart;
-    }
-
-    function isBooked(day) {
-      return bookedDates.value.has(formatDate(currentYear.value, currentMonth.value, day));
-    }
-
-    function isAvailable(day) {
-      return !isPastDay(day) && !isBooked(day);
-    }
-
-    function isSelected(day) {
-      if (!selectedDate.value) return false;
-      return formatDate(currentYear.value, currentMonth.value, day) === selectedDate.value;
-    }
-
-    function selectDay(day) {
-      selectedDate.value = formatDate(currentYear.value, currentMonth.value, day);
-    }
-
-    function prevMonth() {
-      if (currentMonth.value === 0) { currentMonth.value = 11; currentYear.value--; }
-      else currentMonth.value--;
-    }
-
-    function nextMonth() {
-      if (currentMonth.value === 11) { currentMonth.value = 0; currentYear.value++; }
-      else currentMonth.value++;
-    }
-
-    const basePrice = 635;
-    const totalPrice = computed(() => basePrice * guests.value);
-
-    function selectImage(i) {
-      if (i === selectedIndex.value) return;
-      imgSwitching.value = true;
-      setTimeout(() => { selectedIndex.value = i; imgSwitching.value = false; }, 220);
-    }
-
-    function goBack() { history.back(); }
-
-    function submitBooking() {
-      if (!booking.value.name || !booking.value.email || !selectedDate.value) {
-        alert('Mohon lengkapi data diri dan pilih tanggal menginap.');
-        return;
-      }
-      const timeInfo = `, mulai pukul ${selectedTimeStr.value}`;
-      alert(`Terima kasih, ${booking.value.name}! Pemesanan untuk La Selva (${selectedDate.value}${timeInfo}, ${guests.value} tamu) sedang diproses. Total: $${totalPrice.value}`);
-    }
-
-    // 4 info cards: Duration, Distance, Grade, Capacity
-    const infoCards = [
-      { type: 'duration',  label: 'Duration',  value: '2.5 – 3 Jam' },
-      { type: 'distance',  label: 'Distance',  value: '11 Km' },
-      { type: 'grade',     label: 'Grade',     value: 'Grade III+' },
-      { type: 'capacity',  label: 'Capacity',  value: 'Max 4 Org' },
-    ];
-
-    return { 
-      wishlist, expanded, images, selectedIndex, currentImage, imgSwitching, 
-      selectImage, goBack, infoCards, activeNav, booking, submitBooking,
-      guests, currentMonth, currentYear, selectedDate, calendarDays,
-      weekdays, currentMonthName, prevMonth, nextMonth,
-      isPastDay, isBooked, isAvailable, isSelected, selectDay,
-      totalPrice, timeHour, timeMinute, incrementHour, decrementHour, incrementMinute, decrementMinute, selectedTimeStr
-    };
-  }
-}).mount('#app');
+  createApp(App).mount('#app');
 </script>
 </body>
 </html>
