@@ -46,6 +46,29 @@
     * { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing: border-box; }
     body { background: var(--bg); margin: 0; }
 
+    /* ── SCROLL ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.reveal-left {
+      transform: translateX(-28px);
+    }
+    .reveal.reveal-right {
+      transform: translateX(28px);
+    }
+    .reveal.reveal-scale {
+      transform: scale(0.94);
+    }
+    .reveal.reveal-rotate {
+      transform: translateY(20px) rotate(-2deg);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
     .fade-in-up { animation: fadeInUp 0.5s ease forwards; opacity: 0; }
     @keyframes fadeInUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
     .progress-bar { transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -63,7 +86,7 @@
       background: var(--surface);
       border-radius: 20px;
       border: 1px solid var(--border);
-      overflow: hidden; /* Changed from visible to hidden */
+      overflow: hidden;
       flex-shrink: 0;
       height: 100%;
       transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
@@ -88,9 +111,8 @@
     .desktop-sidebar.collapsed .sidebar-logo-area { display: none; }
     .desktop-sidebar.expanded  .sidebar-logo-area { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
 
-    /* KEY FIX: Proper scroll container */
     .sidebar-nav {
-        height: calc(100% - 120px);
+      height: calc(100% - 120px);
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
@@ -116,7 +138,7 @@
       overflow: hidden;
       margin-top: 10px;
       margin-bottom: 4px;
-    min-height: 20px;
+      min-height: 20px;
     }
     .desktop-sidebar.collapsed .nav-group {  
       height: 0;
@@ -305,14 +327,62 @@
         display: none;
       }
     }
-    
+
+    /* ── CALENDAR PACKAGE ICONS ── */
+    .cal-pkg-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+    }
+
+    /* ── TOOLTIP for calendar ── */
+    .cal-tooltip {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 8px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 20;
+    }
+    .cal-day:hover .cal-tooltip { opacity: 1; }
+    .cal-day { position: relative; }
   </style>
 </head>
 <body>
 <div id="app"></div>
 
 <script type="module">
-  import { createApp, ref, computed, onMounted } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+  import { createApp, ref, computed, onMounted, nextTick } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+
+  /* ── SCROLL REVEAL SETUP ── */
+  function initScrollReveal() {
+    const revealTypes = ['reveal', 'reveal-left', 'reveal-right', 'reveal-scale', 'reveal-rotate'];
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = entry.target.dataset.delay || 0;
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  }
 
   const icons = {
     dashboard: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
@@ -322,7 +392,8 @@
     packages: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
     promo: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
     payments: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`,
-    customers: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    reports: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+    logout: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
     orders: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
     settings: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
     bell: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
@@ -338,23 +409,28 @@
     vehicle: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="17" height="12" rx="2"/><path d="M7 18v-2"/><path d="M13 18v-2"/><circle cx="5" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></svg>`,
     climbing: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M10 22l2-12 4 4"/><path d="M8 17l-4 4"/><path d="M16 17l4 4"/></svg>`,
     star: `<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    /* small inline icons for calendar */
+    waveSmall: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2c1 0 1-4 2-4s1 4 2 4 1-4 2-4 1 4 2 4h2"/><path d="M2 16h2c1 0 1-2 2-2s1 2 2 2 1-2 2-2 1 2 2 2h2"/></svg>`,
+    vehicleSmall: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="17" height="12" rx="2"/><path d="M7 18v-2"/><path d="M13 18v-2"/><circle cx="5" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></svg>`,
+    climbingSmall: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M10 22l2-12 4 4"/><path d="M8 17l-4 4"/><path d="M16 17l4 4"/></svg>`,
   };
 
   const NAV_ITEMS = [
-    { id: 'dashboard', label: 'Dashboard' },
+    { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
     { group: 'Bookings' },
-    { id: 'rafting', label: 'Rafting' },
-    { id: 'tour', label: 'Tour VW' },
-    { id: 'outbound', label: 'Outbound' },
+    { id: 'rafting', label: 'Rafting', icon: 'rafting' },
+    { id: 'tour', label: 'Tour VW', icon: 'car' },
+    { id: 'outbound', label: 'Outbound', icon: 'activity' },
     { group: 'Business' },
-    { id: 'packages', label: 'Packages' },
-    { id: 'promo', label: 'Promo' },
-    { id: 'payments', label: 'Payments' },
+    { id: 'packages', label: 'Packages', icon: 'box' },
+    { id: 'promo', label: 'Promo', icon: 'tag' },
+    { id: 'payments', label: 'Payments', icon: 'creditCard' },
     { group: 'Management' },
-    { id: 'customers', label: 'Customers' },
-    { id: 'orders', label: 'Orders' },
+    { id: 'orders', label: 'Orders', icon: 'fileText' },
+    { id: 'reports', label: 'Reports', icon: 'report' },
     { group: 'System' },
-    { id: 'settings', label: 'Settings' },
+    { id: 'settings', label: 'Settings', icon: 'settings' },
+    { id: 'logout', label: 'Logout', icon: 'logout' },
   ];
 
   const Sidebar = {
@@ -374,7 +450,6 @@
             <span v-html="expanded ? icons.chevLeftDouble : icons.chevRightDouble"></span>
           </button>
         </div>
-
         <div class="sidebar-nav">
           <template v-for="item in items" :key="item.id || item.group">
             <div v-if="item.group" class="nav-group">{{ item.group }}</div>
@@ -386,7 +461,6 @@
             </button>
           </template>
         </div>
-
         <div class="sidebar-footer">
           <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0 bg-gray-800">JR</div>
           <div class="profile-label min-w-0">
@@ -479,7 +553,7 @@
       return { stats, icons };
     },
     template: `
-      <div class="card card-hover fade-in-up" style="animation-delay:0.1s">
+      <div class="card card-hover reveal" data-delay="0">
         <div class="flex items-start justify-between mb-5">
           <div>
             <h3 class="font-bold text-gray-900 text-sm">Elung River Rafting</h3>
@@ -514,30 +588,62 @@
     `
   };
 
+  /* ── CALENDAR with per-package icons ── */
   const CalendarCard = {
     setup() {
       const month = 'June 2025';
       const days = ['Mo','Tu','We','Th','Fr','Sa','Su'];
       const today = 14, offset = 6, totalDays = 30;
-      const bookedDays = [3,5,7,9,11,12,13];
+
+      /* Each day can have multiple package bookings */
+      const bookingMap = {
+        3:  ['rafting'],
+        5:  ['vw'],
+        7:  ['rafting','vw'],
+        9:  ['outbound'],
+        11: ['rafting'],
+        12: ['vw','outbound'],
+        13: ['rafting','vw','outbound'],
+        16: ['rafting'],
+        17: ['vw'],
+        19: ['outbound'],
+        21: ['rafting','vw'],
+        23: ['rafting'],
+        25: ['vw','outbound'],
+      };
+
       const scheduledDays = [16,17,19,21,23,25];
+
+      const pkgConfig = {
+        rafting:  { color:'#3b82f6', label:'Rafting',  icon:'waveSmall' },
+        vw:       { color:'#f59e0b', label:'VW Tour',  icon:'vehicleSmall' },
+        outbound: { color:'#10b981', label:'Outbound', icon:'climbingSmall' },
+      };
+
       const cells = computed(() => {
         const arr = [];
         for (let i=0;i<offset;i++) arr.push(null);
         for (let d=1;d<=totalDays;d++) arr.push(d);
         return arr;
       });
+
       const getType = (day) => {
         if (!day) return '';
         if (day===today) return 'today';
-        if (bookedDays.includes(day)) return 'booked';
+        if (bookingMap[day]) return scheduledDays.includes(day) ? 'scheduled' : 'booked';
         if (scheduledDays.includes(day)) return 'scheduled';
         return 'normal';
       };
-      return { month, days, cells, today, getType, icons };
+
+      const getTooltip = (day) => {
+        if (!bookingMap[day]) return '';
+        return bookingMap[day].map(k => pkgConfig[k].label).join(' + ');
+      };
+
+      return { month, days, cells, today, getType, getTooltip, bookingMap, pkgConfig, icons };
     },
     template: `
-      <div class="card card-hover fade-in-up" style="animation-delay:0.15s">
+      <div class="card card-hover reveal reveal-right" data-delay="80">
         <div class="flex items-center justify-between mb-4">
           <h3 class="font-bold text-gray-900 text-sm">{{ month }}</h3>
           <div class="flex gap-1">
@@ -548,40 +654,63 @@
         <div class="grid grid-cols-7 mb-1">
           <div v-for="d in days" :key="d" class="text-center text-[9.5px] font-bold text-gray-400 py-1">{{ d }}</div>
         </div>
-        <div class="grid grid-cols-7 gap-y-0.5">
-          <div v-for="(day,i) in cells" :key="i" class="flex items-center justify-center py-0.5">
-            <div v-if="day" class="relative w-7 h-7 flex items-center justify-center cursor-pointer group">
+        <div class="grid grid-cols-7 gap-y-1">
+          <div v-for="(day,i) in cells" :key="i" class="flex flex-col items-center">
+            <div v-if="day" class="cal-day flex flex-col items-center cursor-pointer group">
+              <!-- day number -->
               <template v-if="getType(day)==='today'">
                 <div class="w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-white text-xs bg-gray-900">{{ day }}</div>
               </template>
               <template v-else-if="getType(day)==='booked'">
-                <span class="text-xs font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">{{ day }}</span>
-                <span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-blue-500"></span>
+                <div class="w-7 h-7 rounded-full flex items-center justify-center bg-blue-50 group-hover:bg-blue-100 transition-colors">
+                  <span class="text-xs font-semibold text-blue-700">{{ day }}</span>
+                </div>
               </template>
               <template v-else-if="getType(day)==='scheduled'">
-                <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                <div class="w-7 h-7 rounded-full border-2 border-gray-300 flex items-center justify-center group-hover:border-gray-500 transition-colors">
                   <span class="text-[11px] font-semibold text-gray-600">{{ day }}</span>
                 </div>
               </template>
               <template v-else>
-                <span class="text-xs text-gray-400 font-medium group-hover:text-gray-600 transition-colors">{{ day }}</span>
+                <div class="w-7 h-7 flex items-center justify-center">
+                  <span class="text-xs text-gray-400 font-medium group-hover:text-gray-600 transition-colors">{{ day }}</span>
+                </div>
               </template>
+
+              <!-- package icon dots -->
+              <div v-if="bookingMap[day]" class="flex gap-0.5 mt-0.5 flex-wrap justify-center" style="max-width:28px;">
+                <span
+                  v-for="pkg in bookingMap[day]"
+                  :key="pkg"
+                  class="cal-pkg-icon"
+                  :style="{background: pkgConfig[pkg].color + '18', color: pkgConfig[pkg].color, width:'13px', height:'13px'}"
+                  :title="pkgConfig[pkg].label">
+                  <span v-html="icons[pkgConfig[pkg].icon]" style="display:flex;align-items:center;justify-content:center;"></span>
+                </span>
+              </div>
+
+              <!-- tooltip -->
+              <div v-if="getTooltip(day)" class="cal-tooltip">{{ getTooltip(day) }}</div>
             </div>
           </div>
         </div>
-        <div class="flex items-center gap-4 mt-4 pt-3 border-t border-gray-100">
+
+        <!-- Legend -->
+        <div class="flex flex-wrap items-center gap-3 mt-4 pt-3 border-t border-gray-100">
           <div class="flex items-center gap-1.5">
-            <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-            <span class="text-[10px] text-gray-500 font-medium">Booked</span>
+            <span class="cal-pkg-icon" style="width:14px;height:14px;background:#3b82f618;color:#3b82f6;"><span v-html="icons.waveSmall" style="display:flex;align-items:center;justify-content:center;"></span></span>
+            <span class="text-[10px] text-gray-500 font-medium">Rafting</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <div class="w-1.5 h-1.5 rounded-full border-2 border-gray-300"></div>
-            <span class="text-[10px] text-gray-500 font-medium">Scheduled</span>
+            <span class="cal-pkg-icon" style="width:14px;height:14px;background:#f59e0b18;color:#f59e0b;"><span v-html="icons.vehicleSmall" style="display:flex;align-items:center;justify-content:center;"></span></span>
+            <span class="text-[10px] text-gray-500 font-medium">VW Tour</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <div class="w-3 h-3 rounded-full bg-gray-900 flex items-center justify-center">
-              <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-            </div>
+            <span class="cal-pkg-icon" style="width:14px;height:14px;background:#10b98118;color:#10b981;"><span v-html="icons.climbingSmall" style="display:flex;align-items:center;justify-content:center;"></span></span>
+            <span class="text-[10px] text-gray-500 font-medium">Outbound</span>
+          </div>
+          <div class="flex items-center gap-1.5 ml-auto">
+            <div class="w-3 h-3 rounded-full bg-gray-900"></div>
             <span class="text-[10px] text-gray-500 font-medium">Today</span>
           </div>
         </div>
@@ -599,7 +728,7 @@
       return { current, total, pct, size, sw, radius, circ, offset, week };
     },
     template: `
-      <div class="card card-hover fade-in-up" style="animation-delay:0.2s">
+      <div class="card card-hover reveal reveal-scale" data-delay="100">
         <div class="flex items-center justify-between mb-4">
           <h3 class="font-bold text-gray-900 text-sm">VW Safari Tour</h3>
           <span class="text-xs font-semibold text-gray-400">Capacity: {{ total }} pax</span>
@@ -654,7 +783,7 @@
       return { current, start, goal, added, pct, targetPct, history, pathD, fillD, W, H, pts };
     },
     template: `
-      <div class="card card-hover fade-in-up" style="animation-delay:0.25s">
+      <div class="card card-hover reveal reveal-rotate" data-delay="120">
         <div class="flex items-start justify-between mb-4">
           <div>
             <h3 class="font-bold text-gray-900 text-sm">Outbound Participants</h3>
@@ -710,41 +839,78 @@
     `
   };
 
-  const PackagesCard = {
+  /* ── LATEST BOOKINGS (replaces packages grid) ── */
+  const LatestBookingsCard = {
     setup() {
-      const packages = [
-        {id:1,name:'Elung River',guide:'Andi S.',pct:78,icon:'wave',dark:true},
-        {id:2,name:'VW Borobudur',guide:'Rina K.',pct:55,icon:'vehicle',dark:false},
-        {id:3,name:'Outbound Merapi',guide:'Bambang',pct:90,icon:'climbing',dark:false},
-        {id:4,name:'Cave Tubing',guide:'Dewi R.',pct:42,icon:'tour',dark:false},
-        {id:5,name:'Sunrise Jeep',guide:'Agus P.',pct:65,icon:'compass',dark:true},
+      const bookings = [
+        {
+          id:'BK-2341', pkg:'Rafting', name:'Reza Firmansyah', pax:6, time:'Hari ini, 08:30',
+          status:'confirmed', guide:'Andi S.', pkgColor:'#3b82f6', pkgBg:'#eff6ff', icon:'wave',
+        },
+        {
+          id:'BK-2340', pkg:'VW Tour', name:'Lina Maharani', pax:4, time:'Hari ini, 10:00',
+          status:'confirmed', guide:'Rina K.', pkgColor:'#f59e0b', pkgBg:'#fffbeb', icon:'vehicle',
+        },
+        {
+          id:'BK-2339', pkg:'Outbound', name:'PT Nusantara Group', pax:22, time:'Kemarin, 07:00',
+          status:'done', guide:'Bambang', pkgColor:'#10b981', pkgBg:'#ecfdf5', icon:'climbing',
+        },
+        {
+          id:'BK-2338', pkg:'Rafting', name:'Dika & Keluarga', pax:8, time:'Kemarin, 09:00',
+          status:'done', guide:'Andi S.', pkgColor:'#3b82f6', pkgBg:'#eff6ff', icon:'wave',
+        },
+        {
+          id:'BK-2337', pkg:'VW Tour', name:'Komunitas Sepeda Jogja', pax:12, time:'23 Jun, 08:00',
+          status:'done', guide:'Agus P.', pkgColor:'#f59e0b', pkgBg:'#fffbeb', icon:'vehicle',
+        },
+        {
+          id:'BK-2336', pkg:'Outbound', name:'SMA Negeri 2 Sleman', pax:45, time:'22 Jun, 06:30',
+          status:'done', guide:'Dewi R.', pkgColor:'#10b981', pkgBg:'#ecfdf5', icon:'climbing',
+        },
       ];
-      return { packages, icons };
+      return { bookings, icons };
     },
     template: `
-      <div class="card card-hover fade-in-up" style="animation-delay:0.3s">
+      <div class="card card-hover reveal reveal-scale" data-delay="60">
         <div class="flex items-center justify-between mb-5">
-          <h3 class="font-bold text-gray-900 text-sm">Adventure Packages</h3>
+          <h3 class="font-bold text-gray-900 text-sm">Latest Bookings</h3>
           <button class="text-xs font-semibold text-gray-500 hover:text-gray-800 px-3 py-1 rounded-full hover:bg-gray-100 transition-all">View all →</button>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <div v-for="p in packages" :key="p.id"
-            class="flex items-center gap-3 p-3 rounded-2xl cursor-pointer group hover:shadow-sm transition-all"
-            :style="p.dark ? 'background:#f4f4f4' : 'background:#fafafa'">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-white shadow-sm group-hover:scale-105 transition-transform"
-              :class="p.dark ? 'text-gray-800' : 'text-gray-500'">
-              <span v-html="icons[p.icon]"></span>
+        <div class="flex flex-col gap-2.5">
+          <div v-for="b in bookings" :key="b.id"
+            class="flex items-center gap-3 p-3 rounded-2xl hover:shadow-sm transition-all cursor-pointer group"
+            :style="{'background': b.status==='confirmed' ? b.pkgBg : '#fafafa'}">
+
+            <!-- Package icon -->
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform"
+              :style="{background: b.pkgColor + '22', color: b.pkgColor}">
+              <span v-html="icons[b.icon]"></span>
             </div>
+
+            <!-- Info -->
             <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between mb-0.5">
-                <p class="text-xs font-bold text-gray-900 truncate">{{ p.name }}</p>
-                <span class="text-[10px] font-bold ml-1 flex-shrink-0 text-blue-500">{{ p.pct }}%</span>
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-xs font-bold text-gray-900 truncate">{{ b.name }}</span>
+                <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                  :style="b.status==='confirmed'
+                    ? {background: b.pkgColor+'22', color: b.pkgColor}
+                    : {background:'#f4f4f4', color:'#999'}">
+                  {{ b.status === 'confirmed' ? 'Terkonfirmasi' : 'Selesai' }}
+                </span>
               </div>
-              <p class="text-[10px] text-gray-400 mb-1.5 truncate font-medium">{{ p.guide }}</p>
-              <div class="h-1.5 rounded-full overflow-hidden bg-gray-200">
-                <div class="h-full rounded-full progress-bar"
-                  :style="{width:p.pct+'%',background:'linear-gradient(90deg,#93c5fd,#3b82f6)'}"></div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-medium text-gray-400">{{ b.pkg }}</span>
+                <span class="text-gray-300 text-[10px]">·</span>
+                <span class="text-[10px] font-medium text-gray-400">{{ b.pax }} pax</span>
+                <span class="text-gray-300 text-[10px]">·</span>
+                <span class="text-[10px] font-medium text-gray-400">{{ b.guide }}</span>
               </div>
+            </div>
+
+            <!-- Time + ID -->
+            <div class="text-right flex-shrink-0">
+              <p class="text-[10px] font-bold text-gray-500">{{ b.time }}</p>
+              <p class="text-[9px] text-gray-400 mt-0.5">{{ b.id }}</p>
             </div>
           </div>
         </div>
@@ -753,11 +919,18 @@
   };
 
   const App = {
-    components: { Sidebar, MobileSidebar, Header, RaftingCard, CalendarCard, VWTourCard, OutboundCard, PackagesCard },
+    components: { Sidebar, MobileSidebar, Header, RaftingCard, CalendarCard, VWTourCard, OutboundCard, LatestBookingsCard },
     setup() {
       const activeNav = ref('dashboard');
       const sidebarOpen = ref(false);
       const sidebarExpanded = ref(false);
+
+      onMounted(() => {
+        nextTick(() => {
+          setTimeout(initScrollReveal, 300);
+        });
+      });
+
       return { activeNav, sidebarOpen, sidebarExpanded, icons };
     },
     template: `
@@ -777,6 +950,7 @@
             <div class="p-4 md:p-6 pb-10 max-w-5xl mx-auto">
               <Header @open-sidebar="sidebarOpen=true"/>
 
+              <!-- Stat cards -->
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 fade-in-up" style="animation-delay:0.08s">
                 <div class="bg-white rounded-2xl p-4 border border-gray-200 flex items-center gap-3 card-hover" style="box-shadow:0 2px 10px rgba(0,0,0,0.04);">
                   <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-gray-100 text-gray-600">
@@ -816,6 +990,7 @@
                 </div>
               </div>
 
+              <!-- Main grid -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                 <div class="flex flex-col gap-5">
                   <RaftingCard/>
@@ -827,7 +1002,8 @@
                 </div>
               </div>
 
-              <PackagesCard/>
+              <!-- Latest Bookings -->
+              <LatestBookingsCard/>
             </div>
           </main>
         </div>
