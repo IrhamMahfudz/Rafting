@@ -2,824 +2,1812 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0"/>
-  <title>Jogja Rafting – Adventure Packages</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>Jogja Rafting · Pesanan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #f2f1ef;
+      --bg: #efefef;
       --surface: #ffffff;
-      --ink: #111827;
-      --ink-2: #374151;
-      --ink-3: #6b7280;
-      --ink-4: #9ca3af;
-      --ink-5: #d1d5db;
-      --card-h-mobile: 240px;
-      --card-h-tab: 300px;
-      --card-h-desktop: 340px;
-      --nav-h: 76px;
+      --border: #e2e2e2;
+      --ink: #111111;
+      --ink2: #333333;
+      --ink3: #666666;
+      --grey-50: #fafafa;
+      --grey-100: #f4f4f4;
+      --grey-200: #e9e9e9;
+      --grey-300: #d4d4d4;
+      --grey-400: #a3a3a3;
+      --grey-500: #737373;
+      --grey-600: #525252;
+      --grey-700: #404040;
+      --grey-800: #262626;
+      --grey-900: #171717;
     }
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: var(--bg);
-      overflow: hidden;
-      font-family: 'DM Sans', sans-serif;
+
+    * { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing: border-box; }
+    body { background: var(--bg); margin: 0; }
+
+    .card {
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      padding: 22px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
     }
-    #app {
-      width: 100%;
-      height: 100%;
+
+    .card-hover { transition: all 0.25s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,0,0,0.09) !important; }
+
+    .fade-in-up { animation: fadeInUp 0.5s ease forwards; opacity: 0; }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--grey-300); border-radius: 99px; }
+
+    /* ── SIDEBAR DESKTOP ── */
+    .desktop-sidebar {
       display: flex;
       flex-direction: column;
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1px solid var(--border);
       overflow: hidden;
-    }
-    .app-shell {
-      display: flex;
-      width: 100%;
+      flex-shrink: 0;
       height: 100%;
-      overflow: hidden;
+      transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
+      min-height: 0;
     }
-    .sidebar { display: none; }
-    @media (min-width: 1024px) {
-      .sidebar {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-        width: 80px;
-        min-height: 100vh;
-        background: var(--surface);
-        box-shadow: 1px 0 0 var(--ink-5);
-        padding: 28px 0;
-        flex-shrink: 0;
-        z-index: 50;
-      }
-      .sidebar-logo {
-        font-family: 'Syne', sans-serif;
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 2px;
-        color: var(--ink);
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-      }
-      .sidebar-nav {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        align-items: center;
-      }
-      .sidebar-nav-item {
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-      .sidebar-nav-item.active { background: var(--ink); }
-      .sidebar-nav-item.active svg { stroke: #fff; }
-      .sidebar-nav-item:not(.active) svg { stroke: var(--ink-4); }
-      .sidebar-nav-item:not(.active):hover { background: var(--bg); }
-    }
-    .main-area {
-      flex: 1;
+    .desktop-sidebar.collapsed { width: 62px; }
+    .desktop-sidebar.expanded  { width: 216px; }
+
+    .sidebar-header {
       display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-      min-width: 0;
+      align-items: center;
+      height: 60px;
+      padding: 0 12px;
+      gap: 8px;
+      border-bottom: 1px solid var(--grey-200);
+      flex-shrink: 0;
+      background: white;
+      z-index: 10;
     }
-    .scroll-content {
+    .desktop-sidebar.collapsed .sidebar-header { justify-content: center; padding: 0; }
+    .desktop-sidebar.collapsed .sidebar-logo-area { display: none; }
+    .desktop-sidebar.expanded  .sidebar-logo-area { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+
+    .sidebar-nav {
+      height: calc(100% - 120px);
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 16px));
-    }
-    @media (min-width: 1024px) {
-      .scroll-content { padding-bottom: 32px; }
-    }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .inner {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-    @media (min-width: 640px) { .inner { padding: 0 32px; } }
-    @media (min-width: 1024px) { .inner { padding: 0; } }
-    .header { padding: max(24px, 4vh) 0 20px; }
-    .header-row {
+      padding: 10px 8px;
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 2px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--grey-300) transparent;
+      min-height: 0;
     }
-    .header-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--ink-2);
-      letter-spacing: 2px;
-      margin-bottom: 8px;
-    }
-    .header-title {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(26px, 5vw, 44px);
-      font-weight: 800;
-      line-height: 1.05;
-      color: var(--ink);
-    }
-    @media (min-width: 1024px) { .header-label { display: none; } }
-    .search-btn {
-      background: var(--surface);
-      border-radius: 14px;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      margin-top: 4px;
-      cursor: pointer;
-      border: none;
-      flex-shrink: 0;
-      transition: box-shadow 0.2s;
-    }
-    .search-btn:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .sidebar-nav::-webkit-scrollbar { width: 3px; }
+    .sidebar-nav::-webkit-scrollbar-thumb { background: var(--grey-300); border-radius: 99px; }
 
-    /* Search overlay */
-    .search-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding-top: 15vh;
-      z-index: 200;
-    }
-    .search-panel {
-      background: white;
-      border-radius: 24px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+    .nav-group {
+      font-size: 9.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--grey-400);
+      padding: 0 10px;
+      white-space: nowrap;
       overflow: hidden;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      min-height: 20px;
     }
-    .search-input-wrap {
-      display: flex;
-      align-items: center;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--ink-5);
-    }
-    .search-input-wrap input {
-      flex:1;
-      border: none;
-      outline: none;
-      font-size: 16px;
-      font-family: 'DM Sans', sans-serif;
-      background: transparent;
-      padding: 8px 0;
-    }
-    .search-results {
-      max-height: 350px;
-      overflow-y: auto;
-    }
-    .search-result-item {
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .search-result-item:hover { background: #f9fafb; }
-    .no-result {
-      padding: 24px;
-      text-align: center;
-      color: var(--ink-4);
-      font-size: 14px;
-    }
-    .card-section { margin-bottom: 28px; }
-    .card-stack {
-      position: relative;
-      height: var(--card-h-mobile);
-    }
-    @media (min-width: 640px) {
-      .card-stack { height: var(--card-h-tab); }
-      .card-back-2 { height: 270px !important; }
-      .card-back-1 { height: 280px !important; }
-      .card-main { height: 290px !important; }
-    }
-    @media (min-width: 1024px) {
-      .card-stack { height: var(--card-h-desktop); }
-      .card-back-2 { height: 310px !important; }
-      .card-back-1 { height: 320px !important; }
-      .card-main { height: 330px !important; }
-    }
-    .card-back-2 {
-      position: absolute;
-      left: -28px; top: 16px;
-      width: calc(100% + 28px);
-      height: 212px;
-      border-radius: 24px;
-      background: #9ca3af;
-      opacity: 0.25;
-      filter: blur(1px);
-      transform: scale(0.91);
-      z-index: 1;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.07);
-    }
-    .card-back-1 {
-      position: absolute;
-      left: -14px; top: 9px;
-      width: calc(100% + 14px);
-      height: 225px;
-      border-radius: 24px;
-      background: #6b7280;
-      opacity: 0.4;
-      transform: scale(0.95);
-      z-index: 2;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    }
-    .card-main {
-      position: absolute;
-      left: 0; top: 0;
+    .desktop-sidebar.collapsed .nav-group { display: none; }
+    .desktop-sidebar.expanded  .nav-group { height: auto; opacity: 1; }
+
+    .nav-btn {
       width: 100%;
-      height: 235px;
-      border-radius: 24px;
-      background: #1f2937;
-      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--grey-600);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.18s ease;
+      white-space: nowrap;
       overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.1);
-      transition: transform 0.25s;
-      cursor: grab;
-      user-select: none;
+      position: relative;
     }
-    .card-main:active { transform: scale(0.985); cursor: grabbing; }
-    .card-main::before {
+    .nav-btn:hover { background: var(--grey-100); color: var(--grey-900); }
+    .nav-btn.active { background: var(--grey-100); color: var(--grey-900); font-weight: 700; }
+    .nav-btn.active::before {
       content: '';
       position: absolute;
-      top: -40%; left: -20%;
-      width: 55%; height: 75%;
-      background: radial-gradient(ellipse, rgba(255,255,255,0.07) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 5;
+      left: 0; top: 25%; bottom: 25%;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--grey-700);
     }
-    .adventure-bg {
+    .desktop-sidebar.collapsed .nav-btn { justify-content: center; padding: 9px 0; }
+    .desktop-sidebar.collapsed .nav-btn.active::before { display: none; }
+
+    .nav-label { transition: all 0.25s; overflow: hidden; white-space: nowrap; }
+    .desktop-sidebar.collapsed .nav-label { width: 0; opacity: 0; }
+    .desktop-sidebar.expanded  .nav-label { width: auto; opacity: 1; }
+
+    .nav-tooltip {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .indicator-lines {
-      position: absolute;
-      left: 16px; top: 50%;
+      left: calc(100% + 10px);
+      top: 50%;
       transform: translateY(-50%);
+      background: var(--grey-900);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 8px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 100;
+    }
+    .desktop-sidebar.collapsed .nav-btn:hover .nav-tooltip { opacity: 1; }
+
+    .toggle-btn {
+      width: 26px; height: 26px;
+      flex-shrink: 0;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--grey-500);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .toggle-btn:hover { background: var(--grey-100); color: var(--grey-800); border-color: var(--grey-300); }
+
+    .sidebar-footer {
+      flex-shrink: 0;
+      border-top: 1px solid var(--grey-200);
+      padding: 10px 8px;
       display: flex;
-      flex-direction: column;
-      gap: 5px;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+      background: white;
       z-index: 10;
     }
-    .indicator-line {
-      width: 3px;
-      border-radius: 99px;
-      background: rgba(255,255,255,0.35);
-      transition: all 0.3s ease;
+    .desktop-sidebar.collapsed .sidebar-footer { justify-content: center; }
+
+    .profile-label { transition: all 0.25s; overflow: hidden; white-space: nowrap; }
+    .desktop-sidebar.collapsed .profile-label { width: 0; opacity: 0; }
+    .desktop-sidebar.expanded  .profile-label { width: auto; opacity: 1; }
+
+    /* ── SIDEBAR MOBILE ── */
+    .sidebar-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 40; opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
     }
-    .indicator-line.active { background: white; height: 26px; }
-    .indicator-line.inactive { height: 9px; }
-    .card-content {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      padding: 20px 18px 20px 44px;
-      z-index: 6;
+    .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+    .mobile-sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0; width: 220px;
+      background: #fff;
+      z-index: 50;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 8px 0 32px rgba(0,0,0,0.1);
+      display: flex; flex-direction: column;
+      padding: 20px 14px 28px;
+      border-radius: 0 20px 20px 0;
+    }
+    .mobile-sidebar.open { transform: translateX(0); }
+    .mobile-nav-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-height: 0;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
+      gap: 1px;
     }
-    .card-label {
-      font-size: 10px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.55);
-      letter-spacing: 1.2px;
-      margin-bottom: 4px;
-      text-transform: uppercase;
+
+    .app-container {
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
     }
-    .card-name {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(16px, 2.8vw, 22px);
+
+    main {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+    }
+    .sidebar-wrapper {
+      display: flex;
+      height: 100vh;
+      padding: 20px;
+      padding-right: 0;
+      box-sizing: border-box;
+    }
+    @media (max-width: 767px) {
+      .sidebar-wrapper {
+        display: none;
+      }
+    }
+
+    /* ── TABLE STYLES ── */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: white;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead th {
+      background: var(--grey-50);
+      padding: 12px 20px;
+      text-align: left;
       font-weight: 700;
-      color: white;
-      line-height: 1.2;
-      margin-bottom: 4px;
+      font-size: 11px;
+      color: var(--grey-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--grey-200);
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
     }
-    .card-loc {
+    thead th:hover { color: var(--grey-800); }
+    thead th.sorted { color: var(--grey-900); }
+    tbody td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--grey-100);
+      color: var(--grey-800);
+      font-weight: 500;
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background 0.15s; cursor: pointer; }
+    tbody tr:hover { background: var(--grey-50); }
+    tbody tr.today-highlight { background: #fffbeb; }
+    tbody tr.today-highlight:hover { background: #fef3c7; }
+
+    .sort-icon {
+      display: inline-block;
+      margin-left: 2px;
+      font-size: 10px;
+      opacity: 0.4;
+    }
+    .sorted .sort-icon { opacity: 1; }
+
+    .action-btn {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--grey-200);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      cursor: pointer;
+      color: var(--grey-500);
+      transition: all 0.15s;
+      margin-right: 4px;
+    }
+    .action-btn:hover { background: var(--grey-100); color: var(--grey-800); border-color: var(--grey-300); }
+
+    .pagination-btn {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--grey-200);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      cursor: pointer;
+      color: var(--grey-500);
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .pagination-btn:hover:not(.disabled) { background: var(--grey-100); color: var(--grey-800); }
+    .pagination-btn.active { background: var(--grey-900); color: white; border-color: var(--grey-900); }
+    .pagination-btn.disabled { opacity: 0.3; cursor: default; }
+
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-dialog {
+      background: white;
+      border-radius: 24px;
+      padding: 32px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.15);
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--grey-400);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 480px) {
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+
+    .detail-item {
+      background: var(--grey-50);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .detail-item.full {
+      grid-column: 1 / -1;
+    }
+
+    .detail-item-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--grey-400);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .detail-item-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--grey-900);
+    }
+    .detail-item-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--grey-500);
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      padding: 10px 24px;
+      border-radius: 12px;
+      background: var(--grey-900);
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-primary:hover { background: var(--grey-800); }
+    .btn-secondary {
+      padding: 10px 24px;
+      border-radius: 12px;
+      background: white;
+      color: var(--grey-600);
+      font-weight: 700;
+      font-size: 13px;
+      border: 1px solid var(--grey-200);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-secondary:hover { background: var(--grey-50); }
+    .btn-danger {
+      padding: 10px 24px;
+      border-radius: 12px;
+      background: #fef2f2;
+      color: #ef4444;
+      font-weight: 700;
+      font-size: 13px;
+      border: 1px solid #fecaca;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-danger:hover { background: #fee2e2; }
+    .btn-success {
+      padding: 10px 24px;
+      border-radius: 12px;
+      background: #f0fdf4;
+      color: #10b981;
+      font-weight: 700;
+      font-size: 13px;
+      border: 1px solid #a7f3d0;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-success:hover { background: #dcfce7; }
+
+    /* ── BADGES ── */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border: 1px solid transparent;
+    }
+    .status-pending { background: #f9fafb; color: #6b7280; border-color: #e5e7eb; }
+    .status-paid { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+    .status-cancelled { background: #fef2f2; color: #ef4444; border-color: #fecaca; }
+    .status-confirmed { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
+    .status-completed { background: #f5f3ff; color: #7c3aed; border-color: #ddd6fe; }
+    .status-failed { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+
+    .urgent-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #f59e0b;
+      display: inline-block;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* ── NEW DETAIL ROW STYLES ── */
+    .detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--grey-100);
+      margin: 0 -3px;
+    }
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+    .detail-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--grey-600);
       display: flex;
       align-items: center;
       gap: 4px;
     }
-    .dot-row {
+    .detail-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--grey-900);
+      text-align: right;
+    }
+    .detail-sub {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--grey-400);
+      margin-top: 2px;
+    }
+
+    .timeline {
       display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 14px;
+      flex-direction: column;
+      gap: 12px;
     }
-    .dot {
-      height: 6px;
-      border-radius: 99px;
-      transition: all 0.3s;
-      cursor: pointer;
-    }
-    .tabs-row {
-      display: flex;
-      gap: 20px;
-      border-bottom: 1px solid var(--ink-5);
-      padding-bottom: 2px;
-      margin-bottom: 20px;
-    }
-    .tab-item {
+    .timeline-item {
+      padding-left: 20px;
+      border-left: 2px solid var(--grey-200);
       position: relative;
-      padding: 4px 0;
-      cursor: pointer;
-      font-size: clamp(12px, 1.5vw, 14px);
-      transition: color 0.2s;
     }
-    .tab-item.active { font-weight: 700; color: var(--ink); }
-    .tab-item.active::after {
+    .timeline-item.active {
+      border-left-color: var(--grey-900);
+    }
+    .timeline-item::before {
       content: '';
       position: absolute;
-      bottom: -2px; left: 0;
-      width: 100%; height: 2px;
-      background: var(--ink);
-      border-radius: 2px;
+      left: -5px;
+      top: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--grey-200);
     }
-    .tab-item:not(.active) { font-weight: 400; color: var(--ink-4); }
-    .prop-cards-scroll,
-    .prop-list-wrapper {
-      overflow-x: auto;
-      overflow-y: hidden;
-      width: 100%;
-      padding-bottom: 8px;
-      cursor: grab;
-      user-select: none;
-      -webkit-overflow-scrolling: touch;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    .timeline-item.active::before {
+      background: var(--grey-900);
     }
-    .prop-cards-scroll::-webkit-scrollbar,
-    .prop-list-wrapper::-webkit-scrollbar { display: none; }
-    .prop-cards-scroll:active,
-    .prop-list-wrapper:active { cursor: grabbing; }
-    .prop-cards-row {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      gap: 12px;
-      width: max-content;
-    }
-    .prop-list {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      gap: 12px;
-      width: max-content;
-    }
-    .prop-card {
-      border-radius: 18px;
-      overflow: hidden;
-      background: var(--surface);
-      box-shadow: 0 2px 14px rgba(0,0,0,0.06);
-      flex-shrink: 0;
-      width: 148px;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    @media (min-width: 640px) { .prop-card { width: 170px; } }
-    @media (min-width: 1024px) { .prop-card { width: 190px; } }
-    .prop-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
-    .prop-thumb {
-      width: 100%;
-      height: 96px;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    @media (min-width: 640px) { .prop-thumb { height: 110px; } }
-    .list-card {
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 14px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-      cursor: pointer;
-      transition: box-shadow 0.2s, transform 0.2s;
-      flex-shrink: 0;
-      width: 260px;
-    }
-    @media (min-width: 640px) { .list-card { width: 300px; } }
-    @media (min-width: 1024px) { .list-card { width: 280px; } }
-    .list-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.09); transform: translateY(-2px); }
-    .list-thumb {
-      width: 52px; height: 52px;
-      border-radius: 12px;
-      flex-shrink: 0;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    .bottom-nav-wrapper {
-      display: block;
+
+    /* ── CLEAN MODAL STYLES ── */
+    .modal-backdrop {
       position: fixed;
-      bottom: 0; left: 0; right: 0;
-      padding: 0 20px;
-      padding-bottom: max(14px, env(safe-area-inset-bottom, 14px));
-      z-index: 100;
-      background: transparent;
-      pointer-events: none;
-    }
-    .bottom-nav {
-      max-width: 480px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 99px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.07);
-      padding: 10px 20px;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
       display: flex;
       align-items: center;
-      justify-content: space-around;
-      pointer-events: all;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
     }
-    @media (min-width: 640px) {
-      .bottom-nav { max-width: 560px; padding: 12px 32px; }
+
+    .modal-container {
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalIn 0.2s ease-out;
     }
-    @media (min-width: 1024px) {
-      .bottom-nav-wrapper { display: none; }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
-    .nav-item {
-      width: 46px; height: 46px;
-      border-radius: 99px;
-      display: flex; align-items: center; justify-content: center;
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      background: #fafbfc;
+    }
+
+    .btn-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      background: transparent;
+      border: none;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.15s;
     }
-    .nav-item.active { background: var(--ink); }
-    .nav-item.active svg { stroke: white; }
-    .nav-item:not(.active) svg { stroke: var(--ink-4); }
-    .slide-fade-enter-active, .slide-fade-leave-active { transition: all 0.3s ease; }
-    .slide-fade-enter-from { opacity: 0; transform: translateX(24px); }
-    .slide-fade-leave-to { opacity: 0; transform: translateX(-24px); }
-    @media (min-width: 1024px) {
-      .desktop-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 32px;
-        align-items: start;
-      }
-      .desktop-right {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        overflow: visible;
-      }
-      .card-section { min-width: 0; max-width: 100%; }
-      .card-stack { height: var(--card-h-desktop); width: 100%; }
+
+    .btn-close:hover {
+      background: #f1f5f9;
+      color: #475569;
     }
-    @media (max-width: 1023px) {
-      .desktop-grid { display: block; }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .modal-body::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .info-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1rem;
+      transition: border-color 0.15s;
+    }
+
+    .info-card:hover {
+      border-color: #cbd5e1;
+    }
+
+    .info-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      color: #64748b;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.125rem 0.625rem;
+      border-radius: 100px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      line-height: 1.5;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+
+    .badge-amber {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .badge-emerald {
+      background: #d1fae5;
+      color: #047857;
+    }
+
+    .badge-rose {
+      background: #ffe4e6;
+      color: #be123c;
+    }
+
+    .badge-sky {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .badge-indigo {
+      background: #e0e7ff;
+      color: #4338ca;
+    }
+
+    .badge-slate {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .timeline-compact {
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .timeline-compact::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: #e2e8f0;
+      border-radius: 1px;
+    }
+
+    .timeline-step {
+      position: relative;
+      padding: 0.25rem 0 0.25rem 0.75rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -0.625rem;
+      top: 0.5rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      border: 2px solid white;
+      z-index: 1;
+    }
+
+    .timeline-step.active .timeline-dot {
+      background: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .btn-emerald {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-emerald:hover {
+      background: #059669;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-rose {
+      background: #f43f5e;
+      color: white;
+    }
+
+    .btn-rose:hover {
+      background: #e11d48;
+      box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+    }
+
+    .btn-indigo {
+      background: #6366f1;
+      color: white;
+    }
+
+    .btn-indigo:hover {
+      background: #4f46e5;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-slate {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .btn-slate:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-approve {
+      background: #10b981;
+      color: white;
+      padding: 0.625rem 1rem;
+      border-radius: 10px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-approve:hover {
+      background: #059669;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-reject {
+      background: #f43f5e;
+      color: white;
+      padding: 0.625rem 1rem;
+      border-radius: 10px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-reject:hover {
+      background: #e11d48;
+      box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+    }
+
+    .proof-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+    }
+
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid #f1f5f9;
+      background: #fafbfc;
+    }
+
+    /* Tabs */
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+      background: transparent;
+      color: #64748b;
+    }
+    .tab-btn.active {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+    .tab-btn:hover {
+      background: #f8fafc;
+      color: #334155;
     }
   </style>
 </head>
 <body>
-<div id="app">
-  <div class="app-shell">
-    <aside class="sidebar h-screen w-20 bg-white flex flex-col justify-between items-center py-6 border-r">
-      <div class="sidebar-logo text-xs font-semibold tracking-widest text-gray-700">JOGJA RAFTING</div>
-      <nav class="sidebar-nav flex flex-col gap-6" aria-label="Navigasi utama">
-        <div v-for="nav in navItems" :key="nav.id"
-             class="sidebar-nav-item w-12 h-12 flex items-center justify-center rounded-xl cursor-pointer transition-all duration-200"
-             :class="activeNav===nav.id ? 'bg-gray-900 text-white' : 'text-gray-500 hover:bg-gray-100'"
-             @click="setActiveNav(nav.id)"
-             role="button" :aria-label="nav.id" :aria-current="activeNav===nav.id ? 'page' : undefined"
-             tabindex="0" @keydown.enter="setActiveNav(nav.id)" @keydown.space.prevent="setActiveNav(nav.id)">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <template v-if="nav.id==='home'"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></template>
-            <template v-else-if="nav.id==='promo'"><path d="M20.59 13.41L11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82z"/><circle cx="7.5" cy="7.5" r="1.5"/></template>
-            <template v-else-if="nav.id==='cek-booking'"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></template>
-            <template v-else-if="nav.id==='contact'"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></template>
-          </svg>
-        </div>
-      </nav>
-    </aside>
+<div id="app"></div>
 
-    <main class="main-area">
-      <div class="scroll-content no-scrollbar" ref="scrollContentRef">
-        <div class="inner">
-          <header class="header">
-            <div class="header-row">
-              <div>
-                <div class="header-label">JOGJA RAFTING</div>
-                <div class="header-title">Find Your<br/>Perfect<br/>Adventure</div>
-              </div>
-              <button class="search-btn" aria-label="Search" @click="openSearch">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                </svg>
-              </button>
+<script type="module">
+  import { createApp, ref, computed } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+
+  /* ── IKON SVG ── */
+  const icons = {
+    dashboard: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+    rafting: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2v-3H2v3z"/><path d="M20 11V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v4"/><circle cx="8" cy="17" r="1.5"/><circle cx="16" cy="17" r="1.5"/></svg>`,
+    tour: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="17" height="12" rx="2"/><path d="M7 18v-2"/><path d="M13 18v-2"/><circle cx="5" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></svg>`,
+    outbound: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M10 22l2-12 4 4"/><path d="M8 17l-4 4"/><path d="M16 17l4 4"/></svg>`,
+    packages: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
+    promo: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+    payments: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`,
+    reports: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+    logout: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
+    orders: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
+    settings: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    bell: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
+    search: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+    chevLeft: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`,
+    chevRight: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
+    chevLeftDouble: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>`,
+    chevRightDouble: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>`,
+    menu: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`,
+    close: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+    compass: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
+    plus: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+    edit: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+    trash: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
+    arrowUp: `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>`,
+    arrowDown: `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`,
+    tag: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+    calendar: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+    percent: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`,
+    warning: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+    eye: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
+    check: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    xCircle: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
+    clock: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+    user: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+    phone: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+    mail: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
+    anchor: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg>`,
+    creditCard: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>`,
+    mapPin: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+    truck: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
+    camera: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+    info: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+    checkCircle: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+    receipt: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1z"/><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/></svg>`,
+    wallet: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></svg>`,
+    bank: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 21 21 21"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/><line x1="4" y1="10" x2="4" y2="21"/><line x1="20" y1="10" x2="20" y2="21"/><line x1="8" y1="14" x2="8" y2="17"/><line x1="12" y1="14" x2="12" y2="17"/><line x1="16" y1="14" x2="16" y2="17"/></svg>`,
+    externalLink: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
+    image: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`,
+  };
+
+  const NAV_ITEMS = [
+    { id: 'dashboard', label: 'Dasbor', icon: 'dashboard' },
+    { group: 'Pemesanan' },
+    { id: 'rafting', label: 'Arung Jeram', icon: 'rafting' },
+    { id: 'tour', label: 'Tur VW', icon: 'tour' },
+    { id: 'outbound', label: 'Outbound', icon: 'outbound' },
+    { group: 'Bisnis' },
+    { id: 'packages', label: 'Paket', icon: 'packages' },
+    { id: 'promo', label: 'Promo', icon: 'promo' },
+    { id: 'payments', label: 'Pembayaran', icon: 'payments' },
+    { group: 'Manajemen' },
+    { id: 'orders', label: 'Pesanan', icon: 'orders' },
+    { id: 'reports', label: 'Laporan', icon: 'reports' },
+    { group: 'Sistem' },
+    { id: 'settings', label: 'Pengaturan', icon: 'settings' },
+    { id: 'logout', label: 'Keluar', icon: 'logout' },
+  ];
+
+  /* ── DATA ORDER ── */
+  const ALL_ORDERS = [
+    { id:1, invoice:'INV-001', customer:'Budi Santoso', phone:'0812-3456-7890', email:'budi@email.com', service:'Rafting', package:'Elang Family', date:'2025-07-15', time:'09:00', qty:4, packagePrice:250000, promoCode:'RAFTING10', promoType:'Percent', promoValue:10, total:900000, paymentMethod:'Midtrans', paymentStatus:'Paid', orderStatus:'Confirmed', notes:'Tidak ada', paymentProof:'https://via.placeholder.com/400x300/f0fdf4/16a34a?text=Bukti+Transfer+Midtrans' },
+    { id:2, invoice:'INV-002', customer:'Sari Dewi', phone:'0856-7890-1234', email:'sari@email.com', service:'VW Tour', package:'Borobudur Sunrise', date:'2025-07-16', time:'04:30', qty:2, packagePrice:450000, promoCode:'', promoType:'', promoValue:0, total:900000, paymentMethod:'Manual Transfer', paymentStatus:'Pending', orderStatus:'Pending', notes:'Jemput di hotel', paymentProof:'https://via.placeholder.com/400x300/fef2f2/ef4444?text=Belum+Ada+Bukti', bankName:'BCA', bankAccount:'1234567890', bankOwner:'PT Jogja Rafting' },
+    { id:3, invoice:'INV-003', customer:'Kelompok Garuda', phone:'0811-2233-4455', email:'garuda@company.com', service:'Outbound', package:'Team Building Pro', date:'2025-07-20', time:'08:00', qty:25, packagePrice:200000, promoCode:'GROUP20', promoType:'Percent', promoValue:20, total:4000000, paymentMethod:'Midtrans', paymentStatus:'Paid', orderStatus:'Confirmed', notes:'Request instruktur 3 orang', paymentProof:'https://via.placeholder.com/400x300/f0fdf4/16a34a?text=Bukti+Transfer+Midtrans' },
+    { id:4, invoice:'INV-004', customer:'Andi Pratama', phone:'0877-1122-3344', email:'andi@email.com', service:'Rafting', package:'Solo Adventure', date:'2025-07-15', time:'13:00', qty:1, packagePrice:180000, promoCode:'WELCOME50', promoType:'Fixed', promoValue:50000, total:130000, paymentMethod:'Midtrans', paymentStatus:'Failed', orderStatus:'Cancelled', notes:'Kartu declined', paymentProof:'' },
+    { id:5, invoice:'INV-005', customer:'Rina Kusuma', phone:'0821-9988-7766', email:'rina@email.com', service:'Rafting', package:'Elang Family', date:'2025-07-22', time:'09:00', qty:6, packagePrice:250000, promoCode:'', promoType:'', promoValue:0, total:1500000, paymentMethod:'Midtrans', paymentStatus:'Pending', orderStatus:'Pending', notes:'', paymentProof:'' },
+    { id:6, invoice:'INV-006', customer:'PT Maju Jaya', phone:'021-5555-1234', email:'event@majujaya.co.id', service:'Outbound', package:'Team Building Basic', date:'2025-08-01', time:'08:30', qty:40, packagePrice:150000, promoCode:'', promoType:'', promoValue:0, total:6000000, paymentMethod:'Manual Transfer', paymentStatus:'Paid', orderStatus:'Confirmed', notes:'Acara tahunan, perlu dokumentasi', paymentProof:'https://via.placeholder.com/400x300/f0fdf4/16a34a?text=Bukti+Transfer+Manual', bankName:'Mandiri', bankAccount:'9876543210', bankOwner:'PT Jogja Rafting' },
+    { id:7, invoice:'INV-007', customer:'Dewi Anggraini', phone:'0838-4455-6677', email:'dewi@email.com', service:'VW Tour', package:'City Heritage', date:'2025-07-18', time:'10:00', qty:3, packagePrice:350000, promoCode:'FLASH100', promoType:'Fixed', promoValue:100000, total:950000, paymentMethod:'Midtrans', paymentStatus:'Paid', orderStatus:'Completed', notes:'', paymentProof:'https://via.placeholder.com/400x300/f0fdf4/16a34a?text=Bukti+Transfer+Midtrans' },
+    { id:8, invoice:'INV-008', customer:'Hendra Gunawan', phone:'0899-0001-1122', email:'hendra@email.com', service:'Rafting', package:'Elang Family', date:'2025-07-15', time:'09:00', qty:2, packagePrice:250000, promoCode:'', promoType:'', promoValue:0, total:500000, paymentMethod:'Manual Transfer', paymentStatus:'Pending', orderStatus:'Pending', notes:'Urgent! Mohon konfirmasi cepat', paymentProof:'https://via.placeholder.com/400x300/fef2f2/ef4444?text=Belum+Ada+Bukti', bankName:'BNI', bankAccount:'5678901234', bankOwner:'PT Jogja Rafting' },
+  ];
+
+  const PER_PAGE = 8;
+
+  /* ── KOMPONEN SIDEBAR ── */
+  const Sidebar = {
+    props: { active: String, expanded: Boolean },
+    emits: ['navigate', 'toggle'],
+    setup(props, { emit }) { return { items: NAV_ITEMS, icons, emit }; },
+    template: `
+      <aside class="desktop-sidebar hidden md:flex flex-col" :class="expanded ? 'expanded' : 'collapsed'">
+        <div class="sidebar-header">
+          <div class="sidebar-logo-area">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-gray-900 text-white">
+              <span v-html="icons.compass"></span>
             </div>
-          </header>
+            <span class="text-sm font-extrabold text-gray-900 tracking-tight truncate">Jogja Rafting</span>
+          </div>
+          <button @click="emit('toggle')" class="toggle-btn flex-shrink-0" :class="!expanded ? '' : 'ml-auto'">
+            <span v-html="expanded ? icons.chevLeftDouble : icons.chevRightDouble"></span>
+          </button>
+        </div>
+        <div class="sidebar-nav">
+          <template v-for="item in items" :key="item.id || item.group">
+            <div v-if="item.group" class="nav-group">{{ item.group }}</div>
+            <button v-else @click="emit('navigate', item.id)"
+              class="nav-btn" :class="{ active: active === item.id }">
+              <span v-html="icons[item.id]" class="flex-shrink-0"></span>
+              <span class="nav-label">{{ item.label }}</span>
+              <span class="nav-tooltip">{{ item.label }}</span>
+            </button>
+          </template>
+        </div>
+        <div class="sidebar-footer">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0 bg-gray-800">JR</div>
+          <div class="profile-label min-w-0">
+            <p class="text-xs font-bold text-gray-900 truncate leading-none">Admin JR</p>
+            <p class="text-[10px] text-gray-500 font-medium mt-0.5">Operator</p>
+          </div>
+        </div>
+      </aside>
+    `
+  };
 
-          <!-- Search Overlay -->
-          <div v-if="showSearch" class="search-overlay" @click.self="closeSearch">
-            <div class="search-panel">
-              <div class="search-input-wrap">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input ref="searchInput" v-model="searchQuery" type="text" placeholder="Cari paket adventure..." @input="performSearch" @keydown.escape="closeSearch" />
-                <button @click="closeSearch" style="background:none; border:none; cursor:pointer; padding:4px;">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  const MobileSidebar = {
+    props: { active: String, open: Boolean },
+    emits: ['navigate', 'close'],
+    setup(props, { emit }) {
+      const go = (id) => { emit('navigate', id); emit('close'); };
+      return { items: NAV_ITEMS, go, icons };
+    },
+    template: `
+      <div>
+        <div class="sidebar-overlay md:hidden" :class="{open}" @click="$emit('close')"></div>
+        <div class="mobile-sidebar md:hidden" :class="{open}">
+          <div class="flex items-center justify-between mb-5 flex-shrink-0">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl flex items-center justify-center bg-gray-900 text-white">
+                <span v-html="icons.compass"></span>
+              </div>
+              <span class="font-extrabold text-gray-900 text-sm tracking-tight">Jogja Rafting</span>
+            </div>
+            <button @click="$emit('close')"
+              class="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 transition-all">
+              <span v-html="icons.close"></span>
+            </button>
+          </div>
+          <div class="mobile-nav-scroll">
+            <template v-for="item in items" :key="item.id || item.group">
+              <span v-if="item.group" class="text-[9.5px] font-extrabold text-gray-400 uppercase tracking-widest px-3 mt-3 mb-1 block">{{ item.group }}</span>
+              <button v-else @click="go(item.id)"
+                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-sm font-semibold"
+                :class="active===item.id ? 'bg-gray-100 text-gray-900 font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'">
+                <span v-html="icons[item.id]"></span>{{ item.label }}
+              </button>
+            </template>
+          </div>
+          <div class="flex items-center gap-3 pt-4 border-t border-gray-200 flex-shrink-0 mt-auto">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm bg-gray-800">JR</div>
+            <div>
+              <p class="text-sm font-bold text-gray-900 leading-none">Admin JR</p>
+              <p class="text-xs text-gray-500 mt-0.5 font-medium">Operator</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  };
+
+  /* ── MODAL DETAIL ORDER (GABUNGAN DENGAN PEMBAYARAN) ── */
+  const OrderDetailModal = {
+    props: { order: Object },
+    emits: ['close', 'action', 'approvePayment', 'rejectPayment'],
+    setup(props, { emit }) {
+      const activeTab = ref('order'); // 'order' atau 'payment'
+      
+      const formatCurrency = (val) => 'Rp ' + Number(val).toLocaleString('id-ID');
+      const formatDate = (d) => {
+        if (!d) return '-';
+        return new Date(d).toLocaleDateString('id-ID', { weekday:'short', day:'numeric', month:'long', year:'numeric' });
+      };
+      const formatDateTime = (dt) => {
+        if (!dt) return '-';
+        return new Date(dt).toLocaleString('id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      };
+
+      const subtotal = computed(() => props.order.packagePrice * props.order.qty);
+      const discountAmount = computed(() => {
+        if (!props.order.promoCode) return 0;
+        if (props.order.promoType === 'Percent') {
+          return (subtotal.value * props.order.promoValue) / 100;
+        }
+        return props.order.promoValue;
+      });
+      const grandTotal = computed(() => Math.max(0, subtotal.value - discountAmount.value));
+
+      const getStatusClass = (status) => {
+        switch(status) {
+          case 'Pending': return 'badge-amber';
+          case 'Paid': return 'badge-emerald';
+          case 'Cancelled': return 'badge-rose';
+          case 'Confirmed': return 'badge-sky';
+          case 'Completed': return 'badge-indigo';
+          case 'Failed': return 'badge-rose';
+          default: return 'badge-slate';
+        }
+      };
+
+      const getTimeline = (order) => {
+        const steps = [];
+        steps.push({ label: 'Order Dibuat', date: '2025-07-10', active: true });
+        if (order.paymentStatus === 'Paid') steps.push({ label: 'Pembayaran Lunas', date: '2025-07-12', active: true });
+        else if (order.paymentStatus === 'Failed') steps.push({ label: 'Pembayaran Gagal', date: '2025-07-12', active: true });
+        else steps.push({ label: 'Menunggu Pembayaran', active: order.orderStatus === 'Pending' });
+
+        if (order.orderStatus === 'Confirmed' || order.orderStatus === 'Completed') steps.push({ label: 'Pesanan Dikonfirmasi', date: '2025-07-13', active: true });
+        if (order.orderStatus === 'Completed') steps.push({ label: 'Selesai', date: order.date, active: true });
+        if (order.orderStatus === 'Cancelled') steps.push({ label: 'Dibatalkan', active: true });
+        return steps;
+      };
+
+      const canConfirm = computed(() => props.order.orderStatus === 'Pending' && props.order.paymentStatus === 'Paid');
+      const canCancel = computed(() => ['Pending', 'Confirmed'].includes(props.order.orderStatus));
+      const canComplete = computed(() => props.order.orderStatus === 'Confirmed');
+
+      // Payment helpers
+      const getStatusIcon = (status) => {
+        switch(status) {
+          case 'Paid': return icons.checkCircle;
+          case 'Pending': return icons.clock;
+          case 'Failed': return icons.xCircle;
+          case 'Expired': return icons.xCircle;
+          default: return '';
+        }
+      };
+      const getStatusColor = (status) => {
+        switch(status) {
+          case 'Paid': return 'text-emerald-600 bg-emerald-50 border-emerald-200';
+          case 'Pending': return 'text-amber-600 bg-amber-50 border-amber-200';
+          case 'Failed': return 'text-red-600 bg-red-50 border-red-200';
+          case 'Expired': return 'text-gray-500 bg-gray-100 border-gray-200';
+          default: return 'text-gray-500 bg-gray-100 border-gray-200';
+        }
+      };
+
+      // Generate dummy Midtrans data
+      const midtransData = computed(() => {
+        if (props.order.paymentMethod !== 'Midtrans') return null;
+        return {
+          transactionId: 'MD-' + Math.random().toString(36).substring(2, 10).toUpperCase(),
+          paymentType: props.order.paymentStatus === 'Paid' ? 'bank_transfer' : 'gopay',
+          midtransStatus: props.order.paymentStatus === 'Paid' ? 'settlement' : props.order.paymentStatus === 'Pending' ? 'pending' : 'expire',
+          fraudStatus: props.order.paymentStatus === 'Paid' ? 'accept' : 'challenge'
+        };
+      });
+
+      return { 
+        activeTab, formatCurrency, formatDate, formatDateTime, getStatusClass, getTimeline, 
+        canConfirm, canCancel, canComplete, subtotal, discountAmount, grandTotal, 
+        getStatusIcon, getStatusColor, midtransData,
+        emit, icons 
+      };
+    },
+    template: `
+      <div class="modal-overlay" @click.self="emit('close')">
+        <div class="modal-dialog" style="max-width: 640px;">
+          
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-gray-900 text-white">
+                <span v-html="icons.receipt"></span>
+              </div>
+              <div>
+                <h3 class="text-lg font-extrabold text-gray-900">{{ order.invoice }}</h3>
+                <div class="flex items-center gap-2 mt-0.5">
+                  <span :class="['pill', getStatusClass(order.orderStatus)]">{{ order.orderStatus }}</span>
+                  <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                  <span :class="['pill', getStatusClass(order.paymentStatus)]">
+                    {{ order.paymentStatus === 'Paid' ? 'Lunas' : order.paymentStatus === 'Failed' ? 'Gagal' : 'Belum Bayar' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button @click="emit('close')"
+              class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all">
+              <span v-html="icons.close"></span>
+            </button>
+          </div>
+
+          <!-- Tabs -->
+          <div class="flex items-center gap-1 mb-5 bg-gray-100 rounded-xl p-1">
+            <button @click="activeTab = 'order'" 
+              :class="['tab-btn flex-1', activeTab === 'order' ? 'active bg-white shadow-sm' : '']">
+              Detail Pesanan
+            </button>
+            <button @click="activeTab = 'payment'" 
+              :class="['tab-btn flex-1', activeTab === 'payment' ? 'active bg-white shadow-sm' : '']">
+              Pembayaran
+            </button>
+          </div>
+
+          <!-- ==================== TAB ORDER ==================== -->
+          <div v-if="activeTab === 'order'">
+            
+            <!-- Grid Layout for Info Sections -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              
+              <!-- Customer Info Card -->
+              <div class="info-card">
+                <div class="info-card-header">
+                  <span v-html="icons.user" class="w-4 h-4"></span>
+                  <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500">Pelanggan</h3>
+                </div>
+                <div class="space-y-2">
+                  <p class="text-sm font-medium text-slate-900">{{ order.customer }}</p>
+                  <p class="text-xs text-slate-600">
+                    <span v-html="icons.phone" class="inline w-3 h-3 mr-1"></span>{{ order.phone }}
+                  </p>
+                  <p v-if="order.email" class="text-xs text-slate-600">
+                    <span v-html="icons.mail" class="inline w-3 h-3 mr-1"></span>{{ order.email }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Service Info Card -->
+              <div class="info-card">
+                <div class="info-card-header">
+                  <span v-html="icons.anchor" class="w-4 h-4"></span>
+                  <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500">Layanan</h3>
+                </div>
+                <div class="space-y-2">
+                  <p class="text-sm font-medium text-slate-900">{{ order.service }}</p>
+                  <p class="text-xs text-slate-600">{{ order.package }}</p>
+                  <div class="flex items-center gap-3 text-xs text-slate-600">
+                    <span class="flex items-center gap-1">
+                      <span v-html="icons.calendar" class="w-3 h-3"></span>{{ formatDate(order.date) }}
+                    </span>
+                    <span v-if="order.time" class="flex items-center gap-1">
+                      <span v-html="icons.clock" class="w-3 h-3"></span>{{ order.time }}
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-600">
+                    <span v-html="icons.truck" class="inline w-3 h-3 mr-1"></span>{{ order.qty }} orang
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pricing Card -->
+            <div class="info-card mb-4">
+              <div class="info-card-header">
+                <span v-html="icons.tag" class="w-4 h-4"></span>
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500">Rincian Biaya</h3>
+              </div>
+              <div class="space-y-1.5">
+                <div class="flex justify-between text-sm text-slate-600">
+                  <span>Harga Paket × {{ order.qty }}</span>
+                  <span>{{ formatCurrency(order.packagePrice) }}</span>
+                </div>
+                <div class="flex justify-between text-sm font-medium text-slate-900">
+                  <span>Subtotal</span>
+                  <span>{{ formatCurrency(subtotal) }}</span>
+                </div>
+                <div v-if="order.promoCode" class="flex justify-between text-sm text-rose-600">
+                  <span>Promo ({{ order.promoCode }})</span>
+                  <span>-{{ formatCurrency(discountAmount) }}</span>
+                </div>
+                <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+                  <span class="text-sm font-bold text-slate-900">Total</span>
+                  <span class="text-base font-bold text-slate-900">{{ formatCurrency(grandTotal) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="info-card mb-4">
+              <div class="info-card-header">
+                <span v-html="icons.clock" class="w-4 h-4"></span>
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500">Status Pesanan</h3>
+              </div>
+              <div class="timeline-compact">
+                <div v-for="(step, i) in getTimeline(order)" :key="i" class="timeline-step" :class="{ active: step.active }">
+                  <div class="timeline-dot"></div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs font-medium truncate" :class="step.active ? 'text-slate-900' : 'text-slate-400'">{{ step.label }}</p>
+                    <p v-if="step.date" class="text-[10px] text-slate-400">{{ formatDate(step.date) }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div v-if="order.notes" class="info-card bg-amber-50/50 border-amber-200/50 mb-4">
+              <div class="info-card-header">
+                <span v-html="icons.info" class="w-4 h-4 text-amber-600"></span>
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-amber-700">Catatan</h3>
+              </div>
+              <p class="text-sm text-amber-800">{{ order.notes }}</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center justify-between pt-3 border-t border-gray-200">
+              <div class="flex gap-2">
+                <button v-if="canConfirm" @click="emit('action', { type: 'confirm', order })" class="btn btn-emerald">
+                  <span v-html="icons.check"></span>
+                  <span>Konfirmasi</span>
+                </button>
+                <button v-if="canCancel" @click="emit('action', { type: 'cancel', order })" class="btn btn-rose">
+                  <span v-html="icons.xCircle"></span>
+                  <span>Batalkan</span>
+                </button>
+                <button v-if="canComplete" @click="emit('action', { type: 'complete', order })" class="btn btn-indigo">
+                  <span v-html="icons.check"></span>
+                  <span>Selesaikan</span>
                 </button>
               </div>
-              <div class="search-results">
-                <div v-if="searchResults.length > 0">
-                  <div v-for="item in searchResults" :key="item.id" class="search-result-item" @click="selectSearchResult(item)">
-                    <div :style="{backgroundImage:'url('+item.image+')', width:'40px', height:'40px', borderRadius:'10px', backgroundSize:'cover', backgroundPosition:'center'}" ></div>
-                    <div style="flex:1;">
-                      <div style="font-weight:600; font-size:14px;">{{ item.name }}</div>
-                      <div style="font-size:12px; color:#6b7280;">{{ item.category }} · {{ item.price }}</div>
-                    </div>
-                  </div>
-                </div>
-                <div v-else-if="searchQuery.length > 1" class="no-result">Tidak ada paket ditemukan.</div>
-              </div>
+              <button @click="emit('close')" class="btn btn-slate">
+                Tutup
+              </button>
             </div>
           </div>
 
-          <div class="desktop-grid">
-            <div class="card-section">
-              <div class="card-stack">
-                <div class="card-back-2"></div>
-                <div class="card-back-1"></div>
-                <transition name="slide-fade" mode="out-in">
-                  <div class="card-main" :key="currentCard"
-                       @touchstart.passive="handleTouchStart" @touchmove.passive="handleTouchMove" @touchend.passive="handleTouchEnd"
-                       @mousedown="handleMouseDown" @mousemove="handleMouseMove" @mouseup="handleMouseUp" @mouseleave="handleMouseLeave">
-                    <div class="adventure-bg" :style="{ backgroundImage: 'url(' + cards[currentCard].image + ')' }"></div>
-                    <div class="indicator-lines">
-                      <div v-for="i in cards.length" :key="i" class="indicator-line" :class="i-1 === currentCard ? 'active' : 'inactive'"></div>
-                    </div>
-                    <div class="card-content">
-                      <div class="card-label">Featured Adventure</div>
-                      <div class="card-name">{{ cards[currentCard].name }}</div>
-                      <div class="card-loc">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-                        <span style="font-size:11px; color:rgba(255,255,255,0.65); font-weight:400;">{{ cards[currentCard].location }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </transition>
+          <!-- ==================== TAB PEMBAYARAN ==================== -->
+          <div v-if="activeTab === 'payment'">
+            
+            <!-- Status Badge -->
+            <div class="flex items-center justify-center mb-5">
+              <span :class="[
+                'inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold',
+                getStatusColor(order.paymentStatus)
+              ]">
+                <span v-html="getStatusIcon(order.paymentStatus)" style="width:16px;height:16px;"></span>
+                {{ order.paymentStatus }}
+              </span>
+            </div>
+
+            <!-- Customer & Order -->
+            <div class="bg-gray-50 rounded-2xl p-4 mb-4">
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Customer & Order</p>
+              <div class="detail-row">
+                <span class="detail-label inline-flex items-center gap-1.5"><span v-html="icons.user" style="width:12px;height:12px;"></span> Nama</span>
+                <span class="detail-value">{{ order.customer }}</span>
               </div>
-              <div class="dot-row">
-                <div v-for="(c, i) in cards" :key="i" class="dot" @click="currentCard=i; resetAutoSlide()"
-                     :style="{ width: i===currentCard ? '22px' : '6px', background: i===currentCard ? '#374151' : '#d1d5db' }"></div>
+              <div class="detail-row">
+                <span class="detail-label inline-flex items-center gap-1.5"><span v-html="icons.phone" style="width:12px;height:12px;"></span> Telepon</span>
+                <span class="detail-value text-gray-700">{{ order.phone }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label inline-flex items-center gap-1.5"><span v-html="icons.mail" style="width:12px;height:12px;"></span> Email</span>
+                <span class="detail-value text-xs">{{ order.email || '-' }}</span>
               </div>
             </div>
 
-            <div class="desktop-right">
-              <div class="tabs-row">
-                <div v-for="tab in tabs" :key="tab" class="tab-item" :class="{ active: activeTab===tab }" @click="activeTab=tab">{{ tab }}</div>
+            <!-- Package Detail -->
+            <div class="bg-gray-50 rounded-2xl p-4 mb-4">
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Detail Paket</p>
+              <div class="detail-row">
+                <span class="detail-label">Layanan</span>
+                <span class="detail-value">{{ order.service }}</span>
               </div>
-              <transition name="slide-fade" mode="out-in">
-                <div :key="activeTab">
-                  <div class="prop-cards-scroll no-scrollbar" ref="cardsScrollRef">
-                    <div class="prop-cards-row">
-                      <div v-for="pkg in currentPackages" :key="pkg.id" class="prop-card">
-                        <div class="prop-thumb" :style="{ backgroundImage: 'url(' + pkg.image + ')' }"></div>
-                        <div style="padding:10px 10px 12px;">
-                          <div style="font-size:12px; font-weight:600; color:#111827; margin-bottom:2px;">{{ pkg.name }}</div>
-                          <div style="font-size:11px; color:#9ca3af; margin-bottom:5px;">{{ pkg.duration }}</div>
-                          <div style="font-size:12px; font-weight:700; color:#374151;">{{ pkg.price }}</div>
-                        </div>
-                      </div>
-                    </div>
+              <div class="detail-row">
+                <span class="detail-label">Nama Paket</span>
+                <span class="detail-value text-xs">{{ order.package }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Jumlah Peserta</span>
+                <span class="detail-value">{{ order.qty }} Orang</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label text-emerald-600">Harga Paket (per orang)</span>
+                <span class="detail-value">{{ formatCurrency(order.packagePrice) }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Subtotal</span>
+                <span class="detail-value">{{ formatCurrency(subtotal) }}</span>
+              </div>
+              <div v-if="order.promoCode" class="detail-row">
+                <span class="detail-label text-red-500">
+                  Diskon 
+                  <span class="text-[10px] font-bold bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full ml-1">{{ order.promoCode }}</span>
+                </span>
+                <span class="detail-value text-red-500">-{{ formatCurrency(discountAmount) }}</span>
+              </div>
+              <div class="detail-row border-t border-gray-200 pt-3 mt-1">
+                <span class="detail-label text-gray-900 text-sm">Total Pembayaran</span>
+                <span class="text-base font-extrabold text-gray-900">{{ formatCurrency(order.total) }}</span>
+              </div>
+            </div>
+
+            <!-- Metode Pembayaran -->
+            <div class="bg-gray-50 rounded-2xl p-4 mb-4">
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Metode Pembayaran</p>
+              <div class="detail-row">
+                <span class="detail-label">Metode</span>
+                <span class="detail-value inline-flex items-center gap-2">
+                  <span v-html="order.paymentMethod === 'Midtrans' ? icons.wallet : icons.bank" style="width:14px;height:14px;"></span>
+                  {{ order.paymentMethod }}
+                </span>
+              </div>
+              
+              <!-- MANUAL TRANSFER -->
+              <template v-if="order.paymentMethod === 'Manual Transfer'">
+                <div v-if="order.bankName" class="mt-3 pt-3 border-t border-gray-200">
+                  <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Rekening Tujuan</p>
+                  <div class="flex items-center justify-between text-xs mb-1">
+                    <span class="text-gray-500">Bank</span>
+                    <span class="font-bold text-gray-800">{{ order.bankName }}</span>
                   </div>
-                  <div class="prop-list-wrapper no-scrollbar" ref="listScrollRef">
-                    <div class="prop-list">
-                      <div v-for="pkg in currentList" :key="pkg.id" class="list-card">
-                        <div class="list-thumb" :style="{ backgroundImage: 'url(' + pkg.image + ')' }"></div>
-                        <div style="flex:1; min-width:0;">
-                          <div class="prop-name" style="font-size:13px; font-weight:600; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ pkg.name }}</div>
-                          <div class="prop-loc" style="font-size:11px; color:#9ca3af; margin-top:2px;">{{ pkg.description }}</div>
-                        </div>
-                        <div style="text-align:right; flex-shrink:0;">
-                          <div class="prop-price" style="font-size:12px; font-weight:700; color:#374151;">{{ pkg.price }}</div>
-                          <div class="prop-rating" style="font-size:11px; color:#9ca3af; margin-top:2px;">{{ pkg.rating }} ★</div>
-                        </div>
-                      </div>
+                  <div v-if="order.bankAccount" class="flex items-center justify-between text-xs mb-1">
+                    <span class="text-gray-500">No. Rekening</span>
+                    <span class="font-bold text-gray-800 font-mono">{{ order.bankAccount }}</span>
+                  </div>
+                  <div v-if="order.bankOwner" class="flex items-center justify-between text-xs">
+                    <span class="text-gray-500">Pemilik</span>
+                    <span class="font-bold text-gray-800">{{ order.bankOwner }}</span>
+                  </div>
+                </div>
+                <!-- Bukti Transfer -->
+                <div class="mt-4">
+                  <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Bukti Transfer</p>
+                  <img v-if="order.paymentProof" :src="order.paymentProof" alt="Bukti Transfer" class="proof-img" />
+                  <div v-else class="w-full h-32 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
+                    <div class="text-center">
+                      <span v-html="icons.image" style="width:32px;height:32px;display:block;margin:0 auto 4px;"></span>
+                      <span class="text-xs font-medium">Belum ada bukti</span>
                     </div>
                   </div>
                 </div>
-              </transition>
+                <!-- Tombol Aksi -->
+                <div v-if="order.paymentStatus === 'Pending'" class="flex items-center gap-3 mt-5 pt-4 border-t border-gray-200">
+                  <button @click="emit('approvePayment', order)" class="btn-approve flex-1 flex items-center justify-center gap-2">
+                    <span v-html="icons.checkCircle" style="width:16px;height:16px;"></span> Approve
+                  </button>
+                  <button @click="emit('rejectPayment', order)" class="btn-reject flex-1 flex items-center justify-center gap-2">
+                    <span v-html="icons.xCircle" style="width:16px;height:16px;"></span> Reject
+                  </button>
+                </div>
+              </template>
+
+              <!-- MIDTRANS -->
+              <template v-if="order.paymentMethod === 'Midtrans' && midtransData">
+                <div class="mt-3 pt-3 border-t border-gray-200">
+                  <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Midtrans Info</p>
+                  <div class="detail-row">
+                    <span class="detail-label text-blue-600">Transaction ID</span>
+                    <span class="detail-value text-xs font-mono text-gray-900">{{ midtransData.transactionId }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label text-blue-600">Payment Type</span>
+                    <span class="detail-value text-gray-900">{{ midtransData.paymentType }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label text-blue-600">Auto Status</span>
+                    <span class="detail-value text-gray-900">
+                      <span :class="[
+                        'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold',
+                        midtransData.midtransStatus === 'settlement' ? 'bg-emerald-100 text-emerald-700' :
+                        midtransData.midtransStatus === 'pending' ? 'bg-amber-100 text-amber-700' :
+                        midtransData.midtransStatus === 'expire' ? 'bg-red-100 text-red-600' :
+                        'bg-gray-100 text-gray-500'
+                      ]">
+                        {{ midtransData.midtransStatus }}
+                      </span>
+                    </span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label text-blue-600">Fraud Status</span>
+                    <span :class="[
+                      'px-2 py-0.5 rounded-full text-[11px] font-bold',
+                      midtransData.fraudStatus === 'accept' ? 'bg-emerald-100 text-emerald-700' : 
+                      midtransData.fraudStatus === 'challenge' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-600'
+                    ]">
+                      {{ midtransData.fraudStatus }}
+                    </span>
+                  </div>
+                </div>
+              </template>
             </div>
+
+            <!-- Notes di tab pembayaran -->
+            <div v-if="order.notes" class="bg-amber-50 rounded-2xl p-4 mb-4 border border-amber-200/50">
+              <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2 inline-flex items-center gap-1.5">
+                <span v-html="icons.info" style="width:12px;height:12px;"></span> Catatan
+              </p>
+              <p class="text-sm text-amber-800">{{ order.notes }}</p>
+            </div>
+
+            <!-- Close button di tab pembayaran -->
+            <button @click="emit('close')"
+              class="w-full py-3 rounded-xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all">
+              Tutup
+            </button>
+          </div>
+
+        </div>
+      </div>
+    `
+  };
+
+  /* ── MODAL KONFIRMASI ── */
+  const ConfirmModal = {
+    props: { type: String, order: Object },
+    emits: ['confirm', 'cancel'],
+    setup(props, { emit }) {
+      const titles = { confirm: 'Konfirmasi Pesanan', cancel: 'Batalkan Pesanan', complete: 'Selesaikan Pesanan' };
+      return { titles, emit, icons };
+    },
+    template: `
+      <div class="modal-overlay" @click.self="emit('cancel')">
+        <div class="modal-dialog" style="max-width:420px;">
+          <h3 class="text-base font-bold text-gray-900 mb-2">{{ titles[type] }}</h3>
+          <p class="text-sm text-gray-500 mb-6">Anda yakin ingin {{ type === 'cancel' ? 'membatalkan' : 'memproses' }} pesanan <strong>{{ order.invoice }}</strong>?</p>
+          <div class="flex items-center gap-3 justify-end">
+            <button @click="emit('cancel')" class="btn-secondary">Batal</button>
+            <button @click="emit('confirm')" class="btn-primary">Ya, Lanjutkan</button>
           </div>
         </div>
       </div>
+    `
+  };
 
-      <div class="bottom-nav-wrapper">
-        <nav class="bottom-nav" aria-label="Navigasi mobile">
-          <div v-for="nav in navItems" :key="nav.id" class="nav-item" :class="{ active: activeNav===nav.id }"
-               @click="setActiveNav(nav.id)" role="button" :aria-label="nav.id" :aria-current="activeNav===nav.id ? 'page' : undefined"
-               tabindex="0" @keydown.enter="setActiveNav(nav.id)" @keydown.space.prevent="setActiveNav(nav.id)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" :stroke="activeNav===nav.id ? 'white' : '#9ca3af'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <template v-if="nav.id==='home'"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></template>
-              <template v-else-if="nav.id==='promo'"><path d="M20.59 13.41L11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82z"/><circle cx="7.5" cy="7.5" r="1.5"/></template>
-              <template v-else-if="nav.id==='cek-booking'"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></template>
-              <template v-else-if="nav.id==='contact'"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></template>
-            </svg>
-          </div>
-        </nav>
-      </div>
-    </main>
-  </div>
-</div>
+  /* ── APLIKASI ── */
+  const App = {
+    components: { Sidebar, MobileSidebar, OrderDetailModal, ConfirmModal },
+    setup() {
+      const activeNav = ref('orders');
+      const sidebarOpen = ref(false);
+      const sidebarExpanded = ref(true);
+      const searchQuery = ref('');
+      const filterOrderStatus = ref('Semua');
+      const filterPaymentStatus = ref('Semua');
+      const filterService = ref('Semua');
+      const filterDate = ref('');
+      const sortBy = ref('date');
+      const sortDir = ref('desc');
+      const currentPage = ref(1);
 
-<script>
-const { createApp, ref, computed, onMounted, onUnmounted, nextTick, watch } = Vue;
+      const orders = ref([...ALL_ORDERS]);
+      const detailOrder = ref(null);
+      const confirmAction = ref(null);
 
-createApp({
-  setup() {
-    const currentCard = ref(0);
-    const activeTab = ref('Rafting');
-    const activeNav = ref('home');
-    const showSearch = ref(false);
-    const searchQuery = ref('');
-    const searchResults = ref([]);
-    const searchInput = ref(null);
-    const scrollContentRef = ref(null);
-    const cardsScrollRef = ref(null);
-    const listScrollRef = ref(null);
-
-    const tabs = ['Rafting', 'VW Tour', 'Outbound'];
-    const navItems = [{ id: 'home' },{ id: 'promo' },{ id: 'cek-booking' },{ id: 'contact' }];
-
-    const cards = [
-      { name: 'Elo River Adventure', price: 'Rp 250K/person', location: 'Magelang, Jawa Tengah', image: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=600&h=400&fit=crop' },
-      { name: 'Progo River Extreme', price: 'Rp 300K/person', location: 'Kulon Progo, Yogyakarta', image: 'https://images.unsplash.com/photo-1591303874512-c22cfb1a69c2?w=600&h=400&fit=crop' },
-      { name: 'Pindul Cave Tubing', price: 'Rp 180K/person', location: 'Gunungkidul, Yogyakarta', image: 'https://images.unsplash.com/photo-1573551445922-7f1d1f04c04e?w=600&h=400&fit=crop' },
-    ];
-
-    const allPackages = {
-      Rafting: {
-        cards: [
-          { id:1, name:'Elo River Pro', duration:'2.5 hours', price:'Rp 250K', image:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop' },
-          { id:2, name:'Progo Extreme', duration:'3 hours', price:'Rp 300K', image:'https://images.unsplash.com/photo-1527015175922-36a306cf0e20?w=400&h=300&fit=crop' },
-          { id:3, name:'Pindul Tubing', duration:'1.5 hours', price:'Rp 180K', image:'https://images.unsplash.com/photo-1530051744172-739f2f8d0de7?w=400&h=300&fit=crop' },
-        ],
-        list: [
-          { id:4, name:'Family Rafting Package', description:'Elo River · 2-4 persons', price:'Rp 450K', rating:'4.8', image:'https://images.unsplash.com/photo-1566837945700-30057527ade0?w=200&h=200&fit=crop' },
-          { id:5, name:'Group Adventure', description:'Progo River · 5-10 persons', price:'Rp 1.2M', rating:'4.9', image:'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?w=200&h=200&fit=crop' },
-          { id:6, name:'Sunset Rafting', description:'Elo River · 2 persons', price:'Rp 350K', rating:'4.6', image:'https://images.unsplash.com/photo-1509023464722-18d996393ca8?w=200&h=200&fit=crop' },
-        ]
-      },
-      'VW Tour': {
-        cards: [
-          { id:7, name:'City Heritage', duration:'4 hours', price:'Rp 400K', image:'https://images.unsplash.com/photo-1558383409-ab7ef8db3e01?w=400&h=300&fit=crop' },
-          { id:8, name:'Merapi Lava Tour', duration:'6 hours', price:'Rp 550K', image:'https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=400&h=300&fit=crop' },
-          { id:9, name:'Sunset Tour', duration:'3 hours', price:'Rp 350K', image:'https://images.unsplash.com/photo-1504700898892-3e9cfb82a1e7?w=400&h=300&fit=crop' },
-        ],
-        list: [
-          { id:10, name:'Full Day Explorer', description:'All destinations · 8 hours', price:'Rp 750K', rating:'5.0', image:'https://images.unsplash.com/photo-1549473447-581b78f13745?w=200&h=200&fit=crop' },
-          { id:11, name:'Romantic Night Tour', description:'City lights · 3 hours', price:'Rp 450K', rating:'4.7', image:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200&h=200&fit=crop' },
-        ]
-      },
-      Outbound: {
-        cards: [
-          { id:12, name:'Team Building', duration:'Full day', price:'Rp 200K/pax', image:'https://images.unsplash.com/photo-1577471488278-16eec37ffcc2?w=400&h=300&fit=crop' },
-          { id:13, name:'Fun Games', duration:'Half day', price:'Rp 150K/pax', image:'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=300&fit=crop' },
-        ],
-        list: [
-          { id:14, name:'Corporate Package', description:'20-50 persons · Full day', price:'Rp 8M', rating:'4.5', image:'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=200&h=200&fit=crop' },
-          { id:15, name:'School Program', description:'30-100 persons · Half day', price:'Rp 5M', rating:'4.6', image:'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=200&h=200&fit=crop' },
-          { id:16, name:'Family Gathering', description:'10-20 persons · Full day', price:'Rp 3.5M', rating:'4.4', image:'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=200&h=200&fit=crop' },
-        ]
-      }
-    };
-
-    const allPackagesFlat = computed(() => {
-      let flat = [];
-      for (let category in allPackages) {
-        allPackages[category].cards.forEach(p => flat.push({...p, category}));
-        allPackages[category].list.forEach(p => flat.push({...p, category}));
-      }
-      return flat;
-    });
-
-    const currentPackages = computed(() => allPackages[activeTab.value].cards);
-    const currentList = computed(() => allPackages[activeTab.value].list);
-
-    function setActiveNav(id) {
-      activeNav.value = id;
-      if (id === 'home') {
-        // already on home view, maybe scroll to top
-        if (scrollContentRef.value) scrollContentRef.value.scrollTop = 0;
-      }
-    }
-
-    function openSearch() {
-      showSearch.value = true;
-      searchQuery.value = '';
-      searchResults.value = [];
-      nextTick(() => {
-        if (searchInput.value) searchInput.value.focus();
-      });
-    }
-    function closeSearch() {
-      showSearch.value = false;
-    }
-    function performSearch() {
-      const q = searchQuery.value.toLowerCase().trim();
-      if (q.length < 2) { searchResults.value = []; return; }
-      searchResults.value = allPackagesFlat.value.filter(p =>
-        p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q))
-      );
-    }
-    function selectSearchResult(item) {
-      if (tabs.includes(item.category)) {
-        activeTab.value = item.category;
-      }
-      closeSearch();
-    }
-
-    function nextCard() { currentCard.value = (currentCard.value + 1) % cards.length; }
-    function prevCard() { currentCard.value = (currentCard.value - 1 + cards.length) % cards.length; }
-
-    let startX = 0, startY = 0, currentX = 0, currentY = 0;
-    let isDragging = false, swipeHandled = false;
-    const threshold = 40;
-
-    function handleTouchStart(e) { startX = e.touches[0].clientX; startY = e.touches[0].clientY; currentX = startX; currentY = startY; isDragging = true; swipeHandled = false; }
-    function handleTouchMove(e) { if (!isDragging || swipeHandled) return; currentX = e.touches[0].clientX; currentY = e.touches[0].clientY; const diffX = startX - currentX, diffY = startY - currentY; if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) { swipeHandled = true; diffX > 0 ? nextCard() : prevCard(); resetAutoSlide(); } }
-    function handleTouchEnd() { if (!isDragging || swipeHandled) { isDragging = false; return; } const diffX = startX - currentX, diffY = startY - currentY; if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) { diffX > 0 ? nextCard() : prevCard(); resetAutoSlide(); } isDragging = false; }
-    function handleMouseDown(e) { startX = e.clientX; startY = e.clientY; currentX = startX; currentY = startY; isDragging = true; swipeHandled = false; e.preventDefault(); }
-    function handleMouseMove(e) { if (!isDragging || swipeHandled) return; currentX = e.clientX; currentY = e.clientY; const diffX = startX - currentX, diffY = startY - currentY; if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) { swipeHandled = true; diffX > 0 ? nextCard() : prevCard(); resetAutoSlide(); } }
-    function handleMouseUp() { if (!isDragging || swipeHandled) { isDragging = false; return; } const diffX = startX - currentX, diffY = startY - currentY; if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) { diffX > 0 ? nextCard() : prevCard(); resetAutoSlide(); } isDragging = false; }
-    function handleMouseLeave() { if (isDragging && !swipeHandled) { const diffX = startX - currentX, diffY = startY - currentY; if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) { diffX > 0 ? nextCard() : prevCard(); resetAutoSlide(); } } isDragging = false; }
-
-    let autoSlideInterval = null;
-    function startAutoSlide() { stopAutoSlide(); autoSlideInterval = setInterval(nextCard, 5000); }
-    function stopAutoSlide() { if (autoSlideInterval) { clearInterval(autoSlideInterval); autoSlideInterval = null; } }
-    function resetAutoSlide() { stopAutoSlide(); startAutoSlide(); }
-
-    function attachDragScroll(el) {
-      if (!el || el._dragAttached) return;
-      el._dragAttached = true;
-      let isDown = false, startMouseX = 0, startScrollLeft = 0;
-      el.addEventListener('mousedown', (e) => { isDown = true; el.style.cursor = 'grabbing'; startMouseX = e.pageX - el.offsetLeft; startScrollLeft = el.scrollLeft; e.preventDefault(); });
-      el.addEventListener('mouseleave', () => { isDown = false; el.style.cursor = 'grab'; });
-      el.addEventListener('mouseup', () => { isDown = false; el.style.cursor = 'grab'; });
-      el.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const x = e.pageX - el.offsetLeft; el.scrollLeft = startScrollLeft - (x - startMouseX) * 1.5; });
-      el.addEventListener('wheel', (e) => { if (el.scrollWidth > el.clientWidth) { e.preventDefault(); e.stopPropagation(); el.scrollLeft += e.deltaY + e.deltaX; } }, { passive: false });
-    }
-
-    function setupScrollAfterTransition() {
-      setTimeout(() => {
-        nextTick(() => {
-          document.querySelectorAll('.prop-cards-scroll, .prop-list-wrapper').forEach(el => { el._dragAttached = false; attachDragScroll(el); });
+      const filtered = computed(() => {
+        let data = [...orders.value];
+        if (filterOrderStatus.value !== 'Semua') data = data.filter(o => o.orderStatus === filterOrderStatus.value);
+        if (filterPaymentStatus.value !== 'Semua') data = data.filter(o => o.paymentStatus === filterPaymentStatus.value);
+        if (filterService.value !== 'Semua') data = data.filter(o => o.service === filterService.value);
+        if (filterDate.value) data = data.filter(o => o.date === filterDate.value);
+        if (searchQuery.value.trim()) {
+          const q = searchQuery.value.toLowerCase();
+          data = data.filter(o => o.invoice.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q));
+        }
+        data.sort((a,b) => {
+          let valA = sortBy.value === 'date' ? new Date(a.date) : a.total;
+          let valB = sortBy.value === 'date' ? new Date(b.date) : b.total;
+          if (sortBy.value === 'invoice') { valA = a.invoice; valB = b.invoice; return sortDir.value === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA); }
+          return sortDir.value === 'asc' ? valA - valB : valB - valA;
         });
-      }, 350);
-    }
+        return data;
+      });
 
-    watch(activeTab, () => { setupScrollAfterTransition(); });
+      const totalPages = computed(() => Math.max(1, Math.ceil(filtered.value.length / PER_PAGE)));
+      const paginated = computed(() => {
+        const start = (currentPage.value - 1) * PER_PAGE;
+        return filtered.value.slice(start, start + PER_PAGE);
+      });
 
-    onMounted(() => {
-      startAutoSlide();
-      nextTick(() => { setTimeout(() => { document.querySelectorAll('.prop-cards-scroll, .prop-list-wrapper').forEach(el => attachDragScroll(el)); }, 100); });
-    });
-    onUnmounted(() => { stopAutoSlide(); });
+      const paginationRange = computed(() => {
+        const total = totalPages.value; const current = currentPage.value; const range = [];
+        if (total <= 7) { for (let i=1; i<=total; i++) range.push(i); }
+        else { range.push(1); if (current > 3) range.push('...'); for (let i=Math.max(2, current-1); i<=Math.min(total-1, current+1); i++) range.push(i); if (current < total-2) range.push('...'); range.push(total); }
+        return range;
+      });
 
-    return {
-      cards, currentCard, nextCard, prevCard, resetAutoSlide,
-      tabs, activeTab, navItems, activeNav, setActiveNav,
-      currentPackages, currentList,
-      scrollContentRef, cardsScrollRef, listScrollRef,
-      handleTouchStart, handleTouchMove, handleTouchEnd,
-      handleMouseDown, handleMouseMove, handleMouseUp, handleMouseLeave,
-      showSearch, searchQuery, searchResults, openSearch, closeSearch, performSearch, selectSearchResult, searchInput
-    };
-  }
-}).mount('#app');
+      const toggleSort = (col) => {
+        if (sortBy.value === col) sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc';
+        else { sortBy.value = col; sortDir.value = 'asc'; }
+        currentPage.value = 1;
+      };
+
+      const goPage = (p) => { if (p>=1 && p<=totalPages.value) currentPage.value = p; };
+
+      const formatCurrency = (val) => 'Rp ' + Number(val).toLocaleString('id-ID');
+      const formatDate = (d) => d ? new Date(d).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' }) : '-';
+      const isToday = (dateStr) => {
+        if (!dateStr) return false;
+        const today = new Date(); const d = new Date(dateStr);
+        return d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
+      };
+      const isUrgent = (order) => order.orderStatus === 'Pending' && isToday(order.date) && order.notes && order.notes.toLowerCase().includes('urgent');
+
+      const getOrderStatusClass = (status) => {
+        switch(status) {
+          case 'Pending': return 'status-pending';
+          case 'Confirmed': return 'status-confirmed';
+          case 'Cancelled': return 'status-cancelled';
+          case 'Completed': return 'status-completed';
+          default: return 'status-pending';
+        }
+      };
+
+      const openDetail = (order) => { detailOrder.value = order; };
+      const closeDetail = () => { detailOrder.value = null; };
+      const handleAction = (payload) => { detailOrder.value = null; confirmAction.value = payload; };
+      const executeAction = () => {
+        if (!confirmAction.value) return;
+        const { type, order } = confirmAction.value;
+        const idx = orders.value.findIndex(o => o.id === order.id);
+        if (idx === -1) return;
+        if (type === 'confirm') orders.value[idx].orderStatus = 'Confirmed';
+        else if (type === 'cancel') orders.value[idx].orderStatus = 'Cancelled';
+        else if (type === 'complete') orders.value[idx].orderStatus = 'Completed';
+        confirmAction.value = null;
+      };
+      const cancelAction = () => { confirmAction.value = null; };
+
+      const approvePayment = (order) => {
+        const idx = orders.value.findIndex(o => o.id === order.id);
+        if (idx !== -1) {
+          orders.value[idx].paymentStatus = 'Paid';
+        }
+        // Update detailOrder jika masih terbuka
+        if (detailOrder.value && detailOrder.value.id === order.id) {
+          detailOrder.value = orders.value[idx];
+        }
+      };
+
+      const rejectPayment = (order) => {
+        const idx = orders.value.findIndex(o => o.id === order.id);
+        if (idx !== -1) {
+          orders.value[idx].paymentStatus = 'Failed';
+        }
+        // Update detailOrder jika masih terbuka
+        if (detailOrder.value && detailOrder.value.id === order.id) {
+          detailOrder.value = orders.value[idx];
+        }
+      };
+
+      return {
+        activeNav, sidebarOpen, sidebarExpanded, icons,
+        searchQuery, filterOrderStatus, filterPaymentStatus, filterService, filterDate,
+        sortBy, sortDir, currentPage,
+        filtered, paginated, totalPages, paginationRange,
+        toggleSort, goPage,
+        detailOrder, confirmAction,
+        openDetail, closeDetail, handleAction, executeAction, cancelAction,
+        approvePayment, rejectPayment,
+        formatCurrency, formatDate, isToday, isUrgent, getOrderStatusClass,
+      };
+    },
+    template: `
+      <div class="min-h-screen" style="background:#efefef;">
+        <MobileSidebar :active="activeNav" :open="sidebarOpen" @navigate="activeNav=$event" @close="sidebarOpen=false"/>
+        <div class="app-container">
+          <div class="sidebar-wrapper hidden md:block">
+            <Sidebar :active="activeNav" :expanded="sidebarExpanded" @navigate="activeNav=$event" @toggle="sidebarExpanded=!sidebarExpanded"/>
+          </div>
+          <main class="flex-1 overflow-y-auto">
+            <div class="p-4 md:p-6 pb-10 max-w-7xl mx-auto">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 fade-in-up">
+                <div class="flex items-center gap-3">
+                  <button @click="sidebarOpen=true" class="md:hidden w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500"><span v-html="icons.menu"></span></button>
+                  <div><h1 class="text-xl lg:text-2xl font-extrabold text-gray-900">Pesanan</h1><p class="text-xs text-gray-500 mt-0.5 font-medium">Kelola semua pesanan masuk</p></div>
+                </div>
+              </div>
+
+              <!-- Kartu ringkasan: Total, Pending, Hari Ini, Selesai -->
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5 fade-in-up">
+                <div class="card card-hover" style="padding:16px;"><p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2">Total</p><p class="text-2xl font-extrabold text-gray-900">{{ filtered.length }}</p></div>
+                <div class="card card-hover" style="padding:16px;"><p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2">Pending</p><p class="text-2xl font-extrabold text-amber-600">{{ filtered.filter(o => o.orderStatus === 'Pending').length }}</p></div>
+                <div class="card card-hover" style="padding:16px;"><p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2">Hari Ini</p><p class="text-2xl font-extrabold text-emerald-600">{{ filtered.filter(o => isToday(o.date)).length }}</p></div>
+                <div class="card card-hover" style="padding:16px;"><p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2">Selesai</p><p class="text-2xl font-extrabold text-violet-600">{{ filtered.filter(o => o.orderStatus === 'Completed').length }}</p></div>
+              </div>
+
+              <!-- FILTER BAR (GRID 2 KOLOM DI MOBILE) -->
+              <div class="card mb-5 fade-in-up" style="animation-delay:0.05s;">
+                <div class="grid grid-cols-2 md:flex md:flex-row gap-3 items-start md:items-end">
+                  
+                  <!-- Cari (full width di mobile) -->
+                  <div class="relative col-span-2 md:flex-1 md:min-w-[180px]">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Cari</label>
+                    <div class="relative">
+                      <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"><span v-html="icons.search"></span></span>
+                      <input v-model="searchQuery" type="text" placeholder="Invoice atau customer..."
+                        class="pl-10 pr-4 py-2.5 rounded-xl bg-gray-50 text-sm text-gray-800 placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent focus:bg-white w-full transition-all"/>
+                    </div>
+                  </div>
+
+                  <!-- Status Pesanan -->
+                  <div class="w-full">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Status</label>
+                    <select v-model="filterOrderStatus"
+                      class="w-full px-3 py-2.5 rounded-xl bg-gray-50 text-sm font-medium text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent focus:bg-white cursor-pointer">
+                      <option value="Semua">Semua</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Confirmed">Confirmed</option>
+                      <option value="Cancelled">Cancelled</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                  </div>
+
+                  <!-- Status Bayar -->
+                  <div class="w-full">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Bayar</label>
+                    <select v-model="filterPaymentStatus"
+                      class="w-full px-3 py-2.5 rounded-xl bg-gray-50 text-sm font-medium text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent focus:bg-white cursor-pointer">
+                      <option value="Semua">Semua</option>
+                      <option value="Paid">Lunas</option>
+                      <option value="Pending">Belum</option>
+                      <option value="Failed">Gagal</option>
+                    </select>
+                  </div>
+
+                  <!-- Layanan -->
+                  <div class="w-full">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Layanan</label>
+                    <select v-model="filterService"
+                      class="w-full px-3 py-2.5 rounded-xl bg-gray-50 text-sm font-medium text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent focus:bg-white cursor-pointer">
+                      <option value="Semua">Semua</option>
+                      <option value="Rafting">Arung Jeram</option>
+                      <option value="VW Tour">Tur VW</option>
+                      <option value="Outbound">Outbound</option>
+                    </select>
+                  </div>
+
+                  <!-- Tanggal -->
+                  <div class="w-full">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Tanggal</label>
+                    <input v-model="filterDate" type="date"
+                      class="w-full px-3 py-2.5 rounded-xl bg-gray-50 text-sm text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent focus:bg-white cursor-pointer"/>
+                  </div>
+
+                  <!-- Reset -->
+                  <button @click="searchQuery='';filterOrderStatus='Semua';filterPaymentStatus='Semua';filterService='Semua';filterDate='';currentPage=1"
+                    class="col-span-2 md:col-span-1 px-5 py-2.5 rounded-xl bg-gray-200 text-gray-600 font-semibold text-xs hover:bg-gray-300 transition-all flex-shrink-0 md:self-end">
+                    Reset
+                  </button>
+                </div>
+              </div>
+
+              <!-- TABEL -->
+              <div class="card fade-in-up" style="padding: 0; overflow: hidden;">
+                <div class="table-container" style="border-radius: 20px; border: none;">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th @click="toggleSort('invoice')" :class="{ sorted: sortBy === 'invoice' }">Invoice <span class="sort-icon" v-html="sortBy==='invoice' ? (sortDir==='asc' ? icons.arrowUp : icons.arrowDown) : icons.arrowUp"></span></th>
+                        <th>Customer</th>
+                        <th @click="toggleSort('date')" :class="{ sorted: sortBy === 'date' }">Tanggal <span class="sort-icon" v-html="sortBy==='date' ? (sortDir==='asc' ? icons.arrowUp : icons.arrowDown) : icons.arrowUp"></span></th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="order in paginated" :key="order.id" :class="{ 'today-highlight': isToday(order.date) }" @click="openDetail(order)">
+                        <td>
+                          <div class="flex items-center gap-2">
+                            <span v-if="isUrgent(order)" class="urgent-dot" title="Urgent"></span>
+                            <p class="text-sm font-extrabold text-gray-900">{{ order.invoice }}</p>
+                          </div>
+                          <p class="text-[11px] text-gray-400 font-medium mt-0.5">{{ order.service }}</p>
+                        </td>
+                        <td>
+                          <p class="text-sm font-bold text-gray-800">{{ order.customer }}</p>
+                          <p class="text-[11px] text-gray-400 font-medium">{{ order.package }}</p>
+                        </td>
+                        <td>
+                          <div class="flex items-center gap-1.5">
+                            <span v-html="icons.calendar" class="text-gray-400 flex-shrink-0"></span>
+                            <span class="text-sm font-medium" :class="isToday(order.date) ? 'text-amber-600 font-bold' : 'text-gray-700'">{{ formatDate(order.date) }}</span>
+                            <span v-if="isToday(order.date)" class="text-[10px] font-bold text-amber-500 bg-amber-50 px-1.5 py-0.5 rounded-full">HARI INI</span>
+                          </div>
+                          <p class="text-[11px] text-gray-400 font-medium mt-0.5">{{ order.time }}</p>
+                        </td>
+                        <td>
+                          <span :class="['status-badge', getOrderStatusClass(order.orderStatus)]">{{ order.orderStatus }}</span>
+                        </td>
+                      </tr>
+                      <tr v-if="paginated.length === 0">
+                        <td colspan="4">
+                          <div class="empty-state">
+                            <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4 text-gray-400"><span v-html="icons.orders" style="width:28px;height:28px;"></span></div>
+                            <h3 class="text-base font-bold text-gray-700 mb-1">Belum ada pesanan</h3>
+                            <p class="text-sm text-gray-400">Pesanan akan muncul di sini setelah ada booking masuk.</p>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div v-if="totalPages > 1" class="flex items-center justify-between mt-5 fade-in-up">
+                <span class="text-xs text-gray-400 font-medium">Halaman {{ currentPage }} dari {{ totalPages }}</span>
+                <div class="flex items-center gap-1.5">
+                  <button @click="goPage(currentPage-1)" :class="['pagination-btn', { disabled: currentPage === 1 }]"><span v-html="icons.chevLeft"></span></button>
+                  <template v-for="p in paginationRange" :key="p">
+                    <span v-if="p === '...'" class="px-1 text-gray-400 text-xs">...</span>
+                    <button v-else @click="goPage(p)" :class="['pagination-btn', { active: currentPage === p }]">{{ p }}</button>
+                  </template>
+                  <button @click="goPage(currentPage+1)" :class="['pagination-btn', { disabled: currentPage === totalPages }]"><span v-html="icons.chevRight"></span></button>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+
+        <OrderDetailModal 
+          v-if="detailOrder" 
+          :order="detailOrder" 
+          @close="closeDetail" 
+          @action="handleAction" 
+          @approvePayment="approvePayment" 
+          @rejectPayment="rejectPayment" 
+        />
+        <ConfirmModal v-if="confirmAction" :type="confirmAction.type" :order="confirmAction.order" @confirm="executeAction" @cancel="cancelAction" />
+      </div>
+    `
+  };
+
+  createApp(App).mount('#app');
 </script>
 </body>
 </html>
