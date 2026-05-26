@@ -20,8 +20,6 @@
       --card-h-tab: 300px;
       --card-h-desktop: 340px;
       --nav-h: 76px;
-      --promo-blue: #1e3a8a; /* biru tua untuk background promo */
-      --promo-blue-light: #2563eb; /* aksen biru terang */
     }
     html, body {
       width: 100%;
@@ -36,294 +34,142 @@
       height: 100%;
       overflow: hidden;
     }
-    .sidebar {
-      display: none;
-    }
+    .sidebar { display: none; }
 
     @media (min-width: 1024px) {
       .sidebar {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-        width: 80px;
-        min-height: 100vh;
-        background: var(--surface);
-        box-shadow: 1px 0 0 var(--ink-5);
-        padding: 28px 0;
-        flex-shrink: 0;
-        z-index: 50;
-        position: sticky;
-        top: 0;
-        height: 100vh;
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: space-between; width: 80px; min-height: 100vh;
+        background: var(--surface); box-shadow: 1px 0 0 var(--ink-5);
+        padding: 28px 0; flex-shrink: 0; z-index: 50;
+        position: sticky; top: 0; height: 100vh;
       }
-
       .sidebar-logo {
-        font-family: 'Syne', sans-serif;
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 2px;
-        color: var(--ink);
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-        text-decoration: none;
+        font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 800;
+        letter-spacing: 2px; color: var(--ink);
+        writing-mode: vertical-rl; transform: rotate(180deg); text-decoration: none;
       }
-
-      .sidebar-nav {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        align-items: center;
-      }
-
+      .sidebar-nav { display: flex; flex-direction: column; gap: 8px; align-items: center; }
       .sidebar-nav-item {
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background 0.2s;
-        text-decoration: none;
+        width: 46px; height: 46px; border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: background 0.2s; text-decoration: none;
       }
-
       .sidebar-nav-item.active { background: var(--ink); }
       .sidebar-nav-item.active svg { stroke: #fff; }
       .sidebar-nav-item:not(.active) svg { stroke: var(--ink-4); }
       .sidebar-nav-item:not(.active):hover { background: var(--bg); }
-
       .sidebar-avatar {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
+        width: 38px; height: 38px; border-radius: 50%;
         background: linear-gradient(135deg, #374151, #111827);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
+        display: flex; align-items: center; justify-content: center; cursor: pointer;
         margin-bottom: 8px;
       }
-      
-      /* Logo kecil di bawah sidebar */
       .sidebar-bottom-logo {
-        width: 32px;
-        height: 32px;
+        width: 32px; height: 32px;
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>');
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
+        background-size: contain; background-repeat: no-repeat; background-position: center;
         opacity: 0.7;
       }
     }
     .main-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-      min-width: 0;
+      flex: 1; display: flex; flex-direction: column; overflow: hidden;
+      position: relative; min-width: 0; height: 100vh;
     }
     .scroll-content {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
+      flex: 1; overflow-y: auto; overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
       padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 16px));
     }
-    @media (min-width: 1024px) {
-      .scroll-content { padding-bottom: 32px; }
-    }
+    @media (min-width: 1024px) { .scroll-content { padding-bottom: 32px; } }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .inner {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+    .inner { max-width: 960px; margin: 0 auto; padding: 0 20px; }
     @media (min-width: 640px) { .inner { padding: 0 32px; } }
     @media (min-width: 1024px) { .inner { padding: 0; } }
-    .header { padding: max(24px, 4vh) 0 20px; }
-    .header-row {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-    }
+    .header { padding: max(24px, 4vh) 0 16px; }
+    .header-row { display: flex; align-items: flex-start; justify-content: space-between; }
     .header-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--ink-2);
-      letter-spacing: 2px;
-      margin-bottom: 8px;
+      font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+      color: var(--ink-2); letter-spacing: 2px; margin-bottom: 8px;
     }
     .header-title {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(26px, 5vw, 44px);
-      font-weight: 800;
-      line-height: 1.05;
-      color: var(--ink);
+      font-family: 'Syne', sans-serif; font-size: clamp(26px, 5vw, 44px);
+      font-weight: 800; line-height: 1.05; color: var(--ink);
     }
     @media (min-width: 1024px) { .header-label { display: none; } }
     .search-btn {
-      background: var(--surface);
-      border-radius: 14px;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      margin-top: 4px;
-      cursor: pointer;
-      border: none;
-      flex-shrink: 0;
-      transition: box-shadow 0.2s;
+      background: var(--surface); border-radius: 14px; width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-top: 4px;
+      cursor: pointer; border: none; flex-shrink: 0; transition: box-shadow 0.2s;
     }
     .search-btn:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
 
-    /* ── PROMO SECTION ── */
+    /* ── PROMO SECTION (warna biru tua #1f2937) ── */
     .promo-block {
-      background: var(--promo-blue);
-      border-radius: 20px;
-      padding: 20px 22px;
-      margin: 6px 0 24px 0;
+      background: #1f2937;
+      border-radius: 18px;
+      padding: 14px 20px;
+      margin: 8px 0 24px 0;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       color: white;
-      box-shadow: 0 10px 25px rgba(30,58,138,0.25);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
       position: relative;
       overflow: hidden;
     }
     .promo-block::after {
       content: '';
       position: absolute;
-      top: -20px;
-      right: -20px;
-      width: 100px;
-      height: 100px;
-      background: rgba(255,255,255,0.08);
+      top: -20px; right: -20px;
+      width: 90px; height: 90px;
+      background: rgba(255,255,255,0.06);
       border-radius: 50%;
       pointer-events: none;
     }
-    .promo-left {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      z-index: 1;
-    }
-    .promo-code-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .promo-left { display: flex; flex-direction: column; gap: 5px; z-index: 1; }
+    .promo-code-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .promo-code-badge {
-      background: white;
-      color: var(--promo-blue);
-      font-weight: 700;
-      font-size: 18px;
-      letter-spacing: 0.5px;
-      padding: 6px 18px;
-      border-radius: 99px;
-      display: inline-block;
-      font-family: 'Syne', sans-serif;
+      background: white; color: #1f2937; font-weight: 700;
+      font-size: 17px; letter-spacing: 0.5px; padding: 5px 16px;
+      border-radius: 99px; display: inline-block; font-family: 'Syne', sans-serif;
     }
-    .promo-discount {
-      font-size: 15px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.9);
-    }
-    .promo-desc {
-      font-size: 13px;
-      color: rgba(255,255,255,0.8);
-      max-width: 450px;
-      line-height: 1.4;
-    }
-    .promo-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 1;
-      margin-top: 8px;
-    }
+    .promo-discount { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); }
+    .promo-desc { font-size: 12px; color: rgba(255,255,255,0.75); max-width: 420px; line-height: 1.4; }
+    .promo-right { display: flex; align-items: center; gap: 10px; z-index: 1; margin-top: 4px; }
     .copy-btn {
-      background: white;
-      border: none;
-      border-radius: 99px;
-      padding: 10px 20px;
-      font-weight: 600;
-      font-size: 13px;
-      color: var(--promo-blue);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s, transform 0.1s;
-      font-family: 'DM Sans', sans-serif;
+      background: white; border: none; border-radius: 99px;
+      padding: 9px 18px; font-weight: 600; font-size: 13px;
+      color: #1f2937; cursor: pointer; display: flex; align-items: center; gap: 6px;
+      transition: background 0.2s, transform 0.1s; font-family: 'DM Sans', sans-serif;
     }
-    .copy-btn:hover {
-      background: #f0f4ff;
-    }
-    .copy-btn:active {
-      transform: scale(0.96);
-    }
+    .copy-btn:hover { background: #f3f4f6; }
+    .copy-btn:active { transform: scale(0.96); }
     @media (max-width: 500px) {
-      .promo-block {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 14px;
-      }
-      .promo-right {
-        align-self: flex-start;
-      }
+      .promo-block { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .promo-right { align-self: flex-start; }
     }
 
     /* Search overlay */
     .search-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding-top: 15vh;
-      z-index: 200;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+      display: flex; align-items: flex-start; justify-content: center;
+      padding-top: 15vh; z-index: 200;
     }
     .search-panel {
-      background: white;
-      border-radius: 24px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.25);
-      overflow: hidden;
+      background: white; border-radius: 24px; width: 90%; max-width: 500px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.25); overflow: hidden;
       animation: slideDown 0.3s ease;
     }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .search-input-wrap {
-      display: flex;
-      align-items: center;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--ink-5);
-    }
-    .search-input-wrap input {
-      flex:1; border: none; outline: none; font-size: 16px;
-      font-family: 'DM Sans', sans-serif; background: transparent; padding: 8px 0;
-    }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    .search-input-wrap { display: flex; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--ink-5); }
+    .search-input-wrap input { flex:1; border: none; outline: none; font-size: 16px; font-family: 'DM Sans', sans-serif; background: transparent; padding: 8px 0; }
     .search-results { max-height: 350px; overflow-y: auto; }
-    .search-result-item {
-      padding: 14px 20px; display: flex; align-items: center; gap: 14px;
-      cursor: pointer; transition: background 0.15s;
-    }
+    .search-result-item { padding: 14px 20px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: background 0.15s; }
     .search-result-item:hover { background: #f9fafb; }
     .no-result { padding: 24px; text-align: center; color: var(--ink-4); font-size: 14px; }
 
@@ -375,10 +221,7 @@
       position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
       display: flex; flex-direction: column; gap: 5px; z-index: 10;
     }
-    .indicator-line {
-      width: 3px; border-radius: 99px; background: rgba(255,255,255,0.35);
-      transition: all 0.3s ease;
-    }
+    .indicator-line { width: 3px; border-radius: 99px; background: rgba(255,255,255,0.35); transition: all 0.3s ease; }
     .indicator-line.active { background: white; height: 26px; }
     .indicator-line.inactive { height: 9px; }
     .card-content {
@@ -386,37 +229,18 @@
       padding: 20px 18px 20px 44px; z-index: 6;
       display: flex; flex-direction: column; justify-content: flex-end;
     }
-    .card-label {
-      font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.55);
-      letter-spacing: 1.2px; margin-bottom: 4px; text-transform: uppercase;
-    }
-    .card-name {
-      font-family: 'Syne', sans-serif; font-size: clamp(16px, 2.8vw, 22px);
-      font-weight: 700; color: white; line-height: 1.2; margin-bottom: 4px;
-    }
-    .card-loc {
-      display: flex; align-items: center; gap: 4px;
-    }
-    .dot-row {
-      display: flex; justify-content: center; gap: 6px; margin-top: 14px;
-    }
-    .dot {
-      height: 6px; border-radius: 99px; transition: all 0.3s; cursor: pointer;
-    }
-    .tabs-row {
-      display: flex; gap: 20px; border-bottom: 1px solid var(--ink-5);
-      padding-bottom: 2px; margin-bottom: 20px;
-    }
-    .tab-item {
-      position: relative; padding: 4px 0; cursor: pointer;
-      font-size: clamp(12px, 1.5vw, 14px); transition: color 0.2s;
-    }
+    .card-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.55); letter-spacing: 1.2px; margin-bottom: 4px; text-transform: uppercase; }
+    .card-name { font-family: 'Syne', sans-serif; font-size: clamp(16px, 2.8vw, 22px); font-weight: 700; color: white; line-height: 1.2; margin-bottom: 4px; }
+    .card-loc { display: flex; align-items: center; gap: 4px; }
+    .dot-row { display: flex; justify-content: center; gap: 6px; margin-top: 14px; }
+    .dot { height: 6px; border-radius: 99px; transition: all 0.3s; cursor: pointer; }
+    .tabs-row { display: flex; gap: 20px; border-bottom: 1px solid var(--ink-5); padding-bottom: 2px; margin-bottom: 20px; }
+    .tab-item { position: relative; padding: 4px 0; cursor: pointer; font-size: clamp(12px, 1.5vw, 14px); transition: color 0.2s; }
     .tab-item.active { font-weight: 700; color: var(--ink); }
-    .tab-item.active::after {
-      content: ''; position: absolute; bottom: -2px; left: 0;
-      width: 100%; height: 2px; background: var(--ink); border-radius: 2px;
-    }
+    .tab-item.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--ink); border-radius: 2px; }
     .tab-item:not(.active) { font-weight: 400; color: var(--ink-4); }
+    
+    /* Scrollable containers */
     .prop-cards-scroll,
     .prop-list-wrapper {
       overflow-x: auto; overflow-y: hidden; width: 100%; padding-bottom: 8px;
@@ -427,14 +251,9 @@
     .prop-list-wrapper::-webkit-scrollbar { display: none; }
     .prop-cards-scroll:active,
     .prop-list-wrapper:active { cursor: grabbing; }
-    .prop-cards-row {
-      display: flex; flex-direction: row; flex-wrap: nowrap;
-      gap: 12px; width: max-content;
-    }
-    .prop-list {
-      display: flex; flex-direction: row; flex-wrap: nowrap;
-      gap: 12px; width: max-content;
-    }
+    .prop-cards-row { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 12px; width: max-content; }
+    .prop-list { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 12px; width: max-content; }
+    
     .prop-card {
       border-radius: 18px; overflow: hidden; background: var(--surface);
       box-shadow: 0 2px 14px rgba(0,0,0,0.06); flex-shrink: 0;
@@ -444,11 +263,9 @@
     @media (min-width: 640px) { .prop-card { width: 170px; } }
     @media (min-width: 1024px) { .prop-card { width: 190px; } }
     .prop-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
-    .prop-thumb {
-      width: 100%; height: 96px; background-size: cover;
-      background-position: center; background-repeat: no-repeat;
-    }
+    .prop-thumb { width: 100%; height: 96px; background-size: cover; background-position: center; background-repeat: no-repeat; }
     @media (min-width: 640px) { .prop-thumb { height: 110px; } }
+    
     .list-card {
       background: var(--surface); border-radius: 16px; padding: 14px;
       display: flex; gap: 12px; align-items: center;
@@ -459,27 +276,21 @@
     @media (min-width: 640px) { .list-card { width: 300px; } }
     @media (min-width: 1024px) { .list-card { width: 280px; } }
     .list-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.09); transform: translateY(-2px); }
-    .list-thumb {
-      width: 52px; height: 52px; border-radius: 12px; flex-shrink: 0;
-      background-size: cover; background-position: center; background-repeat: no-repeat;
-    }
+    .list-thumb { width: 52px; height: 52px; border-radius: 12px; flex-shrink: 0; background-size: cover; background-position: center; background-repeat: no-repeat; }
+
     .bottom-nav-wrapper {
       display: block; position: fixed; bottom: 0; left: 0; right: 0;
       padding: 0 20px; padding-bottom: max(14px, env(safe-area-inset-bottom, 14px));
       z-index: 100; background: transparent; pointer-events: none;
     }
     .bottom-nav {
-      max-width: 480px; margin: 0 auto; background: white;
-      border-radius: 99px; box-shadow: 0 8px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.07);
-      padding: 10px 20px; display: flex; align-items: center;
-      justify-content: space-around; pointer-events: all;
+      max-width: 480px; margin: 0 auto; background: white; border-radius: 99px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.07);
+      padding: 10px 20px; display: flex; align-items: center; justify-content: space-around;
+      pointer-events: all;
     }
-    @media (min-width: 640px) {
-      .bottom-nav { max-width: 560px; padding: 12px 32px; }
-    }
-    @media (min-width: 1024px) {
-      .bottom-nav-wrapper { display: none; }
-    }
+    @media (min-width: 640px) { .bottom-nav { max-width: 560px; padding: 12px 32px; } }
+    @media (min-width: 1024px) { .bottom-nav-wrapper { display: none; } }
     .nav-item {
       width: 46px; height: 46px; border-radius: 99px;
       display: flex; align-items: center; justify-content: center;
@@ -488,57 +299,35 @@
     .nav-item.active { background: var(--ink); }
     .nav-item.active svg { stroke: white; }
     .nav-item:not(.active) svg { stroke: var(--ink-4); }
+
     @media (min-width: 1024px) {
-      .desktop-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 32px;
-        align-items: start;
-      }
-      .desktop-right {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        overflow: visible;
-      }
+      .desktop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+      .desktop-right { display: flex; flex-direction: column; min-width: 0; overflow: visible; }
       .card-section { min-width: 0; max-width: 100%; }
       .card-stack { height: var(--card-h-desktop); width: 100%; }
     }
-    @media (max-width: 1023px) {
-      .desktop-grid { display: block; }
-    }
+    @media (max-width: 1023px) { .desktop-grid { display: block; } }
   </style>
 </head>
 <body>
 <div id="app">
   <div class="app-shell">
-    <!-- ===== SIDEBAR (desktop) ===== -->
     <aside class="sidebar">
       <a href="home.html" class="sidebar-logo">JOGJA RAFTING</a>
       <nav class="sidebar-nav" aria-label="Navigasi utama">
         <a href="home.html" class="sidebar-nav-item active" data-nav="home" aria-label="home" title="Home">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-          </svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </a>
-        <!-- Ikon Galeri menggantikan Promo di sidebar -->
         <a href="gallery.html" class="sidebar-nav-item" data-nav="gallery" aria-label="gallery" title="Galeri">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-          </svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
         </a>
         <a href="cek-booking.html" class="sidebar-nav-item" data-nav="cek-booking" aria-label="cek-booking" title="Cek Booking">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         </a>
         <a href="contact.html" class="sidebar-nav-item" data-nav="contact" aria-label="contact" title="Contact">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-          </svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         </a>
       </nav>
-      <!-- Logo kecil di bawah sidebar -->
       <div class="sidebar-bottom-logo" title="Jogja Rafting"></div>
     </aside>
 
@@ -552,14 +341,12 @@
                 <div class="header-title">Find Your<br/>Perfect<br/>Adventure</div>
               </div>
               <button class="search-btn" aria-label="Search" @click="openSearch">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                </svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </button>
             </div>
           </header>
 
-          <!-- ===== PROMO SECTION (baru) ===== -->
+          <!-- PROMO SECTION (biru tua #1f2937, ringkas) -->
           <div class="promo-block">
             <div class="promo-left">
               <div class="promo-code-row">
@@ -570,9 +357,7 @@
             </div>
             <div class="promo-right">
               <button class="copy-btn" @click="copyPromoCode">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                </svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 {{ copyButtonText }}
               </button>
             </div>
@@ -591,7 +376,7 @@
               <div class="search-results">
                 <div v-if="searchResults.length > 0">
                   <div v-for="item in searchResults" :key="item.id" class="search-result-item" @click="selectSearchResult(item)">
-                    <div :style="{backgroundImage:'url('+item.image+')', width:'40px', height:'40px', borderRadius:'10px', backgroundSize:'cover', backgroundPosition:'center'}" ></div>
+                    <div :style="{backgroundImage:'url('+item.image+')', width:'40px', height:'40px', borderRadius:'10px', backgroundSize:'cover', backgroundPosition:'center'}"></div>
                     <div style="flex:1;">
                       <div style="font-weight:600; font-size:14px;">{{ item.name }}</div>
                       <div style="font-size:12px; color:#6b7280;">{{ item.category }} · {{ item.price }}</div>
@@ -714,7 +499,6 @@ createApp({
     const cardsScrollRef = ref(null);
     const listScrollRef = ref(null);
 
-    // Data promo
     const promo = ref({
       code: 'RAFTING20',
       type: 'percent',
@@ -726,10 +510,7 @@ createApp({
 
     const tabs = ['Rafting', 'VW Tour', 'Outbound'];
     const navItems = [
-      { id: 'home' },
-      { id: 'gallery' },
-      { id: 'cek-booking' },
-      { id: 'contact' }
+      { id: 'home' }, { id: 'gallery' }, { id: 'cek-booking' }, { id: 'contact' }
     ];
 
     const cards = [
@@ -811,9 +592,7 @@ createApp({
       showSearch.value = true;
       searchQuery.value = '';
       searchResults.value = [];
-      nextTick(() => {
-        if (searchInput.value) searchInput.value.focus();
-      });
+      nextTick(() => { if (searchInput.value) searchInput.value.focus(); });
     }
     function closeSearch() { showSearch.value = false; }
     function performSearch() {
@@ -848,57 +627,86 @@ createApp({
     function stopAutoSlide() { if (autoSlideInterval) { clearInterval(autoSlideInterval); autoSlideInterval = null; } }
     function resetAutoSlide() { stopAutoSlide(); startAutoSlide(); }
 
+    // Fungsi drag scroll yang diperbaiki
     function attachDragScroll(el) {
       if (!el || el._dragAttached) return;
       el._dragAttached = true;
-      let isDown = false, startMouseX = 0, startScrollLeft = 0;
-      el.addEventListener('mousedown', (e) => { 
-        if (e.target.closest('a')) return;
-        isDown = true; 
-        el.style.cursor = 'grabbing'; 
-        startMouseX = e.pageX - el.offsetLeft; 
-        startScrollLeft = el.scrollLeft; 
-        e.preventDefault(); 
+      
+      let isDown = false;
+      let startMouseX = 0;
+      let startScrollLeft = 0;
+      
+      el.addEventListener('mousedown', (e) => {
+        // Jangan aktifkan drag scroll jika mengklik link atau button
+        if (e.target.closest('a') || e.target.closest('button')) return;
+        isDown = true;
+        el.style.cursor = 'grabbing';
+        el.style.userSelect = 'none';
+        startMouseX = e.pageX - el.offsetLeft;
+        startScrollLeft = el.scrollLeft;
       });
-      el.addEventListener('mouseleave', () => { isDown = false; el.style.cursor = 'grab'; });
-      el.addEventListener('mouseup', () => { isDown = false; el.style.cursor = 'grab'; });
-      el.addEventListener('mousemove', (e) => { 
-        if (!isDown) return; 
-        e.preventDefault(); 
-        const x = e.pageX - el.offsetLeft; 
-        el.scrollLeft = startScrollLeft - (x - startMouseX) * 1.5; 
+      
+      el.addEventListener('mouseleave', () => {
+        if (isDown) {
+          isDown = false;
+          el.style.cursor = 'grab';
+          el.style.userSelect = '';
+        }
       });
-      el.addEventListener('wheel', (e) => { 
-        if (el.scrollWidth > el.clientWidth) { 
-          e.preventDefault(); 
-          e.stopPropagation(); 
-          el.scrollLeft += e.deltaY + e.deltaX; 
-        } 
+      
+      el.addEventListener('mouseup', () => {
+        isDown = false;
+        el.style.cursor = 'grab';
+        el.style.userSelect = '';
+      });
+      
+      el.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - el.offsetLeft;
+        const walk = (x - startMouseX) * 1.8; // Kecepatan scroll
+        el.scrollLeft = startScrollLeft - walk;
+      });
+      
+      // Wheel event untuk trackpad dan mouse wheel
+      el.addEventListener('wheel', (e) => {
+        if (el.scrollWidth > el.clientWidth) {
+          e.preventDefault();
+          el.scrollLeft += e.deltaY + e.deltaX;
+        }
       }, { passive: false });
+      
+      // Set initial cursor
+      el.style.cursor = 'grab';
     }
 
     function setupScrollAfterTransition() {
-      setTimeout(() => {
-        nextTick(() => {
-          document.querySelectorAll('.prop-cards-scroll, .prop-list-wrapper').forEach(el => { 
-            el._dragAttached = false; 
-            attachDragScroll(el); 
+      nextTick(() => {
+        setTimeout(() => {
+          document.querySelectorAll('.prop-cards-scroll, .prop-list-wrapper').forEach(el => {
+            el._dragAttached = false; // Reset agar bisa di-attach ulang
+            attachDragScroll(el);
           });
-        });
-      }, 350);
+        }, 100);
+      });
     }
 
-    watch(activeTab, () => { setupScrollAfterTransition(); });
+    watch(activeTab, () => {
+      setupScrollAfterTransition();
+    });
 
     onMounted(() => {
       startAutoSlide();
-      nextTick(() => { 
-        setTimeout(() => { 
-          document.querySelectorAll('.prop-cards-scroll, .prop-list-wrapper').forEach(el => attachDragScroll(el)); 
-        }, 100); 
+      nextTick(() => {
+        setTimeout(() => {
+          document.querySelectorAll('.prop-cards-scroll, .prop-list-wrapper').forEach(el => attachDragScroll(el));
+        }, 200);
       });
     });
-    onUnmounted(() => { stopAutoSlide(); });
+    
+    onUnmounted(() => {
+      stopAutoSlide();
+    });
 
     return {
       cards, currentCard, nextCard, prevCard, resetAutoSlide,
