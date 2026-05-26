@@ -79,9 +79,12 @@
     .scroll-content {
       flex: 1; overflow-y: auto; overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
-      padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 16px));
+      /* Tambah padding bottom besar agar konten tidak ketutup nav mobile */
+      padding-bottom: calc(var(--nav-h) + 40px + env(safe-area-inset-bottom, 16px));
     }
-    @media (min-width: 1024px) { .scroll-content { padding-bottom: 32px; } }
+    @media (min-width: 1024px) { 
+      .scroll-content { padding-bottom: 32px; } 
+    }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .inner { max-width: 960px; margin: 0 auto; padding: 0 20px; }
@@ -106,11 +109,11 @@
     }
     .search-btn:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
 
-    /* ── PROMO SECTION (warna biru tua #1f2937) ── */
+    /* ── PROMO SECTION (ringkas, mobile friendly) ── */
     .promo-block {
       background: #1f2937;
       border-radius: 18px;
-      padding: 14px 20px;
+      padding: 14px 18px;
       margin: 8px 0 24px 0;
       display: flex;
       flex-wrap: wrap;
@@ -125,32 +128,78 @@
       content: '';
       position: absolute;
       top: -20px; right: -20px;
-      width: 90px; height: 90px;
+      width: 80px; height: 80px;
       background: rgba(255,255,255,0.06);
       border-radius: 50%;
       pointer-events: none;
     }
-    .promo-left { display: flex; flex-direction: column; gap: 5px; z-index: 1; }
-    .promo-code-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .promo-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1;
+      flex-wrap: wrap;
+    }
     .promo-code-badge {
-      background: white; color: #1f2937; font-weight: 700;
-      font-size: 17px; letter-spacing: 0.5px; padding: 5px 16px;
-      border-radius: 99px; display: inline-block; font-family: 'Syne', sans-serif;
+      background: white;
+      color: #1f2937;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      padding: 5px 14px;
+      border-radius: 99px;
+      font-family: 'Syne', sans-serif;
+      white-space: nowrap;
     }
-    .promo-discount { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); }
-    .promo-desc { font-size: 12px; color: rgba(255,255,255,0.75); max-width: 420px; line-height: 1.4; }
-    .promo-right { display: flex; align-items: center; gap: 10px; z-index: 1; margin-top: 4px; }
-    .copy-btn {
-      background: white; border: none; border-radius: 99px;
-      padding: 9px 18px; font-weight: 600; font-size: 13px;
-      color: #1f2937; cursor: pointer; display: flex; align-items: center; gap: 6px;
-      transition: background 0.2s, transform 0.1s; font-family: 'DM Sans', sans-serif;
+    .promo-desc {
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.4;
     }
-    .copy-btn:hover { background: #f3f4f6; }
-    .copy-btn:active { transform: scale(0.96); }
+    .promo-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1;
+    }
+    .promo-discount-badge {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+      padding: 6px 14px;
+      border-radius: 14px;
+      font-family: 'Syne', sans-serif;
+      backdrop-filter: blur(4px);
+    }
+    .copy-icon-btn {
+      background: white;
+      border: none;
+      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      color: #1f2937;
+      flex-shrink: 0;
+    }
+    .copy-icon-btn:hover { background: #f3f4f6; }
+    .copy-icon-btn:active { transform: scale(0.92); }
+    .copy-icon-btn.copied { background: #10b981; color: white; }
+
+    /* Mobile: promo lebih ringkas */
     @media (max-width: 500px) {
-      .promo-block { flex-direction: column; align-items: flex-start; gap: 12px; }
-      .promo-right { align-self: flex-start; }
+      .promo-block {
+        padding: 12px 16px;
+        gap: 10px;
+      }
+      .promo-code-badge { font-size: 14px; padding: 4px 12px; }
+      .promo-desc { font-size: 11px; }
+      .promo-discount-badge { font-size: 18px; padding: 5px 10px; }
+      .copy-icon-btn { width: 36px; height: 36px; border-radius: 10px; }
     }
 
     /* Search overlay */
@@ -240,7 +289,6 @@
     .tab-item.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--ink); border-radius: 2px; }
     .tab-item:not(.active) { font-weight: 400; color: var(--ink-4); }
     
-    /* Scrollable containers */
     .prop-cards-scroll,
     .prop-list-wrapper {
       overflow-x: auto; overflow-y: hidden; width: 100%; padding-bottom: 8px;
@@ -346,19 +394,17 @@
             </div>
           </header>
 
-          <!-- PROMO SECTION (biru tua #1f2937, ringkas) -->
+          <!-- PROMO SECTION (lebih ringkas) -->
           <div class="promo-block">
             <div class="promo-left">
-              <div class="promo-code-row">
-                <span class="promo-code-badge">{{ promo.code }}</span>
-                <span class="promo-discount">{{ promo.discountLabel }}</span>
-              </div>
-              <div class="promo-desc">{{ promo.description }}</div>
+              <span class="promo-code-badge">{{ promo.code }}</span>
+              <span class="promo-desc">{{ promo.description }}</span>
             </div>
             <div class="promo-right">
-              <button class="copy-btn" @click="copyPromoCode">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                {{ copyButtonText }}
+              <span class="promo-discount-badge">{{ promo.value }}%</span>
+              <button class="copy-icon-btn" :class="{ copied: copyButtonText === '✓' }" @click="copyPromoCode" :aria-label="'Salin kode ' + promo.code">
+                <svg v-if="copyButtonText !== '✓'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               </button>
             </div>
           </div>
@@ -462,6 +508,9 @@
               </transition>
             </div>
           </div>
+
+          <!-- Spacer tambahan untuk mobile agar konten tidak ketutup nav -->
+          <div style="height: 20px;"></div>
         </div>
       </div>
 
@@ -503,10 +552,9 @@ createApp({
       code: 'RAFTING20',
       type: 'percent',
       value: 20,
-      discountLabel: 'Diskon 20%',
-      description: 'Nikmati diskon 20% untuk semua paket rafting! Gunakan kode ini saat booking. Berlaku hingga 31 Desember 2026.'
+      description: 'Diskon semua paket rafting!',
     });
-    const copyButtonText = ref('Salin Kode');
+    const copyButtonText = ref('copy');
 
     const tabs = ['Rafting', 'VW Tour', 'Outbound'];
     const navItems = [
@@ -574,8 +622,8 @@ createApp({
 
     function copyPromoCode() {
       navigator.clipboard.writeText(promo.value.code).then(() => {
-        copyButtonText.value = 'Tersalin!';
-        setTimeout(() => { copyButtonText.value = 'Salin Kode'; }, 2000);
+        copyButtonText.value = '✓';
+        setTimeout(() => { copyButtonText.value = 'copy'; }, 2000);
       }).catch(() => {
         alert('Gagal menyalin kode. Silakan salin manual: ' + promo.value.code);
       });
@@ -627,7 +675,6 @@ createApp({
     function stopAutoSlide() { if (autoSlideInterval) { clearInterval(autoSlideInterval); autoSlideInterval = null; } }
     function resetAutoSlide() { stopAutoSlide(); startAutoSlide(); }
 
-    // Fungsi drag scroll yang diperbaiki
     function attachDragScroll(el) {
       if (!el || el._dragAttached) return;
       el._dragAttached = true;
@@ -637,7 +684,6 @@ createApp({
       let startScrollLeft = 0;
       
       el.addEventListener('mousedown', (e) => {
-        // Jangan aktifkan drag scroll jika mengklik link atau button
         if (e.target.closest('a') || e.target.closest('button')) return;
         isDown = true;
         el.style.cursor = 'grabbing';
@@ -664,11 +710,10 @@ createApp({
         if (!isDown) return;
         e.preventDefault();
         const x = e.pageX - el.offsetLeft;
-        const walk = (x - startMouseX) * 1.8; // Kecepatan scroll
+        const walk = (x - startMouseX) * 1.8;
         el.scrollLeft = startScrollLeft - walk;
       });
       
-      // Wheel event untuk trackpad dan mouse wheel
       el.addEventListener('wheel', (e) => {
         if (el.scrollWidth > el.clientWidth) {
           e.preventDefault();
@@ -676,7 +721,6 @@ createApp({
         }
       }, { passive: false });
       
-      // Set initial cursor
       el.style.cursor = 'grab';
     }
 
@@ -684,7 +728,7 @@ createApp({
       nextTick(() => {
         setTimeout(() => {
           document.querySelectorAll('.prop-cards-scroll, .prop-list-wrapper').forEach(el => {
-            el._dragAttached = false; // Reset agar bisa di-attach ulang
+            el._dragAttached = false;
             attachDragScroll(el);
           });
         }, 100);
