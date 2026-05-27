@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Pembayaran – Jogja Rafting</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f8f8f7;
+      --surface: #ffffff;
+      --ink: #0f0f0f;
+      --ink-2: #262626;
+      --ink-3: #525252;
+      --ink-4: #a3a3a3;
+      --ink-5: #e5e5e5;
+      --border: #eaeaea;
+      --primary: #171717;
+      --success: #059669;
+      --success-bg: #d1fae5;
+      --warning: #d97706;
+      --danger: #dc2626;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    #app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== DESKTOP ===== */
+    @media (min-width: 1024px) {
+      .desktop-shell {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .left-panel {
+        width: 420px;
+        flex-shrink: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: var(--primary);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .left-bg-img {
+        position: absolute;
+        inset: 0;
+        background-image: url('https://images.unsplash.com/photo-1530866495561-507c9faab2ed?w=800&q=80');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.28;
+        filter: saturate(0.7);
+      }
+
+      .left-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(8, 25, 50, 0.45) 0%, rgba(8, 25, 50, 0.82) 55%, rgba(8, 25, 50, 0.97) 100%);
+      }
+
+      .left-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 32px 32px 28px;
+      }
+
+      .brand-logo {
+        font-family: 'Syne', sans-serif;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .brand-logo svg {
+        opacity: 0.7;
+      }
+
+      .left-pkg-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding-top: 32px;
+      }
+
+      .pkg-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 99px;
+        padding: 5px 12px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 18px;
+        width: fit-content;
+      }
+
+      .pkg-name {
+        font-family: 'Syne', sans-serif;
+        font-size: 30px;
+        font-weight: 800;
+        color: #fff;
+        line-height: 1.15;
+        margin-bottom: 24px;
+      }
+
+      .booking-details-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px;
+        margin-bottom: 28px;
+      }
+
+      .bdet-item {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 12px 14px;
+      }
+
+      .bdet-label {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 4px;
+      }
+
+      .bdet-value {
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .price-breakdown {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 18px;
+      }
+
+      .pb-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        font-size: 12px;
+      }
+
+      .pb-label {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .pb-value {
+        color: rgba(255, 255, 255, 0.75);
+        font-weight: 600;
+      }
+
+      .pb-value.discount {
+        color: #5de8b8;
+      }
+
+      .pb-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+        margin: 10px 0;
+      }
+
+      .pb-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+      }
+
+      .pb-total-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .pb-total-value {
+        font-family: 'Syne', sans-serif;
+        font-size: 22px;
+        font-weight: 800;
+        color: #fff;
+      }
+
+      /* RIGHT PANEL */
+      .right-panel {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 32px 40px 0;
+        overflow: hidden;
+        min-width: 0;
+        background: var(--bg);
+      }
+
+      .right-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 28px;
+        flex-shrink: 0;
+      }
+
+      .right-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--ink);
+      }
+
+      .right-subtitle {
+        font-size: 12px;
+        color: var(--ink-4);
+        margin-top: 2px;
+      }
+
+      .step-pill {
+        background: var(--ink-5);
+        border-radius: 99px;
+        padding: 6px 14px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--ink-3);
+        letter-spacing: 0.5px;
+        border: 1px solid var(--border);
+      }
+
+      .right-body {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto 1fr;
+        gap: 16px;
+        overflow-y: visible;
+        padding-bottom: 0;
+      }
+
+      .payer-card {
+        grid-column: 1 / -1;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 18px 20px;
+        box-shadow: 0 2px 14px rgba(0, 0, 0, 0.04);
+      }
+
+      .card-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--ink-4);
+        margin-bottom: 12px;
+        font-family: 'Syne', sans-serif;
+      }
+
+      .payer-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+      }
+
+      .payer-field-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--ink-4);
+        margin-bottom: 3px;
+      }
+
+      .payer-field-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ink-2);
+      }
+
+      .promo-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 18px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: 0 2px 14px rgba(0, 0, 0, 0.04);
+      }
+
+      .refund-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 18px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: 0 2px 14px rgba(0, 0, 0, 0.04);
+      }
+
+      .refund-rules {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .refund-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--ink-3);
+        font-weight: 500;
+      }
+
+      .refund-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .dot-full {
+        background: var(--success);
+      }
+
+      .dot-partial {
+        background: var(--warning);
+      }
+
+      .dot-none {
+        background: var(--danger);
+      }
+
+      .pay-action {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-shrink: 0;
+      }
+
+      .pay-btn-desktop {
+        flex: 1;
+        padding: 16px 24px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 16px;
+        font-family: 'Syne', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .pay-btn-desktop:hover {
+        background: #1f2937;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      }
+
+      .pay-btn-desktop:active {
+        transform: none;
+      }
+
+      .pay-btn-desktop:disabled {
+        background: var(--ink-4);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .secure-tag {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        color: var(--ink-4);
+        white-space: nowrap;
+      }
+
+      .back-btn-desktop {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+
+      .back-btn-desktop:hover {
+        border-color: var(--ink-3);
+        background: var(--bg);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      }
+
+      .mobile-only {
+        display: none !important;
+      }
+    }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 1023px) {
+      .desktop-shell {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .left-panel {
+        display: none;
+      }
+
+      .right-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      .right-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px 12px;
+        flex-shrink: 0;
+      }
+
+      .right-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--ink);
+      }
+
+      .right-subtitle {
+        display: none;
+      }
+
+      .step-pill {
+        display: none;
+      }
+
+      .right-body {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 20px calc(80px + env(safe-area-inset-bottom)) 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .mobile-summary {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 2px 14px rgba(0, 0, 0, 0.04);
+      }
+
+      .mobile-summary-hero {
+        height: 120px;
+        background-image: url('https://images.unsplash.com/photo-1530866495561-507c9faab2ed?w=600&q=75');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+      }
+
+      .mobile-summary-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, transparent 30%, rgba(8, 25, 50, 0.7) 100%);
+      }
+
+      .mobile-summary-body {
+        padding: 14px 16px;
+      }
+
+      .mobile-pkg-name {
+        font-family: 'Syne', sans-serif;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 12px;
+      }
+
+      .mobile-details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .mobile-det-label {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--ink-4);
+        margin-bottom: 2px;
+      }
+
+      .mobile-det-value {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-2);
+      }
+
+      .mobile-price-rows {
+        border-top: 1px solid var(--ink-5);
+        padding-top: 10px;
+      }
+
+      .mobile-price-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        padding: 3px 0;
+        color: var(--ink-3);
+      }
+
+      .mobile-price-row .val {
+        font-weight: 600;
+        color: var(--ink-2);
+      }
+
+      .mobile-price-row .discount-val {
+        color: var(--success);
+        font-weight: 600;
+      }
+
+      .mobile-total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--ink-5);
+      }
+
+      .mobile-total-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--ink-4);
+      }
+
+      .mobile-total-value {
+        font-family: 'Syne', sans-serif;
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--ink);
+      }
+
+      .payer-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 16px;
+        box-shadow: 0 2px 14px rgba(0, 0, 0, 0.04);
+      }
+
+      .card-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--ink-4);
+        margin-bottom: 10px;
+        font-family: 'Syne', sans-serif;
+      }
+
+      .payer-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .payer-field-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--ink-4);
+        margin-bottom: 2px;
+      }
+
+      .payer-field-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ink-2);
+      }
+
+      .promo-card,
+      .refund-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: 0 2px 14px rgba(0, 0, 0, 0.04);
+      }
+
+      .refund-rules {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .refund-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--ink-3);
+        font-weight: 500;
+      }
+
+      .refund-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .dot-full {
+        background: var(--success);
+      }
+
+      .dot-partial {
+        background: var(--warning);
+      }
+
+      .dot-none {
+        background: var(--danger);
+      }
+
+      .pay-action {
+        display: none;
+      }
+
+      .mobile-pay-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 12px 20px;
+        padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+        background: rgba(248, 248, 247, 0.95);
+        backdrop-filter: blur(12px);
+        border-top: 1px solid var(--border);
+        z-index: 50;
+      }
+
+      .pay-btn-mobile {
+        width: 100%;
+        padding: 15px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 16px;
+        font-family: 'Syne', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+      }
+
+      .pay-btn-mobile:disabled {
+        background: var(--ink-4);
+        cursor: not-allowed;
+      }
+
+      .back-btn-desktop {
+        display: none;
+      }
+
+      .secure-tag-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        font-size: 10px;
+        color: var(--ink-4);
+        margin-top: 6px;
+        white-space: nowrap;
+      }
+    }
+
+    /* ===== SHARED ===== */
+    .promo-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .promo-input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      background: white;
+      outline: none;
+      color: var(--ink);
+      transition: border 0.2s;
+      min-width: 0;
+    }
+
+    .promo-input:focus {
+      border-color: var(--ink-3);
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .promo-btn {
+      padding: 0 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      font-size: 12px;
+      white-space: nowrap;
+      transition: background 0.2s;
+      letter-spacing: 0.3px;
+    }
+
+    .promo-btn:hover {
+      background: #1f2937;
+    }
+
+    .promo-btn:disabled {
+      background: var(--ink-4);
+      cursor: not-allowed;
+    }
+
+    .promo-msg {
+      font-size: 11px;
+      font-weight: 500;
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* ===== SUCCESS PAGE ===== */
+    .success-page {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 40px 24px;
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .success-page.visible {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .success-ring {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--success-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .success-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(24px, 4vw, 34px);
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    .success-desc {
+      font-size: 14px;
+      color: var(--ink-4);
+      max-width: 400px;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .success-desc strong {
+      color: var(--ink-2);
+    }
+
+    .success-code {
+      background: var(--surface);
+      border: 1px dashed var(--ink-5);
+      border-radius: 14px;
+      padding: 12px 28px;
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: var(--ink);
+      margin-bottom: 28px;
+    }
+
+    .success-close {
+      padding: 14px 40px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    .success-close:hover {
+      background: #1f2937;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    /* ===== PROCESSING OVERLAY ===== */
+    .processing-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 150;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .processing-overlay.visible {
+      display: flex;
+    }
+
+    .processing-card {
+      background: white;
+      border-radius: 20px;
+      padding: 32px 40px;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
+    }
+
+    .proc-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--ink-5);
+      border-top-color: var(--ink-3);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .proc-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .proc-sub {
+      font-size: 12px;
+      color: var(--ink-4);
+    }
+
+    .rapid-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--bg);
+      border: 1px solid var(--ink-5);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-3);
+      margin-top: 6px;
+    }
+
+    .right-body::-webkit-scrollbar {
+      display: none;
+    }
+
+    .right-body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="desktop-shell" id="mainView">
+      <!-- LEFT PANEL -->
+      <div class="left-panel">
+        <div class="left-bg-img"></div>
+        <div class="left-overlay"></div>
+        <div class="left-content">
+          <div class="brand-logo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 12s3-5 10-5 10 5 10 5-3 5-10 5-10-5-10-5z" /><circle cx="12" cy="12" r="3" /></svg>
+            JOGJA RAFTING
+          </div>
+          <div class="left-pkg-info">
+            <div class="pkg-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>
+              Magelang · Rafting
+            </div>
+            <div class="pkg-name" id="dpkgName">Jogja Rafting<br>Sungai Progo</div>
+
+            <div class="booking-details-list">
+              <div class="bdet-item">
+                <div class="bdet-label">Tanggal</div>
+                <div class="bdet-value" id="dCheckIn">20 Jun 2026</div>
+              </div>
+              <div class="bdet-item">
+                <div class="bdet-label">Sesi</div>
+                <div class="bdet-value" id="dDuration">Pagi (08.00)</div>
+              </div>
+              <div class="bdet-item">
+                <div class="bdet-label">Peserta</div>
+                <div class="bdet-value" id="dGuests">4 Orang</div>
+              </div>
+              <div class="bdet-item">
+                <div class="bdet-label">Jalur</div>
+                <div class="bdet-value">12 km Standard</div>
+              </div>
+            </div>
+
+            <div class="price-breakdown">
+              <div class="pb-row">
+                <span class="pb-label">Harga/orang</span>
+                <span class="pb-value" id="dPPN">Rp185.000</span>
+              </div>
+              <div class="pb-row">
+                <span class="pb-label">Subtotal (4 orang)</span>
+                <span class="pb-value" id="dSubtotal">Rp740.000</span>
+              </div>
+              <div class="pb-row" id="dDiscountRow" style="display:flex">
+                <span class="pb-label">Diskon</span>
+                <span class="pb-value discount" id="dDiscount">-Rp0</span>
+              </div>
+              <div class="pb-row">
+                <span class="pb-label">Biaya layanan</span>
+                <span class="pb-value" id="dService">Rp37.000</span>
+              </div>
+              <div class="pb-row" id="dPromoRow" style="display:none">
+                <span class="pb-label">Kode promo</span>
+                <span class="pb-value discount" id="dPromoAmt"></span>
+              </div>
+              <div class="pb-divider"></div>
+              <div class="pb-total">
+                <span class="pb-total-label">Total</span>
+                <span class="pb-total-value" id="dTotal">Rp777.000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="right-panel">
+        <div class="right-top">
+          <button class="back-btn-desktop" id="backBtn" title="Kembali">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div>
+            <div class="right-title">Konfirmasi Pembayaran</div>
+            <div class="right-subtitle">Langkah terakhir sebelum petualangan Anda dimulai</div>
+          </div>
+          <div class="step-pill">Langkah 3 / 3</div>
+        </div>
+
+        <div class="right-body" id="rightBody">
+          <!-- Mobile summary -->
+          <div class="mobile-summary mobile-only" id="mobileSummary">
+            <div class="mobile-summary-hero"></div>
+            <div class="mobile-summary-body">
+              <div class="mobile-pkg-name" id="mpkgName">Jogja Rafting – Sungai Progo</div>
+              <div class="mobile-details-grid">
+                <div class="mobile-det-item">
+                  <div class="mobile-det-label">Tanggal</div>
+                  <div class="mobile-det-value" id="mCheckIn">20 Jun 2026</div>
+                </div>
+                <div class="mobile-det-item">
+                  <div class="mobile-det-label">Sesi</div>
+                  <div class="mobile-det-value" id="mDuration">Pagi (08.00)</div>
+                </div>
+              </div>
+              <div class="mobile-price-rows">
+                <div class="mobile-price-row"><span>Subtotal</span><span class="val" id="mSubtotal"></span></div>
+                <div class="mobile-price-row" id="mDiscRow" style="display:flex"><span>Diskon</span><span class="discount-val" id="mDiscount">-Rp0</span></div>
+                <div class="mobile-price-row"><span>Biaya layanan</span><span class="val" id="mService"></span></div>
+                <div class="mobile-price-row" id="mPromoRow" style="display:none"><span>Kode promo</span><span class="discount-val" id="mPromoAmt"></span></div>
+              </div>
+              <div class="mobile-total-row">
+                <span class="mobile-total-label">Total</span>
+                <span class="mobile-total-value" id="mTotal"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payer info -->
+          <div class="payer-card">
+            <div class="card-label">Informasi Peserta & Pembayar</div>
+            <div class="payer-grid">
+              <div class="payer-field">
+                <div class="payer-field-label">Nama Lengkap</div>
+                <div class="payer-field-value" id="payerName">Budi Santoso</div>
+              </div>
+              <div class="payer-field">
+                <div class="payer-field-label">Email</div>
+                <div class="payer-field-value" id="payerEmail">budi@email.com</div>
+              </div>
+              <div class="payer-field">
+                <div class="payer-field-label">No. Telepon</div>
+                <div class="payer-field-value" id="payerPhone">+62 812 3456 7890</div>
+              </div>
+            </div>
+            <div style="margin-top:12px;">
+              <div class="rapid-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                Termasuk: Helm, pelampung, dayung & pemandu profesional
+              </div>
+            </div>
+          </div>
+
+          <!-- Promo code -->
+          <div class="promo-card">
+            <div class="card-label">Kode Promo</div>
+            <div class="promo-group">
+              <input type="text" id="promoInput" placeholder="Masukkan kode..." class="promo-input" autocomplete="off" autocapitalize="characters" />
+              <button class="promo-btn" id="promoBtn">Pakai</button>
+            </div>
+            <div class="promo-msg" id="promoMsg"></div>
+            <div style="font-size:10px;color:var(--ink-4);font-style:italic;">Coba: RAFTING10 atau JOGJA5</div>
+          </div>
+
+          <!-- Refund policy -->
+          <div class="refund-card">
+            <div class="card-label">Kebijakan Pembatalan</div>
+            <div class="refund-rules">
+              <div class="refund-item"><span class="refund-dot dot-full"></span>H-3 atau lebih: Refund 100%</div>
+              <div class="refund-item"><span class="refund-dot dot-partial"></span>H-1 s/d H-2: Refund 50%</div>
+              <div class="refund-item"><span class="refund-dot dot-none"></span>H-0 / No Show: Tidak ada refund</div>
+            </div>
+          </div>
+
+          <!-- Pay action (desktop) -->
+          <div class="pay-action">
+            <button class="pay-btn-desktop" id="payBtnDesktop">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" />
+              </svg>
+              <span id="payBtnDesktopText">Bayar Sekarang</span>
+            </button>
+            <div class="secure-tag">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              Pembayaran aman & terenkripsi
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile pay bar -->
+      <div class="mobile-pay-bar mobile-only" id="mobilePayBar">
+        <button class="pay-btn-mobile" id="payBtnMobile">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" />
+          </svg>
+          <span id="payBtnMobileText">Bayar Sekarang</span>
+        </button>
+        <div class="secure-tag-mobile">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          Pembayaran aman & terenkripsi
+        </div>
+      </div>
+    </div>
+
+    <!-- PROCESSING OVERLAY -->
+    <div class="processing-overlay" id="processingOverlay">
+      <div class="processing-card">
+        <div class="proc-spinner"></div>
+        <div class="proc-text">Memproses Pembayaran</div>
+        <div class="proc-sub">Mohon tunggu sebentar...</div>
+      </div>
+    </div>
+
+    <!-- SUCCESS PAGE -->
+    <div class="success-page" id="successPage">
+      <div class="success-ring">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </div>
+      <div class="success-title">Pembayaran Berhasil!</div>
+      <div class="success-desc" id="successDesc">
+        Booking <strong id="sBookingName">Jogja Rafting – Sungai Progo</strong> untuk tanggal <strong id="sCheckIn">20 Jun 2026</strong> telah dikonfirmasi.<br>
+        Kode booking Anda:
+      </div>
+      <div class="success-code" id="sCode">JR-PRG-2406-4QW9</div>
+      <button class="success-close" id="successCloseBtn">Kembali ke Beranda</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const booking = {
+        packageName: "Jogja Rafting – Sungai Progo",
+        location: "Magelang, Jawa Tengah",
+        checkIn: "20 Juni 2026",
+        duration: "Pagi (08.00)",
+        nights: 1,
+        guests: 4,
+        pricePerNight: 185000,
+        subtotal: 740000,
+        discount: 0,
+        serviceFee: 37000,
+        total: 777000,
+        bookingCode: 'JR-PRG-2406-4QW9',
+      };
+
+      const payer = {
+        name: "Budi Santoso",
+        email: "budi@email.com",
+        phone: "+62 812 3456 7890",
+      };
+
+      const PROMO_CODES = { RAFTING10: 0.10, JOGJA5: 0.05 };
+
+      let promoDiscount = 0;
+      let promoApplied = false;
+      let isProcessing = false;
+
+      function formatRp(v) {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(v);
+      }
+
+      function finalTotal() {
+        return Math.max(0, booking.total - promoDiscount);
+      }
+
+      function setText(id, v) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = v;
+      }
+
+      function renderAll() {
+        const ft = finalTotal();
+
+        setText('dpkgName', booking.packageName);
+        setText('dCheckIn', booking.checkIn);
+        setText('dDuration', booking.duration);
+        setText('dGuests', booking.guests + ' Orang');
+        setText('dPPN', formatRp(booking.pricePerNight));
+        setText('dSubtotal', formatRp(booking.subtotal));
+        setText('dService', formatRp(booking.serviceFee));
+
+        setText('dDiscount', '-' + formatRp(booking.discount));
+        document.getElementById('dDiscountRow').style.display = 'flex';
+
+        const promoRow = document.getElementById('dPromoRow');
+        if (promoDiscount > 0 && promoRow) {
+          setText('dPromoAmt', '-' + formatRp(promoDiscount));
+          promoRow.style.display = 'flex';
+        } else if (promoRow) {
+          promoRow.style.display = 'none';
+        }
+
+        setText('dTotal', formatRp(ft));
+
+        setText('payerName', payer.name);
+        setText('payerEmail', payer.email);
+        setText('payerPhone', payer.phone);
+
+        setText('mpkgName', booking.packageName);
+        setText('mCheckIn', booking.checkIn);
+        setText('mDuration', booking.duration);
+        setText('mSubtotal', formatRp(booking.subtotal));
+        setText('mService', formatRp(booking.serviceFee));
+
+        setText('mDiscount', '-' + formatRp(booking.discount));
+        document.getElementById('mDiscRow').style.display = 'flex';
+
+        const mPromoRow = document.getElementById('mPromoRow');
+        if (promoDiscount > 0 && mPromoRow) {
+          setText('mPromoAmt', '-' + formatRp(promoDiscount));
+          mPromoRow.style.display = 'flex';
+        } else if (mPromoRow) {
+          mPromoRow.style.display = 'none';
+        }
+
+        setText('mTotal', formatRp(ft));
+
+        const label = 'Bayar ' + formatRp(ft);
+        setText('payBtnDesktopText', label);
+        setText('payBtnMobileText', label);
+      }
+
+      const promoInput = document.getElementById('promoInput');
+      const promoBtn = document.getElementById('promoBtn');
+      const promoMsg = document.getElementById('promoMsg');
+
+      function applyPromo() {
+        if (promoApplied || isProcessing) return;
+        const code = promoInput.value.trim().toUpperCase();
+        if (!code) return;
+
+        promoMsg.style.display = 'block';
+        if (PROMO_CODES[code] !== undefined) {
+          const pct = PROMO_CODES[code];
+          promoDiscount = booking.total * pct;
+          promoApplied = true;
+          promoMsg.style.color = 'var(--success)';
+          promoMsg.textContent = '✓ Diskon ' + pct * 100 + '% berhasil diterapkan!';
+          promoBtn.textContent = '✓';
+          promoBtn.disabled = true;
+          promoInput.disabled = true;
+        } else {
+          promoDiscount = 0;
+          promoMsg.style.color = 'var(--danger)';
+          promoMsg.textContent = '✗ Kode promo tidak valid.';
+        }
+        renderAll();
+      }
+
+      promoBtn.addEventListener('click', applyPromo);
+      promoInput.addEventListener('keydown', e => { if (e.key === 'Enter') applyPromo(); });
+      promoInput.addEventListener('input', () => {
+        promoBtn.disabled = promoApplied || !promoInput.value.trim();
+      });
+
+      const mainView = document.getElementById('mainView');
+      const processingOverlay = document.getElementById('processingOverlay');
+      const successPage = document.getElementById('successPage');
+
+      function processPayment() {
+        if (isProcessing) return;
+        isProcessing = true;
+
+        const btns = [document.getElementById('payBtnDesktop'), document.getElementById('payBtnMobile')];
+        btns.forEach(b => { if (b) b.disabled = true; });
+        processingOverlay.classList.add('visible');
+
+        setTimeout(() => {
+          processingOverlay.classList.remove('visible');
+          isProcessing = false;
+
+          setText('sBookingName', booking.packageName);
+          setText('sCheckIn', booking.checkIn);
+          setText('sCode', booking.bookingCode);
+
+          mainView.style.display = 'none';
+          successPage.classList.add('visible');
+        }, 2200);
+      }
+
+      const payBtnD = document.getElementById('payBtnDesktop');
+      const payBtnM = document.getElementById('payBtnMobile');
+      if (payBtnD) payBtnD.addEventListener('click', processPayment);
+      if (payBtnM) payBtnM.addEventListener('click', processPayment);
+
+      document.getElementById('backBtn').addEventListener('click', () => {
+        if (window.history.length > 1) window.history.back();
+      });
+
+      document.getElementById('successCloseBtn').addEventListener('click', () => {
+        successPage.classList.remove('visible');
+        mainView.style.display = 'flex';
+        const btns = [document.getElementById('payBtnDesktop'), document.getElementById('payBtnMobile')];
+        btns.forEach(b => { if (b) b.disabled = false; });
+        renderAll();
+      });
+
+      function applyMobileClasses() {
+        const isMobile = window.innerWidth < 1024;
+        document.querySelectorAll('.mobile-only').forEach(el => {
+          el.style.display = isMobile ? '' : 'none';
+        });
+        
+        // Pastikan right-body bisa di-scroll di mobile
+        const rightBody = document.getElementById('rightBody');
+        if (rightBody) {
+          if (isMobile) {
+            rightBody.style.overflowY = 'auto';
+            rightBody.style.WebkitOverflowScrolling = 'touch';
+          } else {
+            rightBody.style.overflowY = 'visible';
+          }
+        }
+      }
+
+      window.addEventListener('resize', applyMobileClasses);
+      applyMobileClasses();
+
+      promoBtn.disabled = true;
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

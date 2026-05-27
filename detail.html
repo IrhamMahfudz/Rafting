@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, height=device-height"/>
+  <title>Jogja Rafting – La Selva | Eco-Lodge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0f0f0f;
+      --ink-2: #262626;
+      --ink-3: #525252;
+      --ink-4: #a3a3a3;
+      --ink-5: #e5e5e5;
+      --bg: #f8f8f7;
+      --surface: #ffffff;
+      --primary: #171717;
+      --primary-soft: #2f2f2f;
+      --accent: #2f2f2f;
+      --border-light: #eaeaea;
+      --available: #d4d4d4;
+      --booked: #bdbdbd;
+      --selected-date: #171717;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      overflow: auto;
+    }
+
+    #app {
+      width: 100%;
+      min-height: 100%;
+      display: flex;
+      overflow: visible;
+      position: relative;
+    }
+
+    /* ===== SIDEBAR (desktop) ===== */
+    .sidebar {
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        width: 80px;
+        min-height: 100vh;
+        background: var(--surface);
+        box-shadow: 1px 0 0 var(--ink-5);
+        padding: 28px 0;
+        flex-shrink: 0;
+        z-index: 50;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+
+      .sidebar-logo {
+        font-family: 'Syne', sans-serif;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: var(--ink);
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        text-decoration: none;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .sidebar-nav-item {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s;
+        text-decoration: none;
+      }
+
+      .sidebar-nav-item.active { background: var(--ink); }
+      .sidebar-nav-item.active svg { stroke: #fff; }
+      .sidebar-nav-item:not(.active) svg { stroke: var(--ink-4); }
+      .sidebar-nav-item:not(.active):hover { background: var(--bg); }
+
+      .sidebar-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #374151, #111827);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+    }
+
+    /* ===== MAIN AREA ===== */
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      overflow: visible;
+      min-width: 0;
+      position: relative;
+    }
+
+    .page-layout {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    @media (min-width: 1024px) {
+      .page-layout {
+        flex-direction: row;
+        height: 100vh;
+        overflow: hidden;
+      }
+    }
+
+    /* ===== HERO ===== */
+    .hero-wrap {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      flex-shrink: 0;
+      overflow: hidden;
+      border-radius: 0 0 28px 28px;
+    }
+
+    @media (min-width: 640px) {
+      .hero-wrap { height: 420px; }
+    }
+
+    @media (min-width: 1024px) {
+      .hero-wrap {
+        width: 50%;
+        height: 100vh;
+        flex-shrink: 0;
+        border-radius: 0;
+        position: sticky;
+        top: 0;
+      }
+    }
+
+    .hero-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.4s ease, transform 0.5s ease;
+    }
+    .hero-img.switching { opacity: 0; transform: scale(1.04); }
+
+    .hero-grad {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 50%, transparent 100%);
+      pointer-events: none;
+    }
+
+    @media (max-width: 1023px) {
+      .hero-grad { border-radius: 0 0 28px 28px; }
+    }
+
+    .top-btns {
+      position: absolute; top: 20px; left: 0; right: 0;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 20px;
+      z-index: 10;
+    }
+
+    @supports (top: env(safe-area-inset-top)) {
+      .top-btns { top: calc(16px + env(safe-area-inset-top)); }
+    }
+
+    .glass-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.22);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: transform 0.2s;
+      color: white;
+    }
+    .glass-btn:active { transform: scale(0.9); }
+
+    .thumbs-col {
+      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px;
+      z-index: 10;
+    }
+
+    .thumb-item {
+      width: 54px; height: 54px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 2.5px solid white;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .thumb-item.active {
+      box-shadow: 0 0 0 2.5px white, 0 0 0 4.5px var(--accent);
+    }
+    .thumb-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .hero-title {
+      position: absolute; bottom: 24px; left: 20px; z-index: 10;
+    }
+
+    /* ===== CONTENT PANEL ===== */
+    .content-panel {
+      flex: 1;
+      overflow-y: visible;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 20px 20px 24px;
+      background: var(--bg);
+      scroll-behavior: smooth;
+      padding-bottom: 160px;
+      position: relative;
+      z-index: 5;
+    }
+
+    @media (min-width: 640px) {
+      .content-panel { padding: 24px 32px 170px; }
+    }
+
+    @media (min-width: 1024px) {
+      .content-panel {
+        width: 50%;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 36px 40px 180px;
+      }
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* ===== INFO CARDS — 4 kolom ===== */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 400px) {
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .info-card {
+      background: white;
+      border-radius: 18px;
+      padding: 14px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    .info-icon {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 6px;
+      color: white;
+    }
+
+    /* ===== INCLUDED / NOT INCLUDED ===== */
+    .amenities-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .amenity-col h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .amenity-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .amenity-list li {
+      font-size: 13px;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .included-icon { color: #10b981; }
+    .not-included-icon { color: #ef4444; }
+
+    /* ===== FORM ELEMENTS ===== */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ink-3);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      background: white;
+      outline: none;
+      transition: border 0.2s;
+      color: var(--ink);
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+    }
+
+    /* Custom Calendar Styles */
+    .calendar-container {
+      background: white;
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+      margin-bottom: 20px;
+      border: 1px solid var(--border-light);
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .month-nav {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--ink-3);
+      padding: 6px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+    }
+    .month-nav:hover { background: var(--bg); }
+
+    .weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-4);
+      margin-bottom: 8px;
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      text-align: center;
+    }
+
+    .day-cell {
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: transparent;
+      border: none;
+      color: var(--ink-2);
+      position: relative;
+    }
+
+    .day-cell:hover:not(.empty):not(.past):not(.booked):not(.selected):not(.full) {
+      background: #f3f4f6;
+    }
+
+    .day-cell.empty { cursor: default; }
+    .day-cell.past { color: var(--ink-5); cursor: not-allowed; opacity: 0.5; }
+
+    .day-cell.available {
+      background: #ecfdf5;
+      color: #065f46;
+      font-weight: 600;
+    }
+    .day-cell.available:hover:not(.selected) { background: #d1fae5; }
+
+    .day-cell.full {
+      background: #fff7ed;
+      color: #c2410c;
+      cursor: not-allowed;
+      font-weight: 500;
+    }
+
+    .day-cell.booked {
+      background: #fef2f2;
+      color: #b91c1c;
+      text-decoration: line-through;
+      cursor: not-allowed;
+    }
+
+    .day-cell.selected {
+      background: var(--selected-date);
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(79,70,229,0.3);
+    }
+
+    .guest-selector {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 8px 14px;
+      margin-top: 8px;
+    }
+    .guest-btn {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: none;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .guest-count {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--ink);
+    }
+
+    /* ===== TIME PICKER ===== */
+    .time-picker-wrap {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .time-picker-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .time-scroll-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .time-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      flex: 1;
+    }
+
+    .time-col label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ink-4);
+      margin-bottom: 2px;
+    }
+
+    .time-spin-btn {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--ink-3);
+      transition: all 0.15s;
+      font-size: 0;
+      flex-shrink: 0;
+    }
+    .time-spin-btn:hover { background: var(--ink-5); color: var(--ink); }
+    .time-spin-btn:active { transform: scale(0.9); }
+    .time-spin-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .time-display {
+      font-family: 'Syne', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--ink);
+      min-width: 36px;
+      text-align: center;
+      line-height: 1;
+      user-select: none;
+    }
+
+    /* Menit tampil tapi tidak bisa diubah */
+    .time-display.fixed-minute {
+      color: var(--ink-4);
+      cursor: default;
+    }
+
+    .time-col.minute-col .time-spin-btn {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .time-sep {
+      font-family: 'Syne', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--ink-4);
+      line-height: 1;
+      padding-bottom: 2px;
+      align-self: center;
+    }
+
+    .time-range-hint {
+      font-size: 11px;
+      color: var(--ink-4);
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    /* ===== SLOT AVAILABILITY INFO ===== */
+    .slot-availability {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    .slot-availability.available {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .slot-availability.almost-full {
+      background: #fffbeb;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .slot-availability.full {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .slot-availability.no-date {
+      background: #f9fafb;
+      color: #6b7280;
+      border: 1px solid #e5e7eb;
+    }
+
+    .slot-availability-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    /* ===== FLOATING CTA ===== */
+    .floating-cta {
+      position: fixed;
+      bottom: 24px;
+      left: 20px;
+      right: 20px;
+      background: #111827;
+      backdrop-filter: blur(12px);
+      padding: 14px 20px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 45;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 1024px) {
+      .floating-cta {
+        left: auto;
+        right: 24px;
+        width: calc(50% - 80px);
+        max-width: 420px;
+      }
+    }
+
+    .price-text {
+      color: white;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .price-text .total-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 2px;
+    }
+
+    .price-text .amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.1;
+    }
+
+    .price-text .amount span {
+      font-size: 12px;
+      font-weight: 400;
+      color: #9ca3af;
+      margin-left: 2px;
+    }
+
+    .cta-btn {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: white;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+      transition: transform 0.18s, background 0.2s;
+      color: #111827;
+    }
+    .cta-btn:hover { background: #f3f4f6; transform: scale(1.05); }
+    .cta-btn:active { transform: scale(0.93); }
+    .cta-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border-light);
+      margin: 20px 0;
+    }
+
+    @media (max-width: 1023px) {
+      .main-area {
+        overflow: visible;
+        height: auto;
+      }
+      .page-layout {
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- SIDEBAR DESKTOP -->
+  <aside class="sidebar">
+    <a href="home.html" class="sidebar-logo">JOGJA RAFTING</a>
+    <nav class="sidebar-nav" aria-label="Navigasi utama">
+      <a href="home.html" class="sidebar-nav-item active" data-nav="home" aria-label="home" title="Home">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </a>
+      <a href="promo.html" class="sidebar-nav-item" data-nav="promo" aria-label="promo" title="Promo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.59 13.41L11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82z"/><circle cx="7.5" cy="7.5" r="1.5"/>
+        </svg>
+      </a>
+      <a href="cek-booking.html" class="sidebar-nav-item" data-nav="cek-booking" aria-label="cek-booking" title="Cek Booking">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </a>
+      <a href="contact.html" class="sidebar-nav-item" data-nav="contact" aria-label="contact" title="Contact">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-area">
+    <div class="page-layout">
+
+      <!-- HERO -->
+      <div class="hero-wrap">
+        <img id="heroImage" src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=85" alt="La Selva"
+             class="hero-img"/>
+        <div class="hero-grad"></div>
+
+        <div class="top-btns">
+          <button class="glass-btn" id="backBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <button class="glass-btn" id="wishlistBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" id="wishlistIcon"
+                 fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="thumbs-col" id="thumbsCol">
+          <!-- Thumbnails akan di-generate oleh JS -->
+        </div>
+
+        <div class="hero-title">
+          <h1 style="font-family:'Syne',sans-serif; font-size:clamp(26px,4vw,36px); font-weight:800; color:white; line-height:1.1; text-shadow:0 2px 8px rgba(0,0,0,0.3);">
+            La Selva
+          </h1>
+          <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+              <circle cx="12" cy="9" r="2.5"/>
+            </svg>
+            <span style="font-size:13px; color:rgba(255,255,255,0.85);">Peru, South America</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENT PANEL -->
+      <div class="content-panel no-scrollbar">
+
+        <!-- INFO CARDS — 4 items -->
+        <div class="info-grid" id="infoGrid">
+          <!-- Info cards di-generate oleh JS -->
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div style="margin-bottom:24px;">
+          <h2 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:#111827; margin-bottom:8px;">Description</h2>
+          <p id="descriptionText" style="font-size:13px; color:#6b7280; line-height:1.65; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;">
+            La Selva is a breathtaking eco-lodge nestled deep within the lush Amazon rainforest of Peru. Surrounded by ancient trees, exotic wildlife, and crystal-clear rivers, this hidden gem offers a truly immersive nature experience. Guests can explore winding jungle trails, spot rare birds and wildlife, and fall asleep to the soothing sounds of the forest at night.
+          </p>
+          <button id="readMoreBtn" style="font-size:12px; font-weight:600; color:#4f46e5; margin-top:6px; background:none; border:none; cursor:pointer; padding:0;">
+            Read more
+          </button>
+        </div>
+
+        <!-- INCLUDED & NOT INCLUDED -->
+        <div class="amenities-grid">
+          <div class="amenity-col">
+            <h3 style="color:#111827;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Included
+            </h3>
+            <ul class="amenity-list">
+              <li><span class="included-icon">✓</span> Jungle trekking guide</li>
+              <li><span class="included-icon">✓</span> Canopy walkway</li>
+              <li><span class="included-icon">✓</span> 3x daily meals</li>
+              <li><span class="included-icon">✓</span> Airport transfer</li>
+            </ul>
+          </div>
+          <div class="amenity-col">
+            <h3 style="color:#111827;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Not Included
+            </h3>
+            <ul class="amenity-list">
+              <li><span class="not-included-icon">✗</span> International flights</li>
+              <li><span class="not-included-icon">✗</span> Travel insurance</li>
+              <li><span class="not-included-icon">✗</span> Alcoholic beverages</li>
+              <li><span class="not-included-icon">✗</span> Personal expenses</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr/>
+
+        <!-- BOOKING FORM -->
+        <div style="margin-bottom: 10px;">
+          <h2 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:#111827; margin-bottom:16px;">Select Date & Guests</h2>
+          
+          <!-- Custom Calendar -->
+          <div class="calendar-container">
+            <div class="calendar-header">
+              <button class="month-nav" id="prevMonthBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <span id="monthYearDisplay"></span>
+              <button class="month-nav" id="nextMonthBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+            <div class="weekdays">
+              <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+            </div>
+            <div class="days-grid" id="daysGrid">
+              <!-- Hari di-generate oleh JS -->
+            </div>
+          </div>
+
+          <!-- Guest Selector -->
+          <div class="form-group">
+            <label class="form-label">Number of Guests</label>
+            <div class="guest-selector">
+              <button class="guest-btn" id="guestMinusBtn">−</button>
+              <span class="guest-count" id="guestCount">2 Guests</span>
+              <button class="guest-btn" id="guestPlusBtn">+</button>
+            </div>
+            <div style="font-size:11px; color:var(--ink-4); margin-top:4px;">
+              Max 4 orang per booking (1 kapal)
+            </div>
+          </div>
+
+          <!-- Start Time Picker (JAM BISA DIUBAH, MENIT TETAP 00) -->
+          <div class="form-group">
+            <label class="form-label">Start Time</label>
+            <div class="time-picker-wrap">
+              <div class="time-picker-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <div style="flex:1;">
+                <div class="time-scroll-row">
+                  <!-- Hour -->
+                  <div class="time-col">
+                    <label>Jam</label>
+                    <button class="time-spin-btn" id="hourUpBtn">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                    </button>
+                    <span class="time-display" id="hourDisplay">08</span>
+                    <button class="time-spin-btn" id="hourDownBtn">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                  </div>
+                  <span class="time-sep">:</span>
+                  <!-- Minute (tetap 00, tidak bisa diubah) -->
+                  <div class="time-col minute-col">
+                    <label>Menit</label>
+                    <button class="time-spin-btn" disabled>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                    </button>
+                    <span class="time-display fixed-minute">00</span>
+                    <button class="time-spin-btn" disabled>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="time-range-hint">Tersedia 06:00 – 16:00</div>
+              </div>
+            </div>
+
+            <!-- 🔥 INDIKATOR KETERSEDIAAN SLOT -->
+            <div id="slotAvailability" class="slot-availability no-date">
+              <span class="slot-availability-icon">📅</span>
+              <span id="slotAvailabilityText">Pilih tanggal terlebih dahulu untuk melihat ketersediaan slot</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="inputName" placeholder="Your full name" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" id="inputPhone" placeholder="+62 812 3456 7890" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="inputEmail" placeholder="you@example.com" class="form-input" />
+          </div>
+        </div>
+
+        <div style="height: 20px;"></div>
+
+      </div><!-- /content-panel -->
+    </div><!-- /page-layout -->
+
+    <!-- FLOATING CTA -->
+    <div class="floating-cta">
+      <div class="price-text">
+        <div class="total-label">Total Price</div>
+        <div class="amount" id="totalPriceDisplay">
+          $1270 <span>/person</span>
+        </div>
+      </div>
+      <button class="cta-btn" id="submitBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </div>
+
+  </div><!-- /main-area -->
+</div><!-- /app -->
+
+<script>
+(function() {
+  // ========== KONFIGURASI SLOT & KUOTA ==========
+  const MAX_BOATS_PER_SLOT = 50;
+  const MAX_PEOPLE_PER_BOAT = 4;
+
+  // ========== DATA BOOKING (Simulasi Backend) ==========
+  const bookingsByDateSlot = {
+    '2026-05-12': { '08:00': 48, '14:00': 50 },
+    '2026-05-13': { '09:00': 50, '11:00': 50 },
+    '2026-05-20': { '07:00': 30 },
+    '2026-05-21': { '08:00': 50, '10:00': 45, '14:00': 50 },
+    '2026-06-05': { '08:00': 50, '09:00': 50, '10:00': 50, '11:00': 50, '12:00': 50, '13:00': 50, '14:00': 50, '15:00': 50, '16:00': 50 },
+    '2026-06-15': { '08:00': 20 },
+    '2026-06-16': { '14:00': 35 }
+  };
+
+  // ========== STATE ==========
+  let wishlist = false;
+  let expanded = false;
+  let selectedIndex = 0;
+  let imgSwitching = false;
+  let activeNav = 'home';
+  let guests = 2;
+  let timeHour = 8;
+  // Menit selalu 0
+  const timeMinute = 0;
+
+  const today = new Date();
+  let currentMonth = today.getMonth();
+  let currentYear = today.getFullYear();
+  let selectedDate = null;
+
+  // Tanggal yang diblokir penuh
+  const blockedDates = new Set([
+    '2026-05-25', '2026-05-26', '2026-06-10'
+  ]);
+
+  const images = [
+    { full: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=85', thumb: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=200&q=75' },
+    { full: 'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800&q=85', thumb: 'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=200&q=75' },
+    { full: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&q=85', thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=200&q=75' },
+    { full: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=85', thumb: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=200&q=75' }
+  ];
+
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  // ========== DOM ELEMENTS ==========
+  const heroImage = document.getElementById('heroImage');
+  const thumbsCol = document.getElementById('thumbsCol');
+  const infoGrid = document.getElementById('infoGrid');
+  const descriptionText = document.getElementById('descriptionText');
+  const readMoreBtn = document.getElementById('readMoreBtn');
+  const monthYearDisplay = document.getElementById('monthYearDisplay');
+  const daysGrid = document.getElementById('daysGrid');
+  const guestCount = document.getElementById('guestCount');
+  const guestMinusBtn = document.getElementById('guestMinusBtn');
+  const guestPlusBtn = document.getElementById('guestPlusBtn');
+  const hourDisplay = document.getElementById('hourDisplay');
+  const hourUpBtn = document.getElementById('hourUpBtn');
+  const hourDownBtn = document.getElementById('hourDownBtn');
+  const slotAvailability = document.getElementById('slotAvailability');
+  const slotAvailabilityText = document.getElementById('slotAvailabilityText');
+  const totalPriceDisplay = document.getElementById('totalPriceDisplay');
+  const submitBtn = document.getElementById('submitBtn');
+  const wishlistBtn = document.getElementById('wishlistBtn');
+  const wishlistIcon = document.getElementById('wishlistIcon');
+  const backBtn = document.getElementById('backBtn');
+  const inputName = document.getElementById('inputName');
+  const inputEmail = document.getElementById('inputEmail');
+
+  // ========== HELPER FUNCTIONS ==========
+  function formatDate(year, month, day) {
+    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  }
+
+  function isPastDay(day) {
+    const dateStr = formatDate(currentYear, currentMonth, day);
+    const check = new Date(dateStr);
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    return check < todayStart;
+  }
+
+  function isDateBlocked(day) {
+    return blockedDates.has(formatDate(currentYear, currentMonth, day));
+  }
+
+  function isDateFullyBooked(day) {
+    const dateStr = formatDate(currentYear, currentMonth, day);
+    const dayBookings = bookingsByDateSlot[dateStr];
+    if (!dayBookings) return false;
+    const allSlots = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
+    return allSlots.every(slot => (dayBookings[slot] || 0) >= MAX_BOATS_PER_SLOT);
+  }
+
+  function isDateAvailable(day) {
+    return !isPastDay(day) && !isDateBlocked(day) && !isDateFullyBooked(day);
+  }
+
+  function isSelected(day) {
+    if (!selectedDate) return false;
+    return formatDate(currentYear, currentMonth, day) === selectedDate;
+  }
+
+  function getSelectedTimeStr() {
+    return `${String(timeHour).padStart(2, '0')}:00`;
+  }
+
+  function getBoatsBooked(date, timeSlot) {
+    return (bookingsByDateSlot[date] && bookingsByDateSlot[date][timeSlot]) || 0;
+  }
+
+  function getRemainingBoats(date, timeSlot) {
+    const booked = getBoatsBooked(date, timeSlot);
+    return Math.max(0, MAX_BOATS_PER_SLOT - booked);
+  }
+
+  function getBoatsNeeded() {
+    return Math.ceil(guests / MAX_PEOPLE_PER_BOAT);
+  }
+
+  function getTotalPrice() {
+    return 635 * guests;
+  }
+
+  function canBook() {
+    if (!inputName.value || !inputEmail.value || !selectedDate) return false;
+    const remaining = getRemainingBoats(selectedDate, getSelectedTimeStr());
+    return remaining >= getBoatsNeeded();
+  }
+
+  // ========== RENDER FUNCTIONS ==========
+  function renderThumbnails() {
+    thumbsCol.innerHTML = '';
+    images.forEach((img, i) => {
+      const div = document.createElement('div');
+      div.className = 'thumb-item' + (i === selectedIndex ? ' active' : '');
+      div.innerHTML = `<img src="${img.thumb}" alt="view ${i}"/>`;
+      div.addEventListener('click', () => selectImage(i));
+      thumbsCol.appendChild(div);
+    });
+  }
+
+  function renderInfoCards() {
+    const cards = [
+      { type: 'duration', label: 'Duration', value: '2.5 – 3 Jam' },
+      { type: 'distance', label: 'Distance', value: '11 Km' },
+      { type: 'grade', label: 'Grade', value: 'Grade III+' },
+      { type: 'capacity', label: 'Capacity', value: 'Max 4 Org' }
+    ];
+
+    infoGrid.innerHTML = '';
+    cards.forEach(info => {
+      let iconSvg = '';
+      if (info.type === 'duration') {
+        iconSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+      } else if (info.type === 'distance') {
+        iconSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+      } else if (info.type === 'grade') {
+        iconSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c1.5-3 3-4.5 4.5-4.5S9 9 10.5 9 13.5 6 15 6s3 3 4.5 3 2.5-2 3-3"/><path d="M2 18c1.5-3 3-4.5 4.5-4.5S9 15 10.5 15 13.5 12 15 12s3 3 4.5 3 2.5-2 3-3"/></svg>';
+      } else if (info.type === 'capacity') {
+        iconSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+      }
+      const card = document.createElement('div');
+      card.className = 'info-card';
+      card.innerHTML = `
+        <div class="info-icon">${iconSvg}</div>
+        <p style="font-size:14px; font-weight:700; color:#111827; text-align:center; line-height:1.2;">${info.value}</p>
+        <p style="font-size:10px; color:#9ca3af; margin-top:2px; text-align:center;">${info.label}</p>
+      `;
+      infoGrid.appendChild(card);
+    });
+  }
+
+  function renderCalendar() {
+    monthYearDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    daysGrid.innerHTML = '';
+
+    // Empty cells
+    for (let i = 0; i < adjustedFirstDay; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'day-cell empty';
+      btn.disabled = true;
+      daysGrid.appendChild(btn);
+    }
+
+    // Day cells
+    for (let d = 1; d <= daysInMonth; d++) {
+      const btn = document.createElement('button');
+      btn.className = 'day-cell';
+      btn.textContent = d;
+
+      const past = isPastDay(d);
+      const blocked = isDateBlocked(d);
+      const fullyBooked = isDateFullyBooked(d);
+      const available = isDateAvailable(d);
+      const selected = isSelected(d);
+
+      if (!d) {
+        btn.classList.add('empty');
+        btn.disabled = true;
+      } else if (past) {
+        btn.classList.add('past');
+        btn.disabled = true;
+      } else if (blocked) {
+        btn.classList.add('booked');
+        btn.disabled = true;
+      } else if (fullyBooked && !selected) {
+        btn.classList.add('full');
+        btn.disabled = true;
+      } else if (selected) {
+        btn.classList.add('selected');
+      } else if (available) {
+        btn.classList.add('available');
+      }
+
+      if (!past && !blocked && !(fullyBooked && !selected)) {
+        btn.addEventListener('click', () => selectDay(d));
+      }
+
+      daysGrid.appendChild(btn);
+    }
+  }
+
+  function updateGuestDisplay() {
+    guestCount.textContent = `${guests} ${guests === 1 ? 'Guest' : 'Guests'}`;
+    updateUI();
+  }
+
+  function updateTimeDisplay() {
+    hourDisplay.textContent = String(timeHour).padStart(2, '0');
+    hourUpBtn.disabled = timeHour >= 16;
+    hourDownBtn.disabled = timeHour <= 6;
+    updateUI();
+  }
+
+  function updateSlotAvailability() {
+    if (!selectedDate) {
+      slotAvailability.className = 'slot-availability no-date';
+      slotAvailabilityText.textContent = 'Pilih tanggal terlebih dahulu untuk melihat ketersediaan slot';
+      return;
+    }
+
+    const timeStr = getSelectedTimeStr();
+    const remaining = getRemainingBoats(selectedDate, timeStr);
+    const boatsNeeded = getBoatsNeeded();
+    const remainingPeople = remaining * MAX_PEOPLE_PER_BOAT;
+
+    if (remaining <= 0) {
+      slotAvailability.className = 'slot-availability full';
+      slotAvailability.innerHTML = '<span class="slot-availability-icon">❌</span><span>' + `Slot ${timeStr} sudah penuh (50/50 kapal). Pilih jam lain.` + '</span>';
+    } else if (remaining < boatsNeeded) {
+      slotAvailability.className = 'slot-availability full';
+      slotAvailability.innerHTML = '<span class="slot-availability-icon">❌</span><span>' + `Slot tidak cukup! Butuh ${boatsNeeded} kapal, tersisa ${remaining} kapal. Kurangi tamu atau pilih jam lain.` + '</span>';
+    } else if (remaining <= 5) {
+      slotAvailability.className = 'slot-availability almost-full';
+      slotAvailability.innerHTML = '<span class="slot-availability-icon">⚠️</span><span>' + `Slot hampir penuh! Tersisa ${remaining} kapal (${remainingPeople} orang). Segera booking!` + '</span>';
+    } else {
+      slotAvailability.className = 'slot-availability available';
+      slotAvailability.innerHTML = '<span class="slot-availability-icon">✅</span><span>' + `Slot tersedia: ${remaining} kapal (${remainingPeople} orang). Kapal dibutuhkan: ${boatsNeeded}.` + '</span>';
+    }
+  }
+
+  function updatePriceDisplay() {
+    const total = getTotalPrice();
+    totalPriceDisplay.innerHTML = `$${total} <span>/person</span>`;
+  }
+
+  function updateSubmitButton() {
+    submitBtn.disabled = !canBook();
+  }
+
+  function updateUI() {
+    updateSlotAvailability();
+    updatePriceDisplay();
+    updateSubmitButton();
+  }
+
+  // ========== ACTIONS ==========
+  function selectImage(i) {
+    if (i === selectedIndex) return;
+    imgSwitching = true;
+    heroImage.classList.add('switching');
+    setTimeout(() => {
+      selectedIndex = i;
+      heroImage.src = images[i].full;
+      heroImage.classList.remove('switching');
+      imgSwitching = false;
+      renderThumbnails();
+    }, 220);
+  }
+
+  function selectDay(day) {
+    selectedDate = formatDate(currentYear, currentMonth, day);
+    renderCalendar();
+    updateUI();
+  }
+
+  function prevMonth() {
+    if (currentMonth === 0) {
+      currentMonth = 11;
+      currentYear--;
+    } else {
+      currentMonth--;
+    }
+    renderCalendar();
+    updateUI();
+  }
+
+  function nextMonth() {
+    if (currentMonth === 11) {
+      currentMonth = 0;
+      currentYear++;
+    } else {
+      currentMonth++;
+    }
+    renderCalendar();
+    updateUI();
+  }
+
+  function incrementHour() {
+    if (timeHour < 16) {
+      timeHour++;
+      updateTimeDisplay();
+    }
+  }
+
+  function decrementHour() {
+    if (timeHour > 6) {
+      timeHour--;
+      updateTimeDisplay();
+    }
+  }
+
+  function submitBooking() {
+    if (!inputName.value || !inputEmail.value || !selectedDate) {
+      alert('Mohon lengkapi data diri dan pilih tanggal.');
+      return;
+    }
+
+    const timeStr = getSelectedTimeStr();
+    const remaining = getRemainingBoats(selectedDate, timeStr);
+    const boatsNeeded = getBoatsNeeded();
+
+    if (remaining < boatsNeeded) {
+      alert(`❌ Slot ${timeStr} tidak cukup! Tersisa ${remaining} kapal, butuh ${boatsNeeded} kapal.`);
+      return;
+    }
+
+    // Simulasi booking
+    if (!bookingsByDateSlot[selectedDate]) {
+      bookingsByDateSlot[selectedDate] = {};
+    }
+    bookingsByDateSlot[selectedDate][timeStr] = (bookingsByDateSlot[selectedDate][timeStr] || 0) + boatsNeeded;
+
+    // Arahkan ke halaman pembayaran
+    window.location.href = 'pembayaran.html';
+  }
+
+  // ========== EVENT LISTENERS ==========
+  backBtn.addEventListener('click', () => history.back());
+
+  wishlistBtn.addEventListener('click', () => {
+    wishlist = !wishlist;
+    if (wishlist) {
+      wishlistIcon.setAttribute('fill', '#f43f5e');
+      wishlistIcon.setAttribute('stroke', '#f43f5e');
+    } else {
+      wishlistIcon.setAttribute('fill', 'none');
+      wishlistIcon.setAttribute('stroke', 'white');
+    }
+  });
+
+  readMoreBtn.addEventListener('click', () => {
+    expanded = !expanded;
+    if (expanded) {
+      descriptionText.style.display = 'block';
+      descriptionText.style.webkitLineClamp = 'unset';
+      descriptionText.style.overflow = 'visible';
+      readMoreBtn.textContent = 'Show less';
+    } else {
+      descriptionText.style.display = '-webkit-box';
+      descriptionText.style.webkitLineClamp = '4';
+      descriptionText.style.overflow = 'hidden';
+      readMoreBtn.textContent = 'Read more';
+    }
+  });
+
+  document.getElementById('prevMonthBtn').addEventListener('click', prevMonth);
+  document.getElementById('nextMonthBtn').addEventListener('click', nextMonth);
+
+  guestMinusBtn.addEventListener('click', () => {
+    if (guests > 1) {
+      guests--;
+      updateGuestDisplay();
+    }
+  });
+
+  guestPlusBtn.addEventListener('click', () => {
+    if (guests < 4) {
+      guests++;
+      updateGuestDisplay();
+    }
+  });
+
+  hourUpBtn.addEventListener('click', incrementHour);
+  hourDownBtn.addEventListener('click', decrementHour);
+
+  submitBtn.addEventListener('click', submitBooking);
+
+  // Sidebar navigation
+  document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+      document.querySelectorAll('.sidebar-nav-item').forEach(el => el.classList.remove('active'));
+      this.classList.add('active');
+      activeNav = this.getAttribute('data-nav');
+    });
+  });
+
+  // Input listeners for validation
+  inputName.addEventListener('input', updateSubmitButton);
+  inputEmail.addEventListener('input', updateSubmitButton);
+
+  // ========== INITIAL RENDER ==========
+  renderThumbnails();
+  renderInfoCards();
+  renderCalendar();
+  updateGuestDisplay();
+  updateTimeDisplay();
+  updateUI();
+})();
+</script>
+</body>
+</html>
