@@ -173,7 +173,7 @@
 
     .top-btns {
       position: absolute; top: 20px; left: 0; right: 0;
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex; justify-content: flex-start; align-items: center;
       padding: 0 20px;
       z-index: 10;
     }
@@ -225,7 +225,7 @@
       overflow-y: visible;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
-      padding: 20px 20px 24px;
+      padding: 20px 20px 24px 20px;
       background: var(--bg);
       scroll-behavior: smooth;
       padding-bottom: 160px;
@@ -234,7 +234,7 @@
     }
 
     @media (min-width: 640px) {
-      .content-panel { padding: 24px 32px 170px; }
+      .content-panel { padding: 24px 32px 110px; }
     }
 
     @media (min-width: 1024px) {
@@ -242,7 +242,7 @@
         width: 50%;
         height: 100vh;
         overflow-y: auto;
-        padding: 36px 40px 180px;
+        padding: 36px 40px 100px;
       }
     }
 
@@ -458,6 +458,7 @@
       border-radius: 14px;
       padding: 8px 14px;
       margin-top: 8px;
+      gap: 10px;
     }
     .guest-btn {
       width: 32px; height: 32px;
@@ -471,11 +472,30 @@
       cursor: pointer;
       color: var(--ink);
       font-weight: 600;
+      flex-shrink: 0;
     }
     .guest-count {
       font-weight: 700;
       font-size: 16px;
       color: var(--ink);
+      flex: 1;
+      text-align: center;
+    }
+    .guest-input {
+      width: 60px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--ink);
+      outline: none;
+      border-bottom: 2px dashed var(--ink-5);
+      transition: border 0.2s;
+    }
+    .guest-input:focus {
+      border-bottom-color: var(--accent);
     }
 
     /* ===== TIME SLOT PICKER ===== */
@@ -572,6 +592,73 @@
       width: 8px; height: 8px;
       border-radius: 50%;
       display: inline-block;
+    }
+
+    /* ===== DURATION INPUT ===== */
+    .duration-selector {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 8px 14px;
+      margin-top: 8px;
+      gap: 8px;
+    }
+    .duration-btn {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: none;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--ink);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .duration-input-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .duration-input {
+      width: 45px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--ink);
+      outline: none;
+      border-bottom: 2px dashed var(--ink-5);
+      transition: border 0.2s;
+      -moz-appearance: textfield;
+    }
+    .duration-input::-webkit-outer-spin-button,
+    .duration-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .duration-input:focus {
+      border-bottom-color: var(--accent);
+    }
+    .duration-unit {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-3);
+      white-space: nowrap;
+    }
+    .duration-separator {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink-4);
     }
 
     /* ===== FLOATING CTA ===== */
@@ -721,14 +808,6 @@
               <polyline points="15 18 9 12 15 6"/>
             </svg>
           </button>
-          <button class="glass-btn" @click="wishlist=!wishlist">
-            <svg width="18" height="18" viewBox="0 0 24 24"
-                 :fill="wishlist ? '#f43f5e' : 'none'"
-                 :stroke="wishlist ? '#f43f5e' : 'white'"
-                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-            </svg>
-          </button>
         </div>
 
         <div class="thumbs-col">
@@ -866,9 +945,17 @@
           <div class="form-group">
             <label class="form-label">Number of Guests</label>
             <div class="guest-selector">
-              <button class="guest-btn" @click="guests > 1 ? guests-- : null">−</button>
-              <span class="guest-count">{{ guests }} {{ guests === 1 ? 'Guest' : 'Guests' }}</span>
-              <button class="guest-btn" @click="guests < 4 ? guests++ : null">+</button>
+              <button class="guest-btn" @click="decrementGuests">−</button>
+              <input
+                type="number"
+                class="guest-input"
+                v-model.number="guests"
+                @input="validateGuests"
+                min="1"
+                max="4"
+                step="1"
+              />
+              <button class="guest-btn" @click="incrementGuests">+</button>
             </div>
             <div style="font-size:11px; color:var(--ink-4); margin-top:4px;">
               Max 4 orang per booking (1 kapal)
@@ -877,7 +964,7 @@
 
           <!-- TIME SLOT PICKER -->
           <div class="form-group">
-            <label class="form-label">Select Time Slot</label>
+            <label class="form-label">Select Start Time</label>
             <div class="time-slots-grid">
               <button
                 v-for="slot in timeSlotOptions" :key="slot.time"
@@ -903,8 +990,44 @@
               <span><span class="legend-dot" style="background:#ef4444;"></span> Penuh</span>
               <span><span class="legend-dot" style="background:var(--ink);"></span> Dipilih</span>
             </div>
-            <div v-if="selectedTime && selectedDate" style="margin-top:8px; font-size:12px; color:var(--ink-3);">
-              📅 {{ selectedDate }} · ⏰ {{ selectedTime }} · 🚤 Kapal: {{ boatsNeeded }} · 👥 {{ guests }} orang
+          </div>
+
+          <!-- DURATION INPUT (Outbound Session) -->
+          <div class="form-group">
+            <label class="form-label">Duration (Outbound Session)</label>
+            <div class="duration-selector">
+              <button class="duration-btn" @click="decrementDuration" :disabled="!selectedTime">−</button>
+              <div class="duration-input-wrap">
+                <input
+                  type="number"
+                  class="duration-input"
+                  v-model.number="durationHours"
+                  @input="onHoursChange"
+                  :disabled="!selectedTime"
+                  min="0"
+                  max="12"
+                  step="1"
+                  placeholder="0"
+                />
+                <span class="duration-unit">jam</span>
+                <span class="duration-separator">:</span>
+                <input
+                  type="number"
+                  class="duration-input"
+                  v-model.number="durationMinutes"
+                  @input="onMinutesChange"
+                  :disabled="!selectedTime"
+                  min="0"
+                  max="45"
+                  step="15"
+                  placeholder="00"
+                />
+                <span class="duration-unit">menit</span>
+              </div>
+              <button class="duration-btn" @click="incrementDuration" :disabled="!selectedTime">+</button>
+            </div>
+            <div style="font-size:11px; color:var(--ink-4); margin-top:4px;">
+              Durasi dalam kelipatan 15 menit, maksimal 12 jam.
             </div>
           </div>
 
@@ -971,13 +1094,14 @@ createApp({
     });
 
     // ========== STATE ==========
-    const wishlist = ref(false);
     const expanded = ref(false);
     const selectedIndex = ref(0);
     const imgSwitching = ref(false);
     const activeNav = ref('home');
     const guests = ref(2);
     const selectedTime = ref(null);
+    const durationHours = ref(0);
+    const durationMinutes = ref(15);
 
     const today = new Date();
     const currentMonth = ref(today.getMonth());
@@ -1060,6 +1184,8 @@ createApp({
       const dateStr = formatDate(currentYear.value, currentMonth.value, day);
       selectedDate.value = dateStr;
       selectedTime.value = null; // Reset waktu saat ganti tanggal
+      durationHours.value = 0;
+      durationMinutes.value = 15;
     }
 
     function prevMonth() {
@@ -1067,6 +1193,8 @@ createApp({
       else currentMonth.value--;
       selectedDate.value = null;
       selectedTime.value = null;
+      durationHours.value = 0;
+      durationMinutes.value = 15;
     }
 
     function nextMonth() {
@@ -1074,24 +1202,47 @@ createApp({
       else currentMonth.value++;
       selectedDate.value = null;
       selectedTime.value = null;
+      durationHours.value = 0;
+      durationMinutes.value = 15;
+    }
+
+    // ========== GUEST LOGIC ==========
+    function validateGuests() {
+      if (guests.value === '' || guests.value === null || guests.value === undefined) {
+        guests.value = 1;
+      }
+      if (typeof guests.value !== 'number' || isNaN(guests.value)) {
+        guests.value = 1;
+      }
+      if (guests.value < 1) guests.value = 1;
+      if (guests.value > 4) guests.value = 4;
+      guests.value = Math.round(guests.value);
+    }
+
+    function incrementGuests() {
+      if (guests.value < 4) {
+        guests.value++;
+      }
+    }
+
+    function decrementGuests() {
+      if (guests.value > 1) {
+        guests.value--;
+      }
     }
 
     // ========== SLOT TIME LOGIC ==========
-    // Ambil jumlah kapal terisi untuk slot tertentu
     function getBoatsBooked(date, timeSlot) {
       return bookingsByDateSlot.value[date]?.[timeSlot] || 0;
     }
 
-    // Sisa kapal untuk slot tertentu
     function getRemainingBoats(date, timeSlot) {
       const booked = getBoatsBooked(date, timeSlot);
       return Math.max(0, MAX_BOATS_PER_SLOT - booked);
     }
 
-    // Hitung berapa kapal dibutuhkan untuk jumlah tamu
     const boatsNeeded = computed(() => Math.ceil(guests.value / MAX_PEOPLE_PER_BOAT));
 
-    // Slot waktu dengan info ketersediaan
     const timeSlotOptions = computed(() => {
       if (!selectedDate.value) {
         return TIME_SLOTS.map(time => ({
@@ -1107,7 +1258,6 @@ createApp({
       }));
     });
 
-    // Cek apakah slot cukup untuk jumlah tamu
     function isSlotEnoughCapacity(date, timeSlot) {
       const remaining = getRemainingBoats(date, timeSlot);
       return remaining >= boatsNeeded.value;
@@ -1121,6 +1271,65 @@ createApp({
         return;
       }
       selectedTime.value = time;
+      durationHours.value = 0;
+      durationMinutes.value = 15;
+    }
+
+    // ========== DURATION LOGIC ==========
+    // Total durasi dalam menit
+    const selectedDuration = computed(() => {
+      return (durationHours.value || 0) * 60 + (durationMinutes.value || 0);
+    });
+
+    function onHoursChange() {
+      if (durationHours.value === '' || durationHours.value === null || durationHours.value === undefined) {
+        durationHours.value = 0;
+      }
+      if (typeof durationHours.value !== 'number' || isNaN(durationHours.value)) {
+        durationHours.value = 0;
+      }
+      durationHours.value = Math.round(durationHours.value);
+      if (durationHours.value < 0) durationHours.value = 0;
+      if (durationHours.value > 12) durationHours.value = 12;
+    }
+
+    function onMinutesChange() {
+      if (durationMinutes.value === '' || durationMinutes.value === null || durationMinutes.value === undefined) {
+        durationMinutes.value = 0;
+      }
+      if (typeof durationMinutes.value !== 'number' || isNaN(durationMinutes.value)) {
+        durationMinutes.value = 0;
+      }
+      // Bulatkan ke kelipatan 15 terdekat
+      durationMinutes.value = Math.round(durationMinutes.value / 15) * 15;
+      if (durationMinutes.value < 0) durationMinutes.value = 0;
+      if (durationMinutes.value >= 60) {
+        // Jika menit >= 60, tambahkan ke jam
+        durationHours.value = (durationHours.value || 0) + Math.floor(durationMinutes.value / 60);
+        durationMinutes.value = durationMinutes.value % 60;
+        if (durationHours.value > 12) durationHours.value = 12;
+        if (durationHours.value === 12) durationMinutes.value = 0;
+      }
+    }
+
+    function incrementDuration() {
+      if (!selectedTime.value) return;
+      let totalMinutes = (durationHours.value || 0) * 60 + (durationMinutes.value || 0);
+      if (totalMinutes < 720) { // Maksimal 12 jam (720 menit)
+        totalMinutes += 15;
+        durationHours.value = Math.floor(totalMinutes / 60);
+        durationMinutes.value = totalMinutes % 60;
+      }
+    }
+
+    function decrementDuration() {
+      if (!selectedTime.value) return;
+      let totalMinutes = (durationHours.value || 0) * 60 + (durationMinutes.value || 0);
+      if (totalMinutes > 15) { // Minimal 15 menit
+        totalMinutes -= 15;
+        durationHours.value = Math.floor(totalMinutes / 60);
+        durationMinutes.value = totalMinutes % 60;
+      }
     }
 
     // ========== PRICING ==========
@@ -1129,7 +1338,7 @@ createApp({
 
     // ========== VALIDASI BOOKING ==========
     const canBook = computed(() => {
-      return booking.value.name && booking.value.email && selectedDate.value && selectedTime.value;
+      return booking.value.name && booking.value.email && selectedDate.value && selectedTime.value && selectedDuration.value > 0;
     });
 
     // ========== IMAGE ==========
@@ -1144,12 +1353,18 @@ createApp({
     // ========== SUBMIT BOOKING ==========
     function submitBooking() {
       if (!canBook.value) {
-        alert('Mohon lengkapi data diri, pilih tanggal, dan pilih slot waktu.');
+        alert('Mohon lengkapi data diri, pilih tanggal, pilih waktu mulai, dan pilih durasi.');
         return;
       }
+      const totalMin = selectedDuration.value;
+      const jam = Math.floor(totalMin / 60);
+      const menit = totalMin % 60;
+      const durasiStr = jam > 0 ? `${jam} jam ${menit > 0 ? menit + ' menit' : ''}` : `${menit} menit`;
+      
       alert(`✅ Terima kasih, ${booking.value.name}!\n\n` +
             `📅 Tanggal: ${selectedDate.value}\n` +
-            `⏰ Jam: ${selectedTime.value}\n` +
+            `⏰ Mulai: ${selectedTime.value}\n` +
+            `⏳ Durasi: ${durasiStr}\n` +
             `👥 Tamu: ${guests.value} orang\n` +
             `🚤 Kapal: ${boatsNeeded.value}\n` +
             `💰 Total: $${totalPrice.value}\n\n` +
@@ -1164,20 +1379,25 @@ createApp({
       { type: 'capacity',  label: 'Capacity',  value: 'Max 4 Org' },
     ];
 
-    // Reset selected time when date changes
+    // Reset selected time & duration when date changes
     watch(selectedDate, () => {
       selectedTime.value = null;
+      durationHours.value = 0;
+      durationMinutes.value = 15;
     });
 
     return { 
-      wishlist, expanded, images, selectedIndex, currentImage, imgSwitching, 
+      expanded, images, selectedIndex, currentImage, imgSwitching, 
       selectImage, goBack, infoCards, activeNav, booking, submitBooking,
-      guests, currentMonth, currentYear, selectedDate, calendarDays,
+      guests, validateGuests, incrementGuests, decrementGuests,
+      currentMonth, currentYear, selectedDate, calendarDays,
       weekdays, currentMonthName, prevMonth, nextMonth,
       isPastDay, isDateBlocked, isDateFullyBooked, isDateAvailable, isSelected, selectDay,
       totalPrice, selectedTime, timeSlotOptions, selectTimeSlot,
       boatsNeeded, canBook,
-      TIME_SLOTS, MAX_BOATS_PER_SLOT, MAX_PEOPLE_PER_BOAT, MAX_PEOPLE_PER_SLOT
+      TIME_SLOTS, MAX_BOATS_PER_SLOT, MAX_PEOPLE_PER_BOAT, MAX_PEOPLE_PER_SLOT,
+      durationHours, durationMinutes, selectedDuration,
+      onHoursChange, onMinutesChange, incrementDuration, decrementDuration,
     };
   }
 }).mount('#app');
