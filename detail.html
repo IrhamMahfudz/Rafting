@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, height=device-height"/>
-  <title>Jogja Rafting – La Selva | Eco-Lodge</title>
+  <title>Affito – La Selva | Eco-Lodge</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -23,6 +24,9 @@
       --available: #d4d4d4;
       --booked: #bdbdbd;
       --selected-date: #171717;
+      --green-500: #10b981;
+      --red-500: #ef4444;
+      --amber-500: #f59e0b;
     }
 
     html, body {
@@ -53,17 +57,15 @@
         align-items: center;
         justify-content: space-between;
         width: 80px;
-        min-height: 100vh;
+        height: 100vh;
         background: var(--surface);
-        box-shadow: 1px 0 0 var(--ink-5);
+        border-right: 1px solid var(--ink-5);
         padding: 28px 0;
         flex-shrink: 0;
         z-index: 50;
         position: sticky;
         top: 0;
-        height: 100vh;
       }
-
       .sidebar-logo {
         font-family: 'Syne', sans-serif;
         font-size: 11px;
@@ -72,41 +74,29 @@
         color: var(--ink);
         writing-mode: vertical-rl;
         transform: rotate(180deg);
-        text-decoration: none;
       }
-
       .sidebar-nav {
         display: flex;
         flex-direction: column;
         gap: 8px;
-        align-items: center;
       }
-
       .sidebar-nav-item {
-        width: 46px;
-        height: 46px;
+        width: 46px; height: 46px;
         border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         cursor: pointer;
         transition: background 0.2s;
-        text-decoration: none;
+        color: var(--ink-4);
       }
-
-      .sidebar-nav-item.active { background: var(--ink); }
-      .sidebar-nav-item.active svg { stroke: #fff; }
+      .sidebar-nav-item.active { background: var(--ink); color: white; }
+      .sidebar-nav-item.active svg { stroke: white; }
       .sidebar-nav-item:not(.active) svg { stroke: var(--ink-4); }
       .sidebar-nav-item:not(.active):hover { background: var(--bg); }
-
       .sidebar-avatar {
-        width: 38px;
-        height: 38px;
+        width: 38px; height: 38px;
         border-radius: 50%;
         background: linear-gradient(135deg, #374151, #111827);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         cursor: pointer;
       }
     }
@@ -488,145 +478,100 @@
       color: var(--ink);
     }
 
-    /* ===== TIME PICKER ===== */
-    .time-picker-wrap {
-      background: white;
-      border: 1px solid var(--border-light);
-      border-radius: 14px;
-      padding: 14px 16px;
+    /* ===== TIME SLOT PICKER ===== */
+    .time-slots-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
       margin-top: 8px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
     }
 
-    .time-picker-icon {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      background: var(--primary);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+    @media (max-width: 480px) {
+      .time-slots-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
 
-    .time-scroll-row {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex: 1;
-    }
-
-    .time-col {
+    .time-slot-btn {
+      padding: 12px 8px;
+      border-radius: 12px;
+      border: 2px solid var(--border-light);
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      font-family: 'DM Sans', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 2px;
-      flex: 1;
     }
 
-    .time-col label {
+    .time-slot-btn:hover:not(.selected):not(.full):not(.disabled) {
+      border-color: var(--ink-3);
+      background: #f9fafb;
+    }
+
+    .time-slot-btn.selected {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
+    }
+
+    .time-slot-btn.full {
+      border-color: #fee2e2;
+      background: #fef2f2;
+      color: #b91c1c;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .time-slot-btn.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #f3f4f6;
+    }
+
+    .time-slot-time {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .time-slot-info {
       font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--ink-4);
-      margin-bottom: 2px;
+      font-weight: 500;
+      opacity: 0.8;
     }
 
-    .time-spin-btn {
-      width: 28px; height: 28px;
-      border-radius: 8px;
-      border: 1px solid var(--border-light);
-      background: var(--bg);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      color: var(--ink-3);
-      transition: all 0.15s;
-      font-size: 0;
-      flex-shrink: 0;
-    }
-    .time-spin-btn:hover { background: var(--ink-5); color: var(--ink); }
-    .time-spin-btn:active { transform: scale(0.9); }
-    .time-spin-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-
-    .time-display {
-      font-family: 'Syne', sans-serif;
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--ink);
-      min-width: 36px;
-      text-align: center;
-      line-height: 1;
-      user-select: none;
+    .time-slot-btn.selected .time-slot-info {
+      color: rgba(255,255,255,0.8);
     }
 
-    /* Menit tampil tapi tidak bisa diubah */
-    .time-display.fixed-minute {
-      color: var(--ink-4);
-      cursor: default;
+    .time-slot-btn.full .time-slot-info {
+      color: #b91c1c;
     }
 
-    .time-col.minute-col .time-spin-btn {
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .time-sep {
-      font-family: 'Syne', sans-serif;
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--ink-4);
-      line-height: 1;
-      padding-bottom: 2px;
-      align-self: center;
-    }
-
-    .time-range-hint {
+    .slot-legend {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
       font-size: 11px;
       color: var(--ink-4);
-      margin-top: 6px;
-      text-align: center;
+      flex-wrap: wrap;
     }
 
-    /* ===== SLOT AVAILABILITY INFO ===== */
-    .slot-availability {
-      margin-top: 10px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 500;
+    .slot-legend span {
       display: flex;
       align-items: center;
-      gap: 8px;
-      line-height: 1.4;
+      gap: 4px;
     }
 
-    .slot-availability.available {
-      background: #ecfdf5;
-      color: #065f46;
-      border: 1px solid #a7f3d0;
-    }
-
-    .slot-availability.almost-full {
-      background: #fffbeb;
-      color: #92400e;
-      border: 1px solid #fde68a;
-    }
-
-    .slot-availability.full {
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
-    }
-
-    .slot-availability.no-date {
-      background: #f9fafb;
-      color: #6b7280;
-      border: 1px solid #e5e7eb;
-    }
-
-    .slot-availability-icon {
-      font-size: 18px;
-      flex-shrink: 0;
+    .legend-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
     }
 
     /* ===== FLOATING CTA ===== */
@@ -729,29 +674,34 @@
 
   <!-- SIDEBAR DESKTOP -->
   <aside class="sidebar">
-    <a href="home.html" class="sidebar-logo">JOGJA RAFTING</a>
-    <nav class="sidebar-nav" aria-label="Navigasi utama">
-      <a href="home.html" class="sidebar-nav-item active" data-nav="home" aria-label="home" title="Home">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <div class="sidebar-logo">AFFITO</div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-item" @click="activeNav='home'" :class="{ active: activeNav==='home' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
         </svg>
-      </a>
-      <a href="promo.html" class="sidebar-nav-item" data-nav="promo" aria-label="promo" title="Promo">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20.59 13.41L11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82z"/><circle cx="7.5" cy="7.5" r="1.5"/>
+      </div>
+      <div class="sidebar-nav-item" @click="activeNav='map'" :class="{ active: activeNav==='map' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>
         </svg>
-      </a>
-      <a href="cek-booking.html" class="sidebar-nav-item" data-nav="cek-booking" aria-label="cek-booking" title="Cek Booking">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+      </div>
+      <div class="sidebar-nav-item" @click="activeNav='chat'" :class="{ active: activeNav==='chat' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>
-      </a>
-      <a href="contact.html" class="sidebar-nav-item" data-nav="contact" aria-label="contact" title="Contact">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+      </div>
+      <div class="sidebar-nav-item" @click="activeNav='notif'" :class="{ active: activeNav==='notif' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
         </svg>
-      </a>
+      </div>
     </nav>
+    <div class="sidebar-avatar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+    </div>
   </aside>
 
   <!-- MAIN -->
@@ -760,26 +710,34 @@
 
       <!-- HERO -->
       <div class="hero-wrap">
-        <img id="heroImage" src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=85" alt="La Selva"
-             class="hero-img"/>
+        <img :src="currentImage" alt="La Selva"
+             class="hero-img"
+             :class="{ switching: imgSwitching }"/>
         <div class="hero-grad"></div>
 
         <div class="top-btns">
-          <button class="glass-btn" id="backBtn">
+          <button class="glass-btn" @click="goBack">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="15 18 9 12 15 6"/>
             </svg>
           </button>
-          <button class="glass-btn" id="wishlistBtn">
-            <svg width="18" height="18" viewBox="0 0 24 24" id="wishlistIcon"
-                 fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="glass-btn" @click="wishlist=!wishlist">
+            <svg width="18" height="18" viewBox="0 0 24 24"
+                 :fill="wishlist ? '#f43f5e' : 'none'"
+                 :stroke="wishlist ? '#f43f5e' : 'white'"
+                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
             </svg>
           </button>
         </div>
 
-        <div class="thumbs-col" id="thumbsCol">
-          <!-- Thumbnails akan di-generate oleh JS -->
+        <div class="thumbs-col">
+          <div v-for="(img, i) in images" :key="i"
+               class="thumb-item"
+               :class="{ active: selectedIndex===i }"
+               @click="selectImage(i)">
+            <img :src="img.thumb" :alt="'view '+i"/>
+          </div>
         </div>
 
         <div class="hero-title">
@@ -800,18 +758,39 @@
       <div class="content-panel no-scrollbar">
 
         <!-- INFO CARDS — 4 items -->
-        <div class="info-grid" id="infoGrid">
-          <!-- Info cards di-generate oleh JS -->
+        <div class="info-grid">
+          <div v-for="info in infoCards" :key="info.label" class="info-card">
+            <div class="info-icon">
+              <svg v-if="info.type==='duration'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <svg v-else-if="info.type==='distance'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+              </svg>
+              <svg v-else-if="info.type==='grade'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12c1.5-3 3-4.5 4.5-4.5S9 9 10.5 9 13.5 6 15 6s3 3 4.5 3 2.5-2 3-3"/>
+                <path d="M2 18c1.5-3 3-4.5 4.5-4.5S9 15 10.5 15 13.5 12 15 12s3 3 4.5 3 2.5-2 3-3"/>
+              </svg>
+              <svg v-else-if="info.type==='capacity'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <p style="font-size:14px; font-weight:700; color:#111827; text-align:center; line-height:1.2;">{{ info.value }}</p>
+            <p style="font-size:10px; color:#9ca3af; margin-top:2px; text-align:center;">{{ info.label }}</p>
+          </div>
         </div>
 
         <!-- DESCRIPTION -->
         <div style="margin-bottom:24px;">
           <h2 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:#111827; margin-bottom:8px;">Description</h2>
-          <p id="descriptionText" style="font-size:13px; color:#6b7280; line-height:1.65; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;">
+          <p style="font-size:13px; color:#6b7280; line-height:1.65;"
+             :style="expanded ? {} : { display:'-webkit-box', WebkitLineClamp:'4', WebkitBoxOrient:'vertical', overflow:'hidden' }">
             La Selva is a breathtaking eco-lodge nestled deep within the lush Amazon rainforest of Peru. Surrounded by ancient trees, exotic wildlife, and crystal-clear rivers, this hidden gem offers a truly immersive nature experience. Guests can explore winding jungle trails, spot rare birds and wildlife, and fall asleep to the soothing sounds of the forest at night.
           </p>
-          <button id="readMoreBtn" style="font-size:12px; font-weight:600; color:#4f46e5; margin-top:6px; background:none; border:none; cursor:pointer; padding:0;">
-            Read more
+          <button @click="expanded=!expanded"
+                  style="font-size:12px; font-weight:600; color:#4f46e5; margin-top:6px; background:none; border:none; cursor:pointer; padding:0;">
+            {{ expanded ? 'Show less' : 'Read more' }}
           </button>
         </div>
 
@@ -847,24 +826,39 @@
 
         <!-- BOOKING FORM -->
         <div style="margin-bottom: 10px;">
-          <h2 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:#111827; margin-bottom:16px;">Select Date & Guests</h2>
+          <h2 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:#111827; margin-bottom:16px;">Select Date & Time Slot</h2>
           
           <!-- Custom Calendar -->
           <div class="calendar-container">
             <div class="calendar-header">
-              <button class="month-nav" id="prevMonthBtn">
+              <button class="month-nav" @click="prevMonth">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
               </button>
-              <span id="monthYearDisplay"></span>
-              <button class="month-nav" id="nextMonthBtn">
+              <span>{{ currentMonthName }} {{ currentYear }}</span>
+              <button class="month-nav" @click="nextMonth">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
               </button>
             </div>
             <div class="weekdays">
-              <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+              <span v-for="d in weekdays" :key="d">{{ d }}</span>
             </div>
-            <div class="days-grid" id="daysGrid">
-              <!-- Hari di-generate oleh JS -->
+            <div class="days-grid">
+              <button
+                v-for="(day, idx) in calendarDays" :key="idx"
+                class="day-cell"
+                :class="{
+                  empty: !day,
+                  past: day && isPastDay(day),
+                  available: day && isDateAvailable(day) && !isSelected(day),
+                  full: day && isDateFullyBooked(day) && !isSelected(day),
+                  booked: day && isDateBlocked(day),
+                  selected: day && isSelected(day)
+                }"
+                :disabled="!day || isPastDay(day) || isDateBlocked(day) || isDateFullyBooked(day)"
+                @click="day && selectDay(day)"
+              >
+                {{ day || '' }}
+              </button>
             </div>
           </div>
 
@@ -872,72 +866,59 @@
           <div class="form-group">
             <label class="form-label">Number of Guests</label>
             <div class="guest-selector">
-              <button class="guest-btn" id="guestMinusBtn">−</button>
-              <span class="guest-count" id="guestCount">2 Guests</span>
-              <button class="guest-btn" id="guestPlusBtn">+</button>
+              <button class="guest-btn" @click="guests > 1 ? guests-- : null">−</button>
+              <span class="guest-count">{{ guests }} {{ guests === 1 ? 'Guest' : 'Guests' }}</span>
+              <button class="guest-btn" @click="guests < 4 ? guests++ : null">+</button>
             </div>
             <div style="font-size:11px; color:var(--ink-4); margin-top:4px;">
               Max 4 orang per booking (1 kapal)
             </div>
           </div>
 
-          <!-- Start Time Picker (JAM BISA DIUBAH, MENIT TETAP 00) -->
+          <!-- TIME SLOT PICKER -->
           <div class="form-group">
-            <label class="form-label">Start Time</label>
-            <div class="time-picker-wrap">
-              <div class="time-picker-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                </svg>
-              </div>
-              <div style="flex:1;">
-                <div class="time-scroll-row">
-                  <!-- Hour -->
-                  <div class="time-col">
-                    <label>Jam</label>
-                    <button class="time-spin-btn" id="hourUpBtn">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-                    </button>
-                    <span class="time-display" id="hourDisplay">08</span>
-                    <button class="time-spin-btn" id="hourDownBtn">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                    </button>
-                  </div>
-                  <span class="time-sep">:</span>
-                  <!-- Minute (tetap 00, tidak bisa diubah) -->
-                  <div class="time-col minute-col">
-                    <label>Menit</label>
-                    <button class="time-spin-btn" disabled>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-                    </button>
-                    <span class="time-display fixed-minute">00</span>
-                    <button class="time-spin-btn" disabled>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                    </button>
-                  </div>
-                </div>
-                <div class="time-range-hint">Tersedia 06:00 – 16:00</div>
-              </div>
+            <label class="form-label">Select Time Slot</label>
+            <div class="time-slots-grid">
+              <button
+                v-for="slot in timeSlotOptions" :key="slot.time"
+                class="time-slot-btn"
+                :class="{
+                  selected: selectedTime === slot.time,
+                  full: slot.remainingBoats <= 0,
+                  disabled: !selectedDate
+                }"
+                :disabled="!selectedDate || slot.remainingBoats <= 0"
+                @click="selectTimeSlot(slot.time)"
+              >
+                <span class="time-slot-time">{{ slot.time }}</span>
+                <span class="time-slot-info" v-if="selectedDate">
+                  <template v-if="slot.remainingBoats <= 0">Penuh</template>
+                  <template v-else>{{ slot.remainingBoats }} kapal tersisa</template>
+                </span>
+                <span class="time-slot-info" v-else>--</span>
+              </button>
             </div>
-
-            <!-- 🔥 INDIKATOR KETERSEDIAAN SLOT -->
-            <div id="slotAvailability" class="slot-availability no-date">
-              <span class="slot-availability-icon">📅</span>
-              <span id="slotAvailabilityText">Pilih tanggal terlebih dahulu untuk melihat ketersediaan slot</span>
+            <div class="slot-legend">
+              <span><span class="legend-dot" style="background:#10b981;"></span> Tersedia</span>
+              <span><span class="legend-dot" style="background:#ef4444;"></span> Penuh</span>
+              <span><span class="legend-dot" style="background:var(--ink);"></span> Dipilih</span>
+            </div>
+            <div v-if="selectedTime && selectedDate" style="margin-top:8px; font-size:12px; color:var(--ink-3);">
+              📅 {{ selectedDate }} · ⏰ {{ selectedTime }} · 🚤 Kapal: {{ boatsNeeded }} · 👥 {{ guests }} orang
             </div>
           </div>
 
           <div class="form-group">
             <label class="form-label">Full Name</label>
-            <input type="text" id="inputName" placeholder="Your full name" class="form-input" />
+            <input type="text" v-model="booking.name" placeholder="Your full name" class="form-input" />
           </div>
           <div class="form-group">
             <label class="form-label">Phone Number</label>
-            <input type="tel" id="inputPhone" placeholder="+62 812 3456 7890" class="form-input" />
+            <input type="tel" v-model="booking.phone" placeholder="+62 812 3456 7890" class="form-input" />
           </div>
           <div class="form-group">
             <label class="form-label">Email Address</label>
-            <input type="email" id="inputEmail" placeholder="you@example.com" class="form-input" />
+            <input type="email" v-model="booking.email" placeholder="you@example.com" class="form-input" />
           </div>
         </div>
 
@@ -950,11 +931,11 @@
     <div class="floating-cta">
       <div class="price-text">
         <div class="total-label">Total Price</div>
-        <div class="amount" id="totalPriceDisplay">
-          $1270 <span>/person</span>
+        <div class="amount">
+          ${{ totalPrice }} <span>/person</span>
         </div>
       </div>
-      <button class="cta-btn" id="submitBtn">
+      <button class="cta-btn" @click="submitBooking" :disabled="!canBook">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
         </svg>
@@ -965,441 +946,241 @@
 </div><!-- /app -->
 
 <script>
-(function() {
-  // ========== KONFIGURASI SLOT & KUOTA ==========
-  const MAX_BOATS_PER_SLOT = 50;
-  const MAX_PEOPLE_PER_BOAT = 4;
+const { createApp, ref, computed, watch } = Vue;
 
-  // ========== DATA BOOKING (Simulasi Backend) ==========
-  const bookingsByDateSlot = {
-    '2026-05-12': { '08:00': 48, '14:00': 50 },
-    '2026-05-13': { '09:00': 50, '11:00': 50 },
-    '2026-05-20': { '07:00': 30 },
-    '2026-05-21': { '08:00': 50, '10:00': 45, '14:00': 50 },
-    '2026-06-05': { '08:00': 50, '09:00': 50, '10:00': 50, '11:00': 50, '12:00': 50, '13:00': 50, '14:00': 50, '15:00': 50, '16:00': 50 },
-    '2026-06-15': { '08:00': 20 },
-    '2026-06-16': { '14:00': 35 }
-  };
+createApp({
+  setup() {
+    // ========== KONFIGURASI SLOT & KUOTA ==========
+    const MAX_BOATS_PER_SLOT = 50;        // Maks 50 kapal per slot waktu
+    const MAX_PEOPLE_PER_BOAT = 4;        // 1 kapal = 4 orang
+    const MAX_PEOPLE_PER_SLOT = MAX_BOATS_PER_SLOT * MAX_PEOPLE_PER_BOAT; // 200 orang
 
-  // ========== STATE ==========
-  let wishlist = false;
-  let expanded = false;
-  let selectedIndex = 0;
-  let imgSwitching = false;
-  let activeNav = 'home';
-  let guests = 2;
-  let timeHour = 8;
-  // Menit selalu 0
-  const timeMinute = 0;
+    // Slot waktu yang tersedia (jam bulat, tidak ada menit)
+    const TIME_SLOTS = ['06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00'];
 
-  const today = new Date();
-  let currentMonth = today.getMonth();
-  let currentYear = today.getFullYear();
-  let selectedDate = null;
-
-  // Tanggal yang diblokir penuh
-  const blockedDates = new Set([
-    '2026-05-25', '2026-05-26', '2026-06-10'
-  ]);
-
-  const images = [
-    { full: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=85', thumb: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=200&q=75' },
-    { full: 'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800&q=85', thumb: 'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=200&q=75' },
-    { full: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&q=85', thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=200&q=75' },
-    { full: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=85', thumb: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=200&q=75' }
-  ];
-
-  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-  // ========== DOM ELEMENTS ==========
-  const heroImage = document.getElementById('heroImage');
-  const thumbsCol = document.getElementById('thumbsCol');
-  const infoGrid = document.getElementById('infoGrid');
-  const descriptionText = document.getElementById('descriptionText');
-  const readMoreBtn = document.getElementById('readMoreBtn');
-  const monthYearDisplay = document.getElementById('monthYearDisplay');
-  const daysGrid = document.getElementById('daysGrid');
-  const guestCount = document.getElementById('guestCount');
-  const guestMinusBtn = document.getElementById('guestMinusBtn');
-  const guestPlusBtn = document.getElementById('guestPlusBtn');
-  const hourDisplay = document.getElementById('hourDisplay');
-  const hourUpBtn = document.getElementById('hourUpBtn');
-  const hourDownBtn = document.getElementById('hourDownBtn');
-  const slotAvailability = document.getElementById('slotAvailability');
-  const slotAvailabilityText = document.getElementById('slotAvailabilityText');
-  const totalPriceDisplay = document.getElementById('totalPriceDisplay');
-  const submitBtn = document.getElementById('submitBtn');
-  const wishlistBtn = document.getElementById('wishlistBtn');
-  const wishlistIcon = document.getElementById('wishlistIcon');
-  const backBtn = document.getElementById('backBtn');
-  const inputName = document.getElementById('inputName');
-  const inputEmail = document.getElementById('inputEmail');
-
-  // ========== HELPER FUNCTIONS ==========
-  function formatDate(year, month, day) {
-    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-  }
-
-  function isPastDay(day) {
-    const dateStr = formatDate(currentYear, currentMonth, day);
-    const check = new Date(dateStr);
-    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    return check < todayStart;
-  }
-
-  function isDateBlocked(day) {
-    return blockedDates.has(formatDate(currentYear, currentMonth, day));
-  }
-
-  function isDateFullyBooked(day) {
-    const dateStr = formatDate(currentYear, currentMonth, day);
-    const dayBookings = bookingsByDateSlot[dateStr];
-    if (!dayBookings) return false;
-    const allSlots = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
-    return allSlots.every(slot => (dayBookings[slot] || 0) >= MAX_BOATS_PER_SLOT);
-  }
-
-  function isDateAvailable(day) {
-    return !isPastDay(day) && !isDateBlocked(day) && !isDateFullyBooked(day);
-  }
-
-  function isSelected(day) {
-    if (!selectedDate) return false;
-    return formatDate(currentYear, currentMonth, day) === selectedDate;
-  }
-
-  function getSelectedTimeStr() {
-    return `${String(timeHour).padStart(2, '0')}:00`;
-  }
-
-  function getBoatsBooked(date, timeSlot) {
-    return (bookingsByDateSlot[date] && bookingsByDateSlot[date][timeSlot]) || 0;
-  }
-
-  function getRemainingBoats(date, timeSlot) {
-    const booked = getBoatsBooked(date, timeSlot);
-    return Math.max(0, MAX_BOATS_PER_SLOT - booked);
-  }
-
-  function getBoatsNeeded() {
-    return Math.ceil(guests / MAX_PEOPLE_PER_BOAT);
-  }
-
-  function getTotalPrice() {
-    return 635 * guests;
-  }
-
-  function canBook() {
-    if (!inputName.value || !inputEmail.value || !selectedDate) return false;
-    const remaining = getRemainingBoats(selectedDate, getSelectedTimeStr());
-    return remaining >= getBoatsNeeded();
-  }
-
-  // ========== RENDER FUNCTIONS ==========
-  function renderThumbnails() {
-    thumbsCol.innerHTML = '';
-    images.forEach((img, i) => {
-      const div = document.createElement('div');
-      div.className = 'thumb-item' + (i === selectedIndex ? ' active' : '');
-      div.innerHTML = `<img src="${img.thumb}" alt="view ${i}"/>`;
-      div.addEventListener('click', () => selectImage(i));
-      thumbsCol.appendChild(div);
+    // ========== DATA BOOKING (Simulasi Backend) ==========
+    // Format: { 'YYYY-MM-DD': { 'HH:MM': jumlah_kapal_terisi } }
+    const bookingsByDateSlot = ref({
+      '2026-05-12': { '08:00': 48, '14:00': 50 },  // 08:00 hampir penuh, 14:00 penuh
+      '2026-05-13': { '09:00': 50, '11:00': 50 },  // 2 slot penuh
+      '2026-05-20': { '07:00': 30 },
+      '2026-05-21': { '08:00': 50, '10:00': 45, '14:00': 50 },
+      '2026-06-05': { '08:00': 50, '09:00': 50, '10:00': 50, '11:00': 50, '12:00': 50, '13:00': 50, '14:00': 50, '15:00': 50, '16:00': 50 }, // Semua full
+      '2026-06-15': { '08:00': 20 },
+      '2026-06-16': { '14:00': 35 },
     });
-  }
 
-  function renderInfoCards() {
-    const cards = [
-      { type: 'duration', label: 'Duration', value: '2.5 – 3 Jam' },
-      { type: 'distance', label: 'Distance', value: '11 Km' },
-      { type: 'grade', label: 'Grade', value: 'Grade III+' },
-      { type: 'capacity', label: 'Capacity', value: 'Max 4 Org' }
+    // ========== STATE ==========
+    const wishlist = ref(false);
+    const expanded = ref(false);
+    const selectedIndex = ref(0);
+    const imgSwitching = ref(false);
+    const activeNav = ref('home');
+    const guests = ref(2);
+    const selectedTime = ref(null);
+
+    const today = new Date();
+    const currentMonth = ref(today.getMonth());
+    const currentYear = ref(today.getFullYear());
+    const selectedDate = ref(null);
+
+    const booking = ref({
+      name: '',
+      phone: '',
+      email: ''
+    });
+
+    // Tanggal yang diblokir penuh (tidak bisa dipilih sama sekali)
+    const blockedDates = ref(new Set([
+      '2026-05-25', '2026-05-26', '2026-06-10'
+    ]));
+
+    const images = [
+      { full:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=85', thumb:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=200&q=75' },
+      { full:'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800&q=85', thumb:'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=200&q=75' },
+      { full:'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&q=85', thumb:'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=200&q=75' },
+      { full:'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=85', thumb:'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=200&q=75' },
     ];
 
-    infoGrid.innerHTML = '';
-    cards.forEach(info => {
-      let iconSvg = '';
-      if (info.type === 'duration') {
-        iconSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-      } else if (info.type === 'distance') {
-        iconSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>';
-      } else if (info.type === 'grade') {
-        iconSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c1.5-3 3-4.5 4.5-4.5S9 9 10.5 9 13.5 6 15 6s3 3 4.5 3 2.5-2 3-3"/><path d="M2 18c1.5-3 3-4.5 4.5-4.5S9 15 10.5 15 13.5 12 15 12s3 3 4.5 3 2.5-2 3-3"/></svg>';
-      } else if (info.type === 'capacity') {
-        iconSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
-      }
-      const card = document.createElement('div');
-      card.className = 'info-card';
-      card.innerHTML = `
-        <div class="info-icon">${iconSvg}</div>
-        <p style="font-size:14px; font-weight:700; color:#111827; text-align:center; line-height:1.2;">${info.value}</p>
-        <p style="font-size:10px; color:#9ca3af; margin-top:2px; text-align:center;">${info.label}</p>
-      `;
-      infoGrid.appendChild(card);
+    const currentImage = computed(() => images[selectedIndex.value].full);
+
+    const weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const currentMonthName = computed(() => monthNames[currentMonth.value]);
+
+    const calendarDays = computed(() => {
+      const year = currentYear.value;
+      const month = currentMonth.value;
+      const firstDay = new Date(year, month, 1).getDay();
+      const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      let days = [];
+      for (let i = 0; i < adjustedFirstDay; i++) days.push(null);
+      for (let d = 1; d <= daysInMonth; d++) days.push(d);
+      return days;
     });
-  }
 
-  function renderCalendar() {
-    monthYearDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-    daysGrid.innerHTML = '';
-
-    // Empty cells
-    for (let i = 0; i < adjustedFirstDay; i++) {
-      const btn = document.createElement('button');
-      btn.className = 'day-cell empty';
-      btn.disabled = true;
-      daysGrid.appendChild(btn);
+    // ========== HELPER FUNCTIONS ==========
+    function formatDate(year, month, day) {
+      return `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
     }
 
-    // Day cells
-    for (let d = 1; d <= daysInMonth; d++) {
-      const btn = document.createElement('button');
-      btn.className = 'day-cell';
-      btn.textContent = d;
+    function isPastDay(day) {
+      const dateStr = formatDate(currentYear.value, currentMonth.value, day);
+      const check = new Date(dateStr);
+      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      return check < todayStart;
+    }
 
-      const past = isPastDay(d);
-      const blocked = isDateBlocked(d);
-      const fullyBooked = isDateFullyBooked(d);
-      const available = isDateAvailable(d);
-      const selected = isSelected(d);
+    // Tanggal diblokir admin (hitam total)
+    function isDateBlocked(day) {
+      return blockedDates.value.has(formatDate(currentYear.value, currentMonth.value, day));
+    }
 
-      if (!d) {
-        btn.classList.add('empty');
-        btn.disabled = true;
-      } else if (past) {
-        btn.classList.add('past');
-        btn.disabled = true;
-      } else if (blocked) {
-        btn.classList.add('booked');
-        btn.disabled = true;
-      } else if (fullyBooked && !selected) {
-        btn.classList.add('full');
-        btn.disabled = true;
-      } else if (selected) {
-        btn.classList.add('selected');
-      } else if (available) {
-        btn.classList.add('available');
+    // Tanggal semua slot penuh (full)
+    function isDateFullyBooked(day) {
+      const dateStr = formatDate(currentYear.value, currentMonth.value, day);
+      const dayBookings = bookingsByDateSlot.value[dateStr];
+      if (!dayBookings) return false; // Belum ada booking = tidak full
+      // Cek apakah SEMUA slot penuh (50 kapal)
+      return TIME_SLOTS.every(slot => (dayBookings[slot] || 0) >= MAX_BOATS_PER_SLOT);
+    }
+
+    // Tanggal masih ada slot tersedia
+    function isDateAvailable(day) {
+      return !isPastDay(day) && !isDateBlocked(day) && !isDateFullyBooked(day);
+    }
+
+    function isSelected(day) {
+      if (!selectedDate.value) return false;
+      return formatDate(currentYear.value, currentMonth.value, day) === selectedDate.value;
+    }
+
+    function selectDay(day) {
+      const dateStr = formatDate(currentYear.value, currentMonth.value, day);
+      selectedDate.value = dateStr;
+      selectedTime.value = null; // Reset waktu saat ganti tanggal
+    }
+
+    function prevMonth() {
+      if (currentMonth.value === 0) { currentMonth.value = 11; currentYear.value--; }
+      else currentMonth.value--;
+      selectedDate.value = null;
+      selectedTime.value = null;
+    }
+
+    function nextMonth() {
+      if (currentMonth.value === 11) { currentMonth.value = 0; currentYear.value++; }
+      else currentMonth.value++;
+      selectedDate.value = null;
+      selectedTime.value = null;
+    }
+
+    // ========== SLOT TIME LOGIC ==========
+    // Ambil jumlah kapal terisi untuk slot tertentu
+    function getBoatsBooked(date, timeSlot) {
+      return bookingsByDateSlot.value[date]?.[timeSlot] || 0;
+    }
+
+    // Sisa kapal untuk slot tertentu
+    function getRemainingBoats(date, timeSlot) {
+      const booked = getBoatsBooked(date, timeSlot);
+      return Math.max(0, MAX_BOATS_PER_SLOT - booked);
+    }
+
+    // Hitung berapa kapal dibutuhkan untuk jumlah tamu
+    const boatsNeeded = computed(() => Math.ceil(guests.value / MAX_PEOPLE_PER_BOAT));
+
+    // Slot waktu dengan info ketersediaan
+    const timeSlotOptions = computed(() => {
+      if (!selectedDate.value) {
+        return TIME_SLOTS.map(time => ({
+          time,
+          remainingBoats: MAX_BOATS_PER_SLOT,
+          remainingPeople: MAX_PEOPLE_PER_SLOT
+        }));
       }
-
-      if (!past && !blocked && !(fullyBooked && !selected)) {
-        btn.addEventListener('click', () => selectDay(d));
-      }
-
-      daysGrid.appendChild(btn);
-    }
-  }
-
-  function updateGuestDisplay() {
-    guestCount.textContent = `${guests} ${guests === 1 ? 'Guest' : 'Guests'}`;
-    updateUI();
-  }
-
-  function updateTimeDisplay() {
-    hourDisplay.textContent = String(timeHour).padStart(2, '0');
-    hourUpBtn.disabled = timeHour >= 16;
-    hourDownBtn.disabled = timeHour <= 6;
-    updateUI();
-  }
-
-  function updateSlotAvailability() {
-    if (!selectedDate) {
-      slotAvailability.className = 'slot-availability no-date';
-      slotAvailabilityText.textContent = 'Pilih tanggal terlebih dahulu untuk melihat ketersediaan slot';
-      return;
-    }
-
-    const timeStr = getSelectedTimeStr();
-    const remaining = getRemainingBoats(selectedDate, timeStr);
-    const boatsNeeded = getBoatsNeeded();
-    const remainingPeople = remaining * MAX_PEOPLE_PER_BOAT;
-
-    if (remaining <= 0) {
-      slotAvailability.className = 'slot-availability full';
-      slotAvailability.innerHTML = '<span class="slot-availability-icon">❌</span><span>' + `Slot ${timeStr} sudah penuh (50/50 kapal). Pilih jam lain.` + '</span>';
-    } else if (remaining < boatsNeeded) {
-      slotAvailability.className = 'slot-availability full';
-      slotAvailability.innerHTML = '<span class="slot-availability-icon">❌</span><span>' + `Slot tidak cukup! Butuh ${boatsNeeded} kapal, tersisa ${remaining} kapal. Kurangi tamu atau pilih jam lain.` + '</span>';
-    } else if (remaining <= 5) {
-      slotAvailability.className = 'slot-availability almost-full';
-      slotAvailability.innerHTML = '<span class="slot-availability-icon">⚠️</span><span>' + `Slot hampir penuh! Tersisa ${remaining} kapal (${remainingPeople} orang). Segera booking!` + '</span>';
-    } else {
-      slotAvailability.className = 'slot-availability available';
-      slotAvailability.innerHTML = '<span class="slot-availability-icon">✅</span><span>' + `Slot tersedia: ${remaining} kapal (${remainingPeople} orang). Kapal dibutuhkan: ${boatsNeeded}.` + '</span>';
-    }
-  }
-
-  function updatePriceDisplay() {
-    const total = getTotalPrice();
-    totalPriceDisplay.innerHTML = `$${total} <span>/person</span>`;
-  }
-
-  function updateSubmitButton() {
-    submitBtn.disabled = !canBook();
-  }
-
-  function updateUI() {
-    updateSlotAvailability();
-    updatePriceDisplay();
-    updateSubmitButton();
-  }
-
-  // ========== ACTIONS ==========
-  function selectImage(i) {
-    if (i === selectedIndex) return;
-    imgSwitching = true;
-    heroImage.classList.add('switching');
-    setTimeout(() => {
-      selectedIndex = i;
-      heroImage.src = images[i].full;
-      heroImage.classList.remove('switching');
-      imgSwitching = false;
-      renderThumbnails();
-    }, 220);
-  }
-
-  function selectDay(day) {
-    selectedDate = formatDate(currentYear, currentMonth, day);
-    renderCalendar();
-    updateUI();
-  }
-
-  function prevMonth() {
-    if (currentMonth === 0) {
-      currentMonth = 11;
-      currentYear--;
-    } else {
-      currentMonth--;
-    }
-    renderCalendar();
-    updateUI();
-  }
-
-  function nextMonth() {
-    if (currentMonth === 11) {
-      currentMonth = 0;
-      currentYear++;
-    } else {
-      currentMonth++;
-    }
-    renderCalendar();
-    updateUI();
-  }
-
-  function incrementHour() {
-    if (timeHour < 16) {
-      timeHour++;
-      updateTimeDisplay();
-    }
-  }
-
-  function decrementHour() {
-    if (timeHour > 6) {
-      timeHour--;
-      updateTimeDisplay();
-    }
-  }
-
-  function submitBooking() {
-    if (!inputName.value || !inputEmail.value || !selectedDate) {
-      alert('Mohon lengkapi data diri dan pilih tanggal.');
-      return;
-    }
-
-    const timeStr = getSelectedTimeStr();
-    const remaining = getRemainingBoats(selectedDate, timeStr);
-    const boatsNeeded = getBoatsNeeded();
-
-    if (remaining < boatsNeeded) {
-      alert(`❌ Slot ${timeStr} tidak cukup! Tersisa ${remaining} kapal, butuh ${boatsNeeded} kapal.`);
-      return;
-    }
-
-    // Simulasi booking
-    if (!bookingsByDateSlot[selectedDate]) {
-      bookingsByDateSlot[selectedDate] = {};
-    }
-    bookingsByDateSlot[selectedDate][timeStr] = (bookingsByDateSlot[selectedDate][timeStr] || 0) + boatsNeeded;
-
-    // Arahkan ke halaman pembayaran
-    window.location.href = 'pembayaran.html';
-  }
-
-  // ========== EVENT LISTENERS ==========
-  backBtn.addEventListener('click', () => history.back());
-
-  wishlistBtn.addEventListener('click', () => {
-    wishlist = !wishlist;
-    if (wishlist) {
-      wishlistIcon.setAttribute('fill', '#f43f5e');
-      wishlistIcon.setAttribute('stroke', '#f43f5e');
-    } else {
-      wishlistIcon.setAttribute('fill', 'none');
-      wishlistIcon.setAttribute('stroke', 'white');
-    }
-  });
-
-  readMoreBtn.addEventListener('click', () => {
-    expanded = !expanded;
-    if (expanded) {
-      descriptionText.style.display = 'block';
-      descriptionText.style.webkitLineClamp = 'unset';
-      descriptionText.style.overflow = 'visible';
-      readMoreBtn.textContent = 'Show less';
-    } else {
-      descriptionText.style.display = '-webkit-box';
-      descriptionText.style.webkitLineClamp = '4';
-      descriptionText.style.overflow = 'hidden';
-      readMoreBtn.textContent = 'Read more';
-    }
-  });
-
-  document.getElementById('prevMonthBtn').addEventListener('click', prevMonth);
-  document.getElementById('nextMonthBtn').addEventListener('click', nextMonth);
-
-  guestMinusBtn.addEventListener('click', () => {
-    if (guests > 1) {
-      guests--;
-      updateGuestDisplay();
-    }
-  });
-
-  guestPlusBtn.addEventListener('click', () => {
-    if (guests < 4) {
-      guests++;
-      updateGuestDisplay();
-    }
-  });
-
-  hourUpBtn.addEventListener('click', incrementHour);
-  hourDownBtn.addEventListener('click', decrementHour);
-
-  submitBtn.addEventListener('click', submitBooking);
-
-  // Sidebar navigation
-  document.querySelectorAll('.sidebar-nav-item').forEach(item => {
-    item.addEventListener('click', function(e) {
-      document.querySelectorAll('.sidebar-nav-item').forEach(el => el.classList.remove('active'));
-      this.classList.add('active');
-      activeNav = this.getAttribute('data-nav');
+      return TIME_SLOTS.map(time => ({
+        time,
+        remainingBoats: getRemainingBoats(selectedDate.value, time),
+        remainingPeople: getRemainingBoats(selectedDate.value, time) * MAX_PEOPLE_PER_BOAT
+      }));
     });
-  });
 
-  // Input listeners for validation
-  inputName.addEventListener('input', updateSubmitButton);
-  inputEmail.addEventListener('input', updateSubmitButton);
+    // Cek apakah slot cukup untuk jumlah tamu
+    function isSlotEnoughCapacity(date, timeSlot) {
+      const remaining = getRemainingBoats(date, timeSlot);
+      return remaining >= boatsNeeded.value;
+    }
 
-  // ========== INITIAL RENDER ==========
-  renderThumbnails();
-  renderInfoCards();
-  renderCalendar();
-  updateGuestDisplay();
-  updateTimeDisplay();
-  updateUI();
-})();
+    function selectTimeSlot(time) {
+      if (!selectedDate.value) return;
+      if (getRemainingBoats(selectedDate.value, time) <= 0) return;
+      if (!isSlotEnoughCapacity(selectedDate.value, time)) {
+        alert(`Slot ${time} tidak cukup untuk ${guests.value} tamu (butuh ${boatsNeeded.value} kapal). Kurangi tamu atau pilih slot lain.`);
+        return;
+      }
+      selectedTime.value = time;
+    }
+
+    // ========== PRICING ==========
+    const basePrice = 635;
+    const totalPrice = computed(() => basePrice * guests.value);
+
+    // ========== VALIDASI BOOKING ==========
+    const canBook = computed(() => {
+      return booking.value.name && booking.value.email && selectedDate.value && selectedTime.value;
+    });
+
+    // ========== IMAGE ==========
+    function selectImage(i) {
+      if (i === selectedIndex.value) return;
+      imgSwitching.value = true;
+      setTimeout(() => { selectedIndex.value = i; imgSwitching.value = false; }, 220);
+    }
+
+    function goBack() { history.back(); }
+
+    // ========== SUBMIT BOOKING ==========
+    function submitBooking() {
+      if (!canBook.value) {
+        alert('Mohon lengkapi data diri, pilih tanggal, dan pilih slot waktu.');
+        return;
+      }
+      alert(`✅ Terima kasih, ${booking.value.name}!\n\n` +
+            `📅 Tanggal: ${selectedDate.value}\n` +
+            `⏰ Jam: ${selectedTime.value}\n` +
+            `👥 Tamu: ${guests.value} orang\n` +
+            `🚤 Kapal: ${boatsNeeded.value}\n` +
+            `💰 Total: $${totalPrice.value}\n\n` +
+            `Pemesanan Anda sedang diproses. Guide akan diassign otomatis.`);
+    }
+
+    // ========== INFO CARDS ==========
+    const infoCards = [
+      { type: 'duration',  label: 'Duration',  value: '2.5 – 3 Jam' },
+      { type: 'distance',  label: 'Distance',  value: '11 Km' },
+      { type: 'grade',     label: 'Grade',     value: 'Grade III+' },
+      { type: 'capacity',  label: 'Capacity',  value: 'Max 4 Org' },
+    ];
+
+    // Reset selected time when date changes
+    watch(selectedDate, () => {
+      selectedTime.value = null;
+    });
+
+    return { 
+      wishlist, expanded, images, selectedIndex, currentImage, imgSwitching, 
+      selectImage, goBack, infoCards, activeNav, booking, submitBooking,
+      guests, currentMonth, currentYear, selectedDate, calendarDays,
+      weekdays, currentMonthName, prevMonth, nextMonth,
+      isPastDay, isDateBlocked, isDateFullyBooked, isDateAvailable, isSelected, selectDay,
+      totalPrice, selectedTime, timeSlotOptions, selectTimeSlot,
+      boatsNeeded, canBook,
+      TIME_SLOTS, MAX_BOATS_PER_SLOT, MAX_PEOPLE_PER_BOAT, MAX_PEOPLE_PER_SLOT
+    };
+  }
+}).mount('#app');
 </script>
 </body>
 </html>
